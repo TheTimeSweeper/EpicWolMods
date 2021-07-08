@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace WolModButEpic {
 
-
-    /// <summary>
-    /// This attribute in [brackets] is (as can be seen) parameters for the beipn plugin
-    /// </summary>
-    /// <param name="GUID">
-    /// The GUID is the identifier for your mod. Follows the convention of "com.YourUsername.YourModName"
-    /// </param>
-    /// <param name="Name">
-    /// The Name is the full name of your mod.
-    /// </param>
-    /// <param name="Version">
-    /// The Version, as usually, is useful for differing between updates.
-    /// If you have two pulgins of the same GUID, bepin will automatically load the newest one and not load older ones.
-    /// Custmoary to follow Semantic Versioning (major.minor.patch). You don't have to, but you'll just look silly in front of everyone. It's ok. I won't make fun of you.
-    /// </param>
+    // summary:
+    // This attribute in [brackets] is (as can be seen) parameters for the beipn plugin
+    // <param name="GUID">
+    // The GUID is the identifier for your mod. Follows the convention of "com.YourUsername.YourModName"
+    // <param name="Name">
+    // The Name is the full name of your mod.
+    // <param name="Version">
+    // The Version, as usually, is useful for differing between updates.
+    // If you have two pulgins of the same GUID, bepin will automatically load the newest one and not load older ones.
+    // Custmoary to follow Semantic Versioning (major.minor.patch). You don't have to, but you'll just look silly in front of everyone. It's ok. I won't make fun of you.
     [BepInPlugin("com.TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.1")]
     public class CoolEpicModThatDoesThings : BaseUnityPlugin {
+
+    // BaseUnityPlugin is the main class that gets loaded by bepin.
+    // It inherits from MonoBehaviour, so it gains all the callback functions you can use:
+    //     Awake, Start, Update, FixedUpdate, etc.
+    //     Awake is usually quite important. it's where we initialize our modding
 
         private bool zoomin;
 
@@ -59,17 +59,19 @@ namespace WolModButEpic {
 
             if (GameController.playerScripts[0] == null || GameController.playerScripts[1] == null)
                 return;
-            //Debug.LogWarning("I'm not racist I swear");
+            //copied from DNSpy
             //if (GameController.pvpOn || SceneManager.GetActiveScene().name.Contains("PvP"))
-            //this the bit of code ordinarly runs after the 'if' statement above ("are we pvp right now").
+            //this the bit of code ordinarly runs after the 'if' statement above (checks are we pvp right now).
             //so for this hook i'm simply doing it again, but without the check, so it always does it.
             self.distanceBetweenPlayers = self.playerDiff.magnitude * 0.42f;
             Camera.main.orthographicSize = ((self.distanceBetweenPlayers <= CameraController.originalCameraSize * 0.95f) ? CameraController.originalCameraSize * 0.95f : self.distanceBetweenPlayers);
         
-            //ordinarily, simply copypasting code from the game is kinda bad practice, but that's a subject for a different time
+            //ordinarily, simply copypasting code from the game is kinda bad practice, but that's a subject in itself
             //copypasting their code and tweaking things is kind of a cop-out, also a lot of the time ain't even gonna cut it
             //what you want is to really understand what's happening in their code, then figure out what you want to do by adding your additional code.
             //it's a pretty interesting unique problem to solve. gotta think outside the box almost literally
+            //that said, for simple things like this, and until you really wrap your head around all this, it's fine. it'll come with experience
+            //I believ in you c:
         }
     }
 }
