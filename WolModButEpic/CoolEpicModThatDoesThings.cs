@@ -30,7 +30,7 @@ namespace WolModButEpic {
 
             //these are hooking on to the functions in the game. when the method is called, our functon will be called
             On.CameraController.Awake += CameraController_Awake;
-            On.CameraController.Update += CameraController_Update;
+            On.CameraController.Update += CameraController_Update; 
         }
 
         private void CameraController_Awake(On.CameraController.orig_Awake orig, CameraController self) {
