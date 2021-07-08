@@ -5,14 +5,19 @@ namespace WolModButEpic {
 
     // summary:
     // This attribute in [brackets] is (as can be seen) parameters for the beipn plugin
-    // <param name="GUID">
+
+    // GUID paramter: "com.TheTimeSweeper.AlwaysPvpCameraMod"
     // The GUID is the identifier for your mod. Follows the convention of "com.YourUsername.YourModName"
-    // <param name="Name">
+
+    // Name parameter: "Always PvP Camera"
     // The Name is the full name of your mod.
-    // <param name="Version">
-    // The Version, as usually, is useful for differing between updates.
+
+    // Version parameter:  "1.0.1"
+    // The Version, as you'd expect, is useful for differing between updates.
     // If you have two pulgins of the same GUID, bepin will automatically load the newest one and not load older ones.
-    // Custmoary to follow Semantic Versioning (major.minor.patch). You don't have to, but you'll just look silly in front of everyone. It's ok. I won't make fun of you.
+    // Custmoary to follow Semantic Versioning (major.minor.patch).
+    //     You don't have to, but you'll just look silly in front of everyone. It's ok. I won't make fun of you.
+    
     [BepInPlugin("com.TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.1")]
     public class CoolEpicModThatDoesThings : BaseUnityPlugin {
 
@@ -38,14 +43,15 @@ namespace WolModButEpic {
             //if you don't have this orig() function, the game's original function will not run 
             orig(self);
 
+            //after the camera initalizes, I'm swoocing right in and increasing these values so the camera will follow players up to a huge distance
             self.maxHorizontalDistBetweenPlayers = 100;
             self.maxVerticalDistBetweenPlayers = 100;
             self.teleportToOtherPlayerRange = 120;
 
+            //zooming out the camera a little bit by default cause I want that
             if (!zoomin) {
                 zoomin = true;
                 CameraController.originalCameraSize *= 1.2f;
-                Debug.LogWarning("came");
             }
         }
 
@@ -59,13 +65,18 @@ namespace WolModButEpic {
 
             if (GameController.playerScripts[0] == null || GameController.playerScripts[1] == null)
                 return;
-            //copied from DNSpy
+
+            //copied from DNSpy CameraControler.Update
             //if (GameController.pvpOn || SceneManager.GetActiveScene().name.Contains("PvP"))
-            //this the bit of code ordinarly runs after the 'if' statement above (checks are we pvp right now).
+
+            //this the bit of code ordinarly runs in the 'if' statement above (checks are we pvp right now).
             //so for this hook i'm simply doing it again, but without the check, so it always does it.
+            //(and with a few adjustments to values I wanted) 
             self.distanceBetweenPlayers = self.playerDiff.magnitude * 0.42f;
             Camera.main.orthographicSize = ((self.distanceBetweenPlayers <= CameraController.originalCameraSize * 0.95f) ? CameraController.originalCameraSize * 0.95f : self.distanceBetweenPlayers);
-        
+            
+            //and we're done! build this mod, put it in Plugins, and run the game!
+
             //ordinarily, simply copypasting code from the game is kinda bad practice, but that's a subject in itself
             //copypasting their code and tweaking things is kind of a cop-out, also a lot of the time ain't even gonna cut it
             //what you want is to really understand what's happening in their code, then figure out what you want to do by adding your additional code.
