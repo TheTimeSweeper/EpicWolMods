@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E629E2D9-0C1D-4CDE-99D8-280C14841444}</ProjectGuid>
+    <ProjectGuid>{81786ED0-CB04-4972-99BF-65F51712C2A7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WolModButEpic</RootNamespace>
-    <AssemblyName>WolModButEpic</AssemblyName>
+    <RootNamespace>TimeWizard</RootNamespace>
+    <AssemblyName>TimeWizard</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -38,11 +38,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ButtonMutinyMod.cs" />
-    <Compile Include="LongPotMod.cs" />
     <Compile Include="ModAccess.cs" />
-    <Compile Include="CoolEpicModThatDoesThings.cs" />
-    <Compile Include="MyBelovedMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeWizardMod.cs" />
   </ItemGroup>

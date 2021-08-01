@@ -9,19 +9,20 @@ using UnityEngine;
 
 namespace PlatWalletUpgrade {
 
-    [BepInPlugin("com.TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.1")]
+    [BepInPlugin("com.TheTimeSweeper.PlatWalletUpgrade", "Gems Gems Gems", "1.0.0")]
     public class PlatWalletUpgrade : BaseUnityPlugin {
 
-        BepInEx.Configuration.ConfigEntry<int> configWalletSize;
+        private BepInEx.Configuration.ConfigEntry<int> configWalletSize;
+        private bool printed;
 
         void Awake() {
 
             SetUpConfig();
-
             On.PlatWallet.ctor += PlatWallet_ctor;
         }
 
         private void SetUpConfig() {
+
             configWalletSize =
                 Config.Bind<int>("Config section",
                                  "WalletSize",
@@ -33,6 +34,12 @@ namespace PlatWalletUpgrade {
 
             orig(self, startBalance);
             self.maxBalance = configWalletSize.Value;
+
+            if (!printed) {
+                //only really need to say this the first time
+                printed = true;
+                Logger.LogMessage($"starting platwallet with a maximum of {configWalletSize.Value}");
+            }
         }
     }
 }
