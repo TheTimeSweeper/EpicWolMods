@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WolModButEpic {
 
-    [BepInPlugin("com.TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.4")]
+    [BepInPlugin("TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.5")]
     public class CoolEpicModThatDoesThings : BaseUnityPlugin {
 
         private float camSizeMultiplierCoop = 1.2f;
@@ -21,7 +21,7 @@ namespace WolModButEpic {
 
         void Awake() { 
 
-            Logger.LogMessage("I still belive in you c:");
+            Logger.LogMessage("I belive in you c:");
 
             Configuratinator();
 
@@ -102,38 +102,31 @@ namespace WolModButEpic {
 
             float playerDistance = Mathf.Max(playY * playerDistCheckMult, playX * playerDistCheckMult);
 
-            GameUI.BroadcastNoticeMessage(string.Format("{0}\n{1}\n{2}\n{3}",
-                $"disty: {playY.ToString("0.000")} | ({Mathf.Abs(self.playerDiff.y).ToString("0.000")})",
-                $"distx: {playX.ToString("0.000")} | ({Mathf.Abs(self.playerDiff.x).ToString("0.000")})",
-                $"dist: {playerDistance.ToString("0.000")}",
-                $"origcam: {CameraController.originalCameraSize.ToString("0.000")} / {_originalOriginalCameraSize.ToString("0.000")}"
-                ));
-
             Camera.main.orthographicSize = playerDistance > CameraController.originalCameraSize ? playerDistance : CameraController.originalCameraSize;
             
         }
 
         void Update() {
 
-            if (Input.GetKeyDown(KeyCode.U)) {
-                camSizeMultiplierCoop += 0.05f;
-                CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
-            }
-            if (Input.GetKeyDown(KeyCode.J)) {
-                camSizeMultiplierCoop -= 0.05f;
-                CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
-            }
+            //if (Input.GetKeyDown(KeyCode.U)) {
+            //    camSizeMultiplierCoop += 0.05f;
+            //    CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
+            //}
+            //if (Input.GetKeyDown(KeyCode.J)) {
+            //    camSizeMultiplierCoop -= 0.05f;
+            //    CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
+            //}
 
-            if (Input.GetKeyDown(KeyCode.I)) {
+            //if (Input.GetKeyDown(KeyCode.I)) {
 
-                playerCameraBuffer += 0.02f;
-                Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
-            }
-            if (Input.GetKeyDown(KeyCode.K)) {
+            //    playerCameraBuffer += 0.02f;
+            //    Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
+            //}
+            //if (Input.GetKeyDown(KeyCode.K)) {
 
-                playerCameraBuffer -= 0.02f;
-                Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
-            }
+            //    playerCameraBuffer -= 0.02f;
+            //    Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
+            //}
         }
     }
 }
