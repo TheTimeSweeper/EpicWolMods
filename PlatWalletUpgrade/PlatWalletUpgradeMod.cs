@@ -10,7 +10,7 @@ using UnityEngine;
 namespace PlatWalletUpgrade {
 
     [BepInPlugin("com.TheTimeSweeper.PlatWalletUpgrade", "Gems Gems Gems", "1.0.0")]
-    public class PlatWalletUpgrade : BaseUnityPlugin {
+    public class PlatWalletUpgradeMod : BaseUnityPlugin {
 
         private BepInEx.Configuration.ConfigEntry<int> configWalletSize;
         private bool printed;
