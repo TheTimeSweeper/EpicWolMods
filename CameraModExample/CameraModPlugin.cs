@@ -10,21 +10,19 @@ namespace CameraModExample {
     // summary:
     // This attribute in [brackets] is setting parameters for the bepin plugin
 
-    // GUID: "com.TheTimeSweeper.AlwaysPvpCameraMod"
+    // GUID: "TheTimeSweeper.CameraModExample"
     // The the identifier for your mod. Follows the convention of "com.YourUsername.YourModName"
 
-    // Name: "Always PvP Camera"
+    // Name: "CameraModExample"
     // The the full name of your mod.
 
-    // Version:  "1.0.0"
+    // Version:  "0.1.0"
     // The Version, as you'd expect, useful for differing between updates.
-    // Additionaly, if you have two plugins of the same GUID, bepin will automatically load the newest one and ignore older ones.
-
     //     Customary to follow Semantic Versioning (major.minor.patch). 
     //         You don't have to, but you'll just look silly in front of everyone. It's ok. I won't make fun of you.
     #endregion
 
-    [BepInPlugin("com.TheTimeSweeper.CameraModExample", "CameraModExample", "0.1.0")]
+    [BepInPlugin("TheTimeSweeper.CameraModExample", "CameraModExample", "0.1.0")]
     public class CameraModPlugin : BaseUnityPlugin {
         #region BaseUnityPluginNotes
         // BaseUnityPlugin is the main class that gets loaded by bepin.
