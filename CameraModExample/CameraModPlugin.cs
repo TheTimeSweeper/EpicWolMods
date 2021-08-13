@@ -45,6 +45,23 @@ namespace CameraModExample {
             On.CameraController.Update += CameraController_Update;
         }
 
+        // This Update() function will run every frame
+        void Update() {
+
+            // Every frame, we'll check if the user is currently pressing f1 on the keyboard
+            if (Input.GetKeyDown(KeyCode.F1)) {
+                //if they just pressed f1 this frame, let's zoom the camera out
+                CameraController.originalCameraSize += 0.5f;
+                Logger.LogMessage("zooming the camera out to " + CameraController.originalCameraSize);
+            }
+
+            // same as above, but pressing f2 to zoom in
+            if (Input.GetKeyDown(KeyCode.F2)) {
+                CameraController.originalCameraSize -= 0.5f;
+                Logger.LogMessage("zooming the camera in to " + CameraController.originalCameraSize);
+            }
+        }
+
         private void CameraController_Awake(On.CameraController.orig_Awake orig, CameraController self) {
 
             // this orig() line is very important. this is executing the original function we've hooked to.

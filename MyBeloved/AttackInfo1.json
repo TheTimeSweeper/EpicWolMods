@@ -1,0 +1,77 @@
+{
+    "entity": {
+        "m_FileID": -65320,
+        "m_PathID": 0
+    },
+    "gameObject": {
+        "m_FileID": -66066,
+        "m_PathID": 0
+    },
+    "skillCategory": "Player0",
+    "skillID": "AirChannelDash",
+    "skillLevel": 1,
+    "isUltimate": false,
+    "attackInfoKey": "Player0AirChannelDash1",
+    "atkObjID": -66074,
+    "attacker": "WindBurst(Clone)-66066",
+    "attackerPosition": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "targetPosition": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "elementType": 2,
+    "subElementType": 2,
+    "showDamageNumber": true,
+    "showDamageEffect": true,
+    "shakeCamera": true,
+    "targetObjID": -1,
+    "targetNames": [
+        "EnemyHurtBox",
+        "DestructibleHurtBox",
+        "",
+        "",
+        "",
+        "FFAHurtBox"
+    ],
+    "time": 0.0,
+    "sameTargetImmunityTime": 0.0,
+    "sameAttackImmunityTime": 0.25,
+    "canHitStun": true,
+    "hitStunDurationModifier": 2.0,
+    "knockbackMultiplier": -20.0,
+    "knockbackOverwrite": false,
+    "knockbackVector": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "attackingVector": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "damage": 5,
+    "isCritical": false,
+    "isDamageOverride": false,
+    "critHitChance": 0.05000000074505806,
+    "critDmgModifier": 1.5,
+    "isStatusEffect": false,
+    "rootChance": 0.0,
+    "rootDuration": 2.0,
+    "chaosChance": 0.0,
+    "chaosLevel": 1,
+    "burnChance": 0.0,
+    "burnLevel": 1,
+    "slowChance": 0.0,
+    "slowLevel": 1,
+    "poisonChance": 0.0,
+    "poisonLevel": 1,
+    "shockChance": 0.0,
+    "shockLevel": 1,
+    "freezeChance": 0.0,
+    "freezeDuration": 1.5,
+    "odDmgModifier": 1.0,
+    "odProgMultiplier": 1.0,
+    "odSingleIncrease": true
+}
