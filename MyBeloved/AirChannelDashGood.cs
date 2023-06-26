@@ -3,7 +3,7 @@
 namespace MyBeloved {
     public class AirChannelDashGood : Player.BaseDashState {
 
-		public AirChannelDashGood(FSM fsm, Player parentPlayer) : base(Player.AirChannelDash.staticID, fsm, parentPlayer) {
+		public AirChannelDashGood(FSM fsm, Player parentPlayer) : base("AirChannelDashGood", fsm, parentPlayer) {
 			//this.hasEmpowered = true;
 			this.applyStopElementStatus = true;
 			base.InitChargeSkillSettings(2, 0f, this.skillData, this);
@@ -37,6 +37,7 @@ namespace MyBeloved {
 		}
 
 		private void CreateImplosion() {
+			//Log.Warning(skillID);
 			this.currentWB = WindBurst.CreateBurst(this.spawnPosition, this.parent.skillCategory, this.skillID, 1, this.burstScale);
 			this.currentWB.emitParticles = false;
 			PoolManager.GetPoolItem<ParticleEffect>("WindBurstEffect").Emit(new int?(3), new Vector3?(this.spawnPosition), null, null, 0f, null, null);

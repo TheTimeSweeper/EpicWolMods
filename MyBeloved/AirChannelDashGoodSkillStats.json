@@ -1,0 +1,282 @@
+{
+    "ID": [
+        "AirChannelDashGood",
+        "AirChannelDashGood",
+        "AirChannelDashGood",
+        "AirChannelDashGood",
+        "AirChannelDashGood"
+    ],
+    "elementType": [
+        "Air",
+        "Air",
+        "Air",
+        "Air",
+        "Air"
+    ],
+    "subElementType": [
+        "Air",
+        "Air",
+        "Air",
+        "Air",
+        "Air"
+    ],
+    "showDamageNumber": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "showDamageEffect": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "shakeCamera": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "targetNames": [
+        "EnemyHurtBox",
+        "DestructibleHurtBox",
+        "",
+        "",
+        ""
+    ],
+    "sameTargetImmunityTime": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "sameAttackImmunityTime": [
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.25
+    ],
+    "canHitStun": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "hitStunDurationModifier": [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+    ],
+    "knockbackMultiplier": [
+        -20.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0
+    ],
+    "knockbackOverwrite": [
+        false,
+        true,
+        true,
+        true,
+        true
+    ],
+    "damage": [
+        5,
+        10,
+        10,
+        10,
+        10
+    ],
+    "cooldown": [
+        3.5,
+        3.5,
+        3.5,
+        3.5,
+        3.5
+    ],
+    "duration": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "hitCount": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "damageInterval": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "spawnCount": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "baseHealth": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "criticalHitChance": [
+        0.05000000074505806,
+        0.05000000074505806,
+        0.05000000074505806,
+        0.05000000074505806,
+        0.05000000074505806
+    ],
+    "criticalDamageModifier": [
+        1.5,
+        1.5,
+        1.5,
+        1.5,
+        1.5
+    ],
+    "isStatusEffect": [
+        false,
+        false,
+        false,
+        false,
+        false
+    ],
+    "rootChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "rootDuration": [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+    ],
+    "chaosChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "chaosLevel": [
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "burnChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "burnLevel": [
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "slowChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "slowLevel": [
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "poisonChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "poisonLevel": [
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "shockChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "shockLevel": [
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "freezeChance": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "freezeDuration": [
+        1.5,
+        1.5,
+        1.5,
+        1.5,
+        1.5
+    ],
+    "overdriveDamageMultiplier": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "overdriveProgressMultiplier": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "overdriveSingleIncrease": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ]
+}

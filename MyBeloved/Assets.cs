@@ -2,12 +2,16 @@
     public class Assets {
         //this is getting out of hand isnt it
 
-        public static AttackInfo AttackInfoChannel;
+        public static AttackInfo AttackInfoAirChannel;
         public static AttackInfo AttackInfoWindBurst;
 
+        public static SkillStats AirChannelDashGoodSkillStats;
+
         public static void Ass() {
-            AttackInfoChannel = Utils.LoadFromEmbeddedJson<AttackInfo>("AttackInfo1.json");
-            AttackInfoWindBurst = Utils.LoadFromEmbeddedJson<AttackInfo>("AttackInfo2.json");
+            AttackInfoAirChannel = Utils.LoadFromEmbeddedJson<AttackInfo>("AttackInfoAirChannel.json");
+            AttackInfoWindBurst = Utils.LoadFromEmbeddedJson<AttackInfo>("AttackInfoWindBurst.json");
+
+            AirChannelDashGoodSkillStats = Utils.LoadFromEmbeddedJson<SkillStats>("AirChannelDashGoodSkillStats.json");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace WolModButEpic {
 
     [BepInPlugin("TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.5")]
     public class CoolEpicModThatDoesThings : BaseUnityPlugin {
-
+        
         private float camSizeMultiplierCoop = 1.2f;
         private float camSizeMultiplierSolo = 1.1f;
         private float playerCameraBuffer = 0.25f;

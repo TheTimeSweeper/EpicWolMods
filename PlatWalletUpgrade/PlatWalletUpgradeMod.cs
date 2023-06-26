@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace PlatWalletUpgrade {
 
-    [BepInPlugin("com.TheTimeSweeper.PlatWalletUpgrade", "Gems Gems Gems", "1.0.0")]
+    [BepInPlugin("TheTimeSweeper.PlatWalletUpgrade", "Gems Gems Gems", "1.0.0")]
     public class PlatWalletUpgradeMod : BaseUnityPlugin {
 
         private BepInEx.Configuration.ConfigEntry<int> configWalletSize;
@@ -26,7 +26,7 @@ namespace PlatWalletUpgrade {
             configWalletSize =
                 Config.Bind<int>("Config section",
                                  "WalletSize",
-                                 999999,
+                                 696969,
                                  "Max Gems. go nuts c:");
         }
 

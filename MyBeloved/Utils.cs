@@ -1,12 +1,11 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using UnityEngine;
 
 namespace MyBeloved {
 
     public class Utils {
-
-        public static BepInEx.Logging.ManualLogSource loge;
 
         static int count;
 
@@ -33,7 +32,7 @@ namespace MyBeloved {
                 log += ($"\n{info.Name.PadLeft(padLength, '-')}| {info.GetValue(obj)}");
             }
 
-            loge.LogMessage(log);
+            Log.Message(log);
 
 
             if (json)
@@ -46,7 +45,7 @@ namespace MyBeloved {
             count++;
 
             File.WriteAllText(jsnPath, jsn);
-            loge.LogWarning("printedjson to " + jsnPath);
+            Log.Warning("printedjson to " + jsnPath);
         }
 
         public static T LoadFromEmbeddedJson<T>(string jsn) {
@@ -62,6 +61,35 @@ namespace MyBeloved {
             }
 
             return JsonUtility.FromJson<T>(jsnstring);
+        }
+
+
+        public static void PrintStatData(StatData self) {
+
+            Log.Warning("Printing all stat data");
+
+            foreach (KeyValuePair<string, object> item in self.statDict) {
+                Log.Warning($"{item.Key}:");
+
+                if (item.Value is List<float>) {
+                    PrintList<float>(item.Value as List<float>);
+                }
+                if (item.Value is List<int>) {
+                    PrintList<int>(item.Value as List<int>);
+                }
+                if (item.Value is List<bool>) {
+                    PrintList<bool>(item.Value as List<bool>);
+                }
+                if (item.Value is List<string>) {
+                    PrintList<string>(item.Value as List<string>);
+                }
+            }
+        }
+
+        public static void PrintList<T>(List<T> list) {
+            for (int i = 0; i < list.Count; i++) {
+                Log.Warning(list[i]);
+            }
         }
     }
 }

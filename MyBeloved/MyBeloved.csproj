@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="AirChannelDashGood.cs" />
     <Compile Include="Assets.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
@@ -114,8 +115,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AttackInfo1.json" />
-    <EmbeddedResource Include="AttackInfo2.json" />
+    <EmbeddedResource Include="AirChannelDashGoodSkillStats.json" />
+    <EmbeddedResource Include="AttackInfoAirChannel.json" />
+    <EmbeddedResource Include="AttackInfoWindBurst.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
