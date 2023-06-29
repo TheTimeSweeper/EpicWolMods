@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeloved", "MyBeloved\MyBe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clothes", "Clothes\Clothes.csproj", "{4B2B0FC3-9ED2-487B-AF96-7854EE1E00E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillsButEpic", "SkillsButEpic\SkillsButEpic\SkillsButEpic.csproj", "{63791774-0A77-49E2-A22F-68FFB5F96A82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{4B2B0FC3-9ED2-487B-AF96-7854EE1E00E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B2B0FC3-9ED2-487B-AF96-7854EE1E00E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B2B0FC3-9ED2-487B-AF96-7854EE1E00E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63791774-0A77-49E2-A22F-68FFB5F96A82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63791774-0A77-49E2-A22F-68FFB5F96A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63791774-0A77-49E2-A22F-68FFB5F96A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63791774-0A77-49E2-A22F-68FFB5F96A82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

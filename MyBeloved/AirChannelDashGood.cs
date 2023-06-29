@@ -3,7 +3,7 @@
 namespace MyBeloved {
     public class AirChannelDashGood : Player.BaseDashState {
 
-		public AirChannelDashGood(FSM fsm, Player parentPlayer) : base("AirChannelDashGood", fsm, parentPlayer) {
+		public AirChannelDashGood(FSM fsm, Player parentPlayer) : base("AirChannelDashGood0", fsm, parentPlayer) {
 			//this.hasEmpowered = true;
 			this.applyStopElementStatus = true;
 			base.InitChargeSkillSettings(2, 0f, this.skillData, this);

@@ -43,47 +43,6 @@ namespace CameraModExample {
             // they hook on to the functions in the game. when the hooked functon is called, our functon will be called
             On.CameraController.Awake += CameraController_Awake;
             On.CameraController.Update += CameraController_Update;
-            //On.Attack.Awake += Attack_Awake;b
-
-            SetHooks();
-        }
-
-        private void SetHooks() {
-
-            //On.ChaosBundle.Get += YesAnyTimeSomethingIsLoadedFromResources;
-        }
-
-        private GameObject YesAnyTimeSomethingIsLoadedFromResources(On.ChaosBundle.orig_Get orig, string assetPath) {
-            GameObject thing = orig(assetPath);
-            recolorAll(thing.transform, Color.magenta);
-            Logger.LogMessage(thing.name);
-            return thing;
-        }
-
-        private void recolorAll(Transform transform, Color color) {
-            bool nig = transform.name == "FlameStrikeBasic";
-            var sprites = transform.root.GetComponentsInChildren<SpriteRenderer>();
-            if (nig) Logger.LogWarning(sprites.Length);
-            for (int i = 0; i < sprites.Length; i++) {
-                sprites[i].color = color;
-            }
-            var particles = transform.root.GetComponentsInChildren<ParticleSystem>();
-            if (nig) Logger.LogWarning(sprites.Length);
-            ParticleSystem.MainModule main;
-            for (int i = 0; i < particles.Length; i++) {
-                main = particles[i].main;
-                main.startColor = color;
-            }
-        }
-
-        private void Attack_Awake(On.Attack.orig_Awake orig, Attack self) {
-            orig(self);
-            Transform transform = self.transform;
-            recolorAll(transform, Color.magenta);
-        }
-
-        private Color? Globals_TryParseColor(On.Globals.orig_TryParseColor orig, string colorString) {
-            throw new NotImplementedException();
         }
 
         // This Update() function will run every frame

@@ -9,35 +9,29 @@ namespace MyBeloved {
     [BepInPlugin("TheTimeSweeper.MyBeloved", "mybeloved", "0.1.0")]
     public class WhyDidYouLeaveMe : BaseUnityPlugin {
 
-        void Awake() {
+        void Start() {
+
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.SkillsButEpic"))
+            {
+                Logger.LogWarning("I'ma let you finish");
+                return;
+            }
 
             Log.Init(Logger);
             Assets.Ass();
 
             On.StatManager.LoadData += StatManager_LoadData_AddAirChannelDashToLoadedData;
-            On.Player.InitData += Player_InitData_AddAirChannelDashToLoadedData;
 
             On.Player.InitFSM += Player_InitFSM_AddAirChannelDash;
             On.Player.InitSkills += Player_InitSkills_AssignSkill;
 
+            //old way
             //On.FSM.AddState += FSM_AddState;
             //On.Attack.SetAttackInfo_string_string_int_bool += Attack_SetAttackInfo_string_string_int_bool_OldReplaceMethod;
         }
         #region add the man
         private void StatManager_LoadData_AddAirChannelDashToLoadedData(On.StatManager.orig_LoadData orig, string assetPath, string statID, string category, string categoryModifier) {
             orig(assetPath, statID, category, categoryModifier);
-            AddAirChannelDashToLoadedData();
-        }
-
-        private void Player_InitData_AddAirChannelDashToLoadedData(On.Player.orig_InitData orig, Player self) {
-            orig(self);
-            AddAirChannelDashToLoadedData(self.playerID.ToString());
-        }
-
-        private void AddAirChannelDashToLoadedData(string categoryModifier = "") {
-
-            string statID = StatManager.statFieldStr;
-            string category = StatManager.playerBaseCategory;
 
             SkillStats stats = Assets.AirChannelDashGoodSkillStats;
             stats.Initialize();
@@ -58,13 +52,17 @@ namespace MyBeloved {
         #endregion
 
         private void Player_InitFSM_AddAirChannelDash(On.Player.orig_InitFSM orig, Player self) {
+
             orig(self);
-            self.fsm.AddState(new AirChannelDashGood(self.fsm, self));
+            //AirChannelDashGood newState = new AirChannelDashGood(self.fsm, self);
+            Player.SkillState newState = (Player.SkillState)Activator.CreateInstance(typeof(AirChannelDashGood), self.fsm, self);
+            self.fsm.AddState(newState);
+            GameDataManager.gameData.PullSkillData();
         }
 
         private void Player_InitSkills_AssignSkill(On.Player.orig_InitSkills orig, Player self) {
             if (Input.GetKey(KeyCode.G)) {
-                self.playerData.skills[1] = "AirChannelDashGood";
+                self.playerData.skills[1] = "AirChannelDashGood0";
             }
             orig(self);
         }

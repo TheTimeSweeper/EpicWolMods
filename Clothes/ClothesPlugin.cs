@@ -11,7 +11,11 @@ namespace Clothes {
 
     public class ClothesPlugin : BaseUnityPlugin {
 
+        public static PluginInfo PluginInfo;
+
         void Awake() {
+            PluginInfo = Info;
+
 			Clothes.Init();
 			ContentLoaderStolen.Init();
 		}
@@ -211,8 +215,6 @@ namespace Clothes {
 		public static void Us_AddOutfit(On.Player.orig_SetPlayerOutfitColor orig, Player self, NumVarStatMod mod, bool givenStatus) {
 			orig(self, mod, givenStatus);
 
-			Debug.LogWarning("green1");
-
 			//if (!loadedWizSprites) {
 			//	loadedWizSprites = true;
 
@@ -225,7 +227,6 @@ namespace Clothes {
 			//}
 
 			Texture2D baseTexture = basePalette.texture;// (Texture2D) self.spriteMaterial.GetTexture("_Palette");
-			Debug.LogWarning("green3");
 			if (newPalette == null) {
 				//Debug.Log("1");
 				newPalette = baseTexture;
@@ -237,7 +238,6 @@ namespace Clothes {
 					int h = t.height;
 					//Debug.Log("3");
 					foreach (Texture2D texture in palettes) {
-						Debug.LogWarning("green2");
 						//Debug.Log("Iterating over " + te.name);
 						newT = new Texture2D(newPalette.width, newPalette.height + 2, TextureFormat.RGBA32, false);
 						newT = FillColorAlpha(newT);

@@ -1,10 +1,10 @@
 {
     "ID": [
-        "AirChannelDashGood",
-        "AirChannelDashGood",
-        "AirChannelDashGood",
-        "AirChannelDashGood",
-        "AirChannelDashGood"
+        "AirChannelDashGood0",
+        "AirChannelDashGood0",
+        "AirChannelDashGood0",
+        "AirChannelDashGood0",
+        "AirChannelDashGood0"
     ],
     "elementType": [
         "Air",
@@ -140,11 +140,11 @@
         0
     ],
     "criticalHitChance": [
-        0.05000000074505806,
-        0.05000000074505806,
-        0.05000000074505806,
-        0.05000000074505806,
-        0.05000000074505806
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05
     ],
     "criticalDamageModifier": [
         1.5,
