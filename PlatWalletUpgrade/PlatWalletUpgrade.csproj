@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\WizardOfLegend_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\_lib\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
@@ -99,7 +99,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(SolutionDir)\_Build"
-if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins"</PostBuildEvent>
+    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins"</PostBuildEvent>
   </PropertyGroup>
 </Project>

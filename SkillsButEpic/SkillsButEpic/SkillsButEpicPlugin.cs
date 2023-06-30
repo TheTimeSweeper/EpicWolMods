@@ -115,6 +115,7 @@ namespace SkillsButEpic
                 stats.Initialize();
                 string fullCategory = category + categoryModifier;
                 StatData statData = new StatData(stats, fullCategory);
+
                 List<string> targetNames = statData.GetValue<List<string>>("targetNames", -1);
 
                 if (targetNames.Contains(Globals.allyHBStr) || targetNames.Contains(Globals.enemyHBStr))
@@ -125,6 +126,8 @@ namespace SkillsButEpic
                 {
                     targetNames.Add(Globals.ffaFCStr);
                 }
+
+                Log.Warning($"{statData != null}, {fullCategory}, {stats.ID[0]}");
 
                 Dictionary<string, StatData> dictionary = StatManager.data[statID][fullCategory];
                 dictionary[statData.GetValue<string>("ID", -1)] = statData;

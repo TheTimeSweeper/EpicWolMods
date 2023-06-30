@@ -12,7 +12,7 @@ namespace SkillsButEpic
         {
             pluginInfo = info;
 
-            SkillInfo NewSkill = new SkillInfo()
+            SkillInfo AirChannelDashGoodSkill = new SkillInfo()
             {
                 ID = "AirChannelDashGood",
                 DisplayName = "Gust Burst",
@@ -21,10 +21,39 @@ namespace SkillsButEpic
                 tier = 1,
                 StateType = typeof(AirChannelDashGoodState),
                 SkillStats = Utils.LoadFromFileJson<SkillStats>("AirChannelDashGoodSkillStats.json"),
+                //no longer used?
                 Element = ElementType.Air,
                 Sprite = null
             };
-            Skills.Register(NewSkill);
+            Skills.Register(AirChannelDashGoodSkill);
+
+            SkillInfo GustBurstButBigSkill = new SkillInfo()
+            {
+                ID = "GustBurstButBig",
+                DisplayName = "Gust Burst but Big",
+                Description = "Create large pulling wind bursts at your position!",
+                EnhancedDescription = "Create a third, larger wind burst!",
+                tier = 1,
+                StateType = typeof(GustBurstButBigState),
+                SkillStats = GustBurstbutBigSKillStats(),
+                Element = ElementType.Air,
+                Sprite = null
+            };
+            Skills.Register(GustBurstButBigSkill);
+        }
+
+        private static SkillStats GustBurstbutBigSKillStats()
+        {
+            return new SkillStats
+            {
+                ID = new string[1] { "GustBurstButBig" },
+                damage = new int[1] { 20 },
+                targetNames = new string[1] { "EnemyHurtBox" },
+                elementType = new string[1] { "Air" },
+                subElementType = new string[1] { "Air" },
+                knockbackMultiplier = new float[1] { -30f },
+                cooldown = new float[1] { 4f },
+            };
         }
     }
 }
