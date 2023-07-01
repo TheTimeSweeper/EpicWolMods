@@ -13,12 +13,30 @@ namespace Clothes {
 
         public static PluginInfo PluginInfo;
 
+        public static Player debugPlayer = null;
+        public static bool empowered;
+
         void Awake() {
             PluginInfo = Info;
 
 			Clothes.Init();
 			ContentLoaderStolen.Init();
 		}
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                if (debugPlayer != null)
+                {
+                    empowered = !empowered;
+                    foreach (Player.SkillState skillState in debugPlayer.skillsDict.Values)
+                    {
+                        skillState.SetEmpowered(empowered, EmpowerStatMods.DefaultEmpowerMod);
+                    }
+                }
+            }
+        }
     }
 
 	public class Clothes {
@@ -39,12 +57,30 @@ namespace Clothes {
 
 			//Palettes[CustomColor.Desolate] = ImgHandlerStolen.LoadTex2D(DesolateOutfit.name);
 
-			foreach (string robeName in ContentLoaderStolen.robeNames) {
-				ContentLoaderStolen.palettes.Add(ImgHandlerStolen.LoadTex2D(robeName));
-			}
-
 			LegendAPI.Outfits.Register(DesolateOutfit);
-		}
+
+            LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
+            {
+                name = "Analysis",
+                customDesc = _ => { return "- Press G to Empower Arcana"; },
+                outfit = new Outfit("Sweep_Analysis", ContentLoaderStolen.AssignNewID("Anal"), new List<OutfitModStat> {
+                    new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
+                    new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -1f, 0f, false),
+                    new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
+                }),
+                customMod = (player, onoroff, idontevenknow )=>
+                {
+                    ClothesPlugin.debugPlayer = onoroff ? player : null;
+                }
+            };
+
+            LegendAPI.Outfits.Register(TestOutfit);
+
+            foreach (string robeName in ContentLoaderStolen.robeNames)
+            {
+                ContentLoaderStolen.palettes.Add(ImgHandlerStolen.LoadTex2D(robeName));
+            }
+        }
 
         public enum CustomColor {
 			Desolate = 33

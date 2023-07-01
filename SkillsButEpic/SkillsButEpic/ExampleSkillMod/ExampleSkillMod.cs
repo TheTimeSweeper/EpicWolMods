@@ -1,16 +1,17 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
-
 namespace SkillsButEpic
 {
     public class ExampleSkillMod
     {
         public static PluginInfo pluginInfo;
 
-        public static void Awake(PluginInfo info)
+        public static void Awake(SkillsButEpicPlugin skillsButEpicPlugin, PluginInfo Info)
         {
-            pluginInfo = info;
+            skillsButEpicPlugin.gameObject.AddComponent<TestValueManager>();
+
+            pluginInfo = Info;
 
             SkillInfo AirChannelDashGoodSkill = new SkillInfo()
             {
@@ -21,7 +22,6 @@ namespace SkillsButEpic
                 tier = 1,
                 StateType = typeof(AirChannelDashGoodState),
                 SkillStats = Utils.LoadFromFileJson<SkillStats>("AirChannelDashGoodSkillStats.json"),
-                //no longer used?
                 Element = ElementType.Air,
                 Sprite = null
             };
@@ -48,11 +48,11 @@ namespace SkillsButEpic
             {
                 ID = new string[1] { "GustBurstButBig" },
                 damage = new int[1] { 20 },
-                targetNames = new string[1] { "EnemyHurtBox" },
+                targetNames = new string[2] { "EnemyHurtBox", "DestructibleHurtBox" },
                 elementType = new string[1] { "Air" },
                 subElementType = new string[1] { "Air" },
-                knockbackMultiplier = new float[1] { -30f },
-                cooldown = new float[1] { 4f },
+                knockbackMultiplier = new float[1] { -20f },
+                cooldown = new float[1] { 5f },
             };
         }
     }

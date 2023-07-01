@@ -40,6 +40,7 @@
     <Compile Include="ExampleSkillMod\AirChannelDashGoodState.cs" />
     <Compile Include="ExampleSkillMod\ExampleSkillMod.cs" />
     <Compile Include="ExampleSkillMod\GustBurstButBigState.cs" />
+    <Compile Include="ExampleSkillMod\TestValueManager.cs" />
     <Compile Include="Misc\Log.cs" />
     <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Misc\Utils.cs" />

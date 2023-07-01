@@ -15,7 +15,7 @@ namespace SkillsButEpic
 
             Skills.Awake();
 
-            ExampleSkillMod.Awake(Info);
+            ExampleSkillMod.Awake(this, Info);
         }
     }
 
@@ -163,9 +163,11 @@ namespace SkillsButEpic
         public int tier = 0;
         public SkillStats SkillStats;
         public Type StateType;
+        //no longer being used?
         public ElementType Element = ElementType.Fire;
         public Sprite Sprite = null;
 
+        //no longer being used?
         public Dictionary<int, Player.SkillState> StateDict = new Dictionary<int, Player.SkillState>();
     }
 }
