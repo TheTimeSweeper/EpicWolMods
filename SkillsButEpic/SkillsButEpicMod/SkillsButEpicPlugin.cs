@@ -91,6 +91,7 @@ namespace SkillsButEpic
                 {
                     IconManager.skillIcons[skillInfo.ID] = skillInfo.Sprite;
                 }
+
                 TextManager.SkillInfo skillText = new TextManager.SkillInfo();
                 skillText.skillID = skillInfo.ID;
                 skillText.displayName = skillInfo.DisplayName;
