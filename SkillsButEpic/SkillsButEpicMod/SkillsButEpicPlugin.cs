@@ -98,7 +98,6 @@ namespace SkillsButEpic
                 skillText.description = skillInfo.Description;
                 skillText.empowered = skillInfo.EnhancedDescription;
                 TextManager.skillInfoDict[skillInfo.ID] = skillText;
-
             }
 
             badentrypointsignal.Add("Loot");
@@ -162,12 +161,15 @@ namespace SkillsButEpic
         public SkillStats SkillStats;
     }
 
+    //helper class to construct SkillStats through more streamlined/intuitive code
     public class SkillStatsInfo
     {
         public string ID;
         public ElementType elementType;
         public ElementType subElementType;
         public string[] targetNames;
+        //bread and butter of the attack data
+        //streamlined to be multiple fields as the game treats them as different stages of the attack
         public SkillStatsLevelInfo[] attackInfos;
 
         public SkillStatsInfo() { }
@@ -184,15 +186,12 @@ namespace SkillsButEpic
         {
             SkillStats skillStats = new SkillStats();
 
-            skillStats.ID = new string[attackInfos.Length];
-            for (int i = 0; i < skillStats.ID.Length; i++) { skillStats.ID[i] = ID; }
+            skillStats.ID = new string[] { ID };
 
-            skillStats.elementType = new string[attackInfos.Length];
-            for (int i = 0; i < skillStats.elementType.Length; i++) { skillStats.elementType[i] = elementType.ToString(); }
-            skillStats.subElementType = new string[attackInfos.Length];
-            for (int i = 0; i < skillStats.subElementType.Length; i++) { skillStats.subElementType[i] = subElementType.ToString(); }
+            skillStats.elementType = new string[] { elementType.ToString() };
+            skillStats.subElementType = new string[] { subElementType.ToString() };
 
-            //only one that doesn't read each entry by skill level (as far as I'm aware)
+            //only one that the game doesn't read each entry by skill level (as far as I'm aware)
             skillStats.targetNames = targetNames;
 
             //wew lad
@@ -273,7 +272,6 @@ namespace SkillsButEpic
                 skillStats.overdriveDamageMultiplier[i] = attackInfo.overdriveDamageMultiplier;
                 skillStats.overdriveProgressMultiplier[i] = attackInfo.overdriveProgressMultiplier;
                 skillStats.overdriveSingleIncrease[i] = attackInfo.overdriveSingleIncrease;
-
             }
             return skillStats;
         }
