@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -60,6 +61,46 @@ namespace SkillsButEpic
             }
 
             return JsonUtility.FromJson<T>(jsonString);
+        }
+
+        public static void PrintMyCodePlease()
+        {
+            var skillStats = Utils.LoadFromFileJson<SkillStats>("AirChannelDashGoodSkillStats.json");
+
+            string log = "printing " + skillStats.GetType();
+
+            FieldInfo[] property_infos = skillStats.GetType().GetFields();
+
+            int padLength = 0;
+            for (int i = 0; i < property_infos.Length; i++)
+            {
+                FieldInfo info = property_infos[i];
+
+                if (info.Name.Length > padLength)
+                {
+                    padLength = info.Name.Length;
+                }
+            }
+
+            for (int i = 0; i < property_infos.Length; i++)
+            {
+                FieldInfo info = property_infos[i];
+
+                //log += ($"\nskillStats.{info.Name} = new {GetCodeTypeString(info.GetValue(skillStats))}nig[attackInfos.Length];").Replace("[]nig", "");
+                log += ($"\nskillStats.{info.Name}[i] = attackInfo.{info.Name};");
+            }
+
+            Log.Message(log);
+        }
+
+        private static object GetCodeTypeString(object infoValue)
+        {
+            string infoString = infoValue.GetType().ToString();
+            infoString = infoString.Replace("System.String", "string");
+            infoString = infoString.Replace("System.Boolean", "bool");
+            infoString = infoString.Replace("System.Int32", "int");
+            infoString = infoString.Replace("System.Single", "float");
+            return infoString;
         }
 
         public static void printAllFields<T>(T obj, bool saveJson = false)

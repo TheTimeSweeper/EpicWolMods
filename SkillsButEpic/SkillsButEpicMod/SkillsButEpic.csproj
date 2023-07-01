@@ -43,7 +43,7 @@
     <Compile Include="TestSkillMod\TestValueManager.cs" />
     <Compile Include="Misc\Log.cs" />
     <Compile Include="Misc\ModAccess.cs" />
-    <Compile Include="Misc\Utils.cs" />
+    <Compile Include="TestSkillMod\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkillsButEpicPlugin.cs" />
   </ItemGroup>

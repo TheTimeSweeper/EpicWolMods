@@ -15,6 +15,8 @@ namespace SkillsButEpic
         private static float scaleNormal = 0.85f;
         private float scaleMultiplier => IsEmpowered ? scaleEmpowered : scaleNormal;
 
+        private int currentCast;
+
         private ParticleSystemOverride implosionOverrideNormal = new ParticleSystemOverride
         {
             startSize = new float?(6 * scaleNormal),
@@ -55,6 +57,7 @@ namespace SkillsButEpic
         {
             base.OnEnter();
 
+            currentCast = 0;
             stopwatchID = ChaosStopwatch.Begin(0f, true, IsEmpowered ? 0.15f : 0.25f, IsEmpowered ? 3 : 2 , 0);
         }
 
@@ -72,6 +75,7 @@ namespace SkillsButEpic
                 case StopwatchState.Ready:
                     PlayAnim(animExecTime);
                     AirChannel_DashCreateImplosion();
+                    currentCast++;
                     break;
             }
         }
@@ -82,7 +86,7 @@ namespace SkillsButEpic
         {
             Vector3 spawnPosition = parent.attackOriginTrans.position;
 
-            this.currentWB = WindBurst.CreateBurst(spawnPosition, parent.skillCategory, this.skillID, 1, this.burstScale * scaleMultiplier);
+            this.currentWB = WindBurst.CreateBurst(spawnPosition, parent.skillCategory, this.skillID, currentCast >= 2 ? 2 : 1, this.burstScale * scaleMultiplier);
             this.currentWB.emitParticles = false;
             //PoolManager.GetPoolItem<ParticleEffect>("WindBurstEffect").Emit(new int?(3), new Vector3?(spawnPosition), null, null, 0f, null, null);
             PoolManager.GetPoolItem<ParticleEffect>("AirVortex").Emit(new int?(1), new Vector3?(spawnPosition), this.implosionOverride, new Vector3?(new Vector3(0f, 0f, UnityEngine.Random.Range(0f, 33f))), 0f, null, null);
