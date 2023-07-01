@@ -13,7 +13,7 @@ namespace SkillsButEpic
         {
             get
             {
-                return System.IO.Path.GetDirectoryName(ExampleSkillMod.pluginInfo.Location);
+                return System.IO.Path.GetDirectoryName(TestSkillMod.pluginInfo.Location);
             }
         }
 

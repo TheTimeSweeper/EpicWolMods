@@ -15,7 +15,7 @@ namespace SkillsButEpic
 
             Skills.Awake();
 
-            ExampleSkillMod.Awake(this, Info);
+            TestSkillMod.Awake(this, Info);
         }
     }
 
@@ -46,37 +46,60 @@ namespace SkillsButEpic
         private static void LootManager_ResetAvailableSkills(On.LootManager.orig_ResetAvailableSkills orig)
         {
             if (badentrypointsignal.Contains("Loot")){
-                //Log.Warning("already entered LootManager_ResetAvailableSkills. skipping");
                 orig();
                 return; 
             }
 
-            foreach (SkillInfo info in SkillsDict.Values)
+            foreach (SkillInfo skillInfo in SkillsDict.Values)
             {
-                if (!LootManager.completeSkillList.Contains(info.ID))
+                if (!LootManager.completeSkillList.Contains(skillInfo.ID))
                 {
-                    LootManager.completeSkillList.Add(info.ID);
+                    LootManager.completeSkillList.Add(skillInfo.ID);
                 }
-                //add tiers if this skill is higher than max
-                if (info.tier >= LootManager.maxSkillTier)
+                //add new tiers if this skill is higher than max
+                if (skillInfo.tier >= LootManager.maxSkillTier)
                 {
-                    for (int i = LootManager.maxSkillTier; i <= info.tier; i++)
+                    for (int i = LootManager.maxSkillTier; i <= skillInfo.tier; i++)
                     {
                         LootManager.skillTierDict.Add(i, new List<string>());
                     }
-                    LootManager.maxSkillTier = info.tier + 1;
+                    LootManager.maxSkillTier = skillInfo.tier + 1;
                 }
-                //if this skill already exists, remove it from an existing tier
+                //if this skill already exists, remove it from its existing tier
                 foreach (List<string> list in LootManager.skillTierDict.Values)
                 {
-                    if (list.Contains(info.ID))
+                    if (list.Contains(skillInfo.ID))
                     {
-                        list.Remove(info.ID);
+                        list.Remove(skillInfo.ID);
                     }
                 }
                 //add this skill to tier
-                LootManager.skillTierDict[info.tier].Add(info.ID);
+                LootManager.skillTierDict[skillInfo.tier].Add(skillInfo.ID);
+
+                //Putting the skill text and icon stuff here since idk where else it should go
+                //Null checks to make sure errors don't occur
+                if (IconManager.skillIcons == null)
+                {
+                    IconManager.skillIcons = IconManager.SkillIcons;
+                }
+                if (TextManager.skillInfoDict == null)
+                {
+                    TextManager.skillInfoDict = new Dictionary<string, TextManager.SkillInfo>();
+                }
+
+                if (skillInfo.Sprite != null)
+                {
+                    IconManager.skillIcons[skillInfo.ID] = skillInfo.Sprite;
+                }
+                TextManager.SkillInfo skillText = new TextManager.SkillInfo();
+                skillText.skillID = skillInfo.ID;
+                skillText.displayName = skillInfo.DisplayName;
+                skillText.description = skillInfo.Description;
+                skillText.empowered = skillInfo.EnhancedDescription;
+                TextManager.skillInfoDict[skillInfo.ID] = skillText;
+
             }
+
             badentrypointsignal.Add("Loot");
             orig();
         }
@@ -86,38 +109,15 @@ namespace SkillsButEpic
         {
             orig(assetPath, statID, category, categoryModifier);
 
-            //Null checks to make sure errors don't occur
-            if (IconManager.skillIcons == null)
-            {
-                IconManager.skillIcons = IconManager.SkillIcons;
-            }
-            if (TextManager.skillInfoDict == null)
-            {
-                TextManager.skillInfoDict = new Dictionary<string, TextManager.SkillInfo>();
-            }
-
             foreach (SkillInfo skillInfo in SkillsDict.Values)
             {
-                if (skillInfo.Sprite != null)
-                {
-                    IconManager.skillIcons[skillInfo.ID] = skillInfo.Sprite;
-                }
-
-                //Putting the skill text stuff here since idk where else it should go
-                TextManager.SkillInfo skillText = new TextManager.SkillInfo();
-                skillText.skillID = skillInfo.ID;
-                skillText.displayName = skillInfo.DisplayName;
-                skillText.description = skillInfo.Description;
-                skillText.empowered = skillInfo.EnhancedDescription;
-                TextManager.skillInfoDict[skillInfo.ID] = skillText;
-
+                //generate StatData from our skills' SkillStats, which values for damage, knockback, etc
                 SkillStats stats = skillInfo.SkillStats;
                 stats.Initialize();
                 string fullCategory = category + categoryModifier;
                 StatData statData = new StatData(stats, fullCategory);
 
                 List<string> targetNames = statData.GetValue<List<string>>("targetNames", -1);
-
                 if (targetNames.Contains(Globals.allyHBStr) || targetNames.Contains(Globals.enemyHBStr))
                 {
                     targetNames.Add(Globals.ffaHBStr);
@@ -127,8 +127,7 @@ namespace SkillsButEpic
                     targetNames.Add(Globals.ffaFCStr);
                 }
 
-                Log.Warning($"{statData != null}, {fullCategory}, {stats.ID[0]}");
-
+                //add our StatData to the StatManager
                 Dictionary<string, StatData> dictionary = StatManager.data[statID][fullCategory];
                 dictionary[statData.GetValue<string>("ID", -1)] = statData;
                 StatManager.globalSkillData[statData.GetValue<string>("ID", -1)] = statData;
@@ -137,16 +136,12 @@ namespace SkillsButEpic
 
         private static void Player_InitFSM_AddSkills(On.Player.orig_InitFSM orig, Player self)
         {
-
             orig(self);
 
+            //init our skills and add them to the player state machine
             foreach (SkillInfo info in SkillsDict.Values)
             {
                 Player.SkillState state = (Player.SkillState)Activator.CreateInstance(info.StateType, self.fsm, self);
-                //self.skillsDict[info.ID] = state;
-
-                //no Idea what this was
-                //info.StateDict[self.playerID] = state;
                 self.fsm.AddState(state);
             }
             //new skills have been added to the skilldict. check GameDataManager.gameData.SkillDataDictionary if they're unlocked

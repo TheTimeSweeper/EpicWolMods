@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 namespace SkillsButEpic
 {
-    public class ExampleSkillMod
+    public class TestSkillMod
     {
         public static PluginInfo pluginInfo;
 
@@ -35,25 +35,20 @@ namespace SkillsButEpic
                 EnhancedDescription = "Create a third, larger wind burst!",
                 tier = 1,
                 StateType = typeof(GustBurstButBigState),
-                SkillStats = GustBurstbutBigSKillStats(),
+                SkillStats = new SkillStats
+                {
+                    ID = new string[1] { "GustBurstButBig" },
+                    damage = new int[1] { 20 },
+                    targetNames = new string[2] { "EnemyHurtBox", "DestructibleHurtBox" },
+                    elementType = new string[1] { "Air" },
+                    subElementType = new string[1] { "Air" },
+                    knockbackMultiplier = new float[1] { -20f },
+                    cooldown = new float[1] { 5f },
+                },
                 Element = ElementType.Air,
                 Sprite = null
             };
             Skills.Register(GustBurstButBigSkill);
-        }
-
-        private static SkillStats GustBurstbutBigSKillStats()
-        {
-            return new SkillStats
-            {
-                ID = new string[1] { "GustBurstButBig" },
-                damage = new int[1] { 20 },
-                targetNames = new string[2] { "EnemyHurtBox", "DestructibleHurtBox" },
-                elementType = new string[1] { "Air" },
-                subElementType = new string[1] { "Air" },
-                knockbackMultiplier = new float[1] { -20f },
-                cooldown = new float[1] { 5f },
-            };
         }
     }
 }
