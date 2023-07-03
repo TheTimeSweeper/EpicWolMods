@@ -112,9 +112,18 @@
       <HintPath>..\_lib\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Release\manifest.json" />
+    <None Include="Release\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Release\plugins\" />
+    <Folder Include="Release\readme\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(SolutionDir)\_Build"
-if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins"</PostBuildEvent>
+    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
+if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\wolBepin\plugins\TheTimesweeper-$(ProjectName)"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

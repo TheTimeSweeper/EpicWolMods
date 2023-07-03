@@ -41,7 +41,7 @@ namespace SkillsButEpic
                 Description = "Create large pulling wind bursts at your position!",
                 EnhancedDescription = "Create a third, larger wind burst!",
                 Sprite = null,
-                tier = 1,
+                tier = 3,
                 StateType = typeof(GustBurstButBigState),
                 SkillStats = new SkillStats
                 {
@@ -51,7 +51,7 @@ namespace SkillsButEpic
                     targetNames = new string[] { "EnemyHurtBox", "DestructibleHurtBox" },
                     damage = new int[] { 20 },
                     cooldown = new float[] { 5f },
-                    knockbackMultiplier = new float[] { -20f, 10 },
+                    knockbackMultiplier = new float[] { -20f },
                     hitStunDurationModifier = new float[] { 0.2f },
                     sameAttackImmunityTime = new float[] { 0.25f }
                 },
@@ -69,7 +69,7 @@ namespace SkillsButEpic
                 Description = "Create large pulling wind bursts at your position!",
                 EnhancedDescription = "Create a third, larger wind burst!",
                 Sprite = null,
-                tier = 1,
+                tier = 3,
                 StateType = typeof(GustBurstButBigState),
                 SkillStats = new SkillStatsInfo()
                 {
@@ -111,7 +111,7 @@ namespace SkillsButEpic
                 Description = "Create large pulling wind bursts at your position!",
                 EnhancedDescription = "Create a third, larger wind burst!",
                 Sprite = null,
-                tier = 1,
+                tier = 3,
                 StateType = typeof(GustBurstButBigState),
                 SkillStats = new SkillStatsInfo(
                     ID: "GustBurstButBig",

@@ -12,6 +12,7 @@ namespace WolModButEpic {
         private float camSizeMultiplierSolo = 1.1f;
         private float playerCameraBuffer = 0.25f;
         private float maxPlayerDistance = 120;
+        private bool useKeys = true;
 
         private float playerDistCheckMult { get => 1 + (playerCameraBuffer * 2); }
         private static float screenRatio { get { return (float)Screen.width / (float)Screen.height; } }
@@ -19,9 +20,7 @@ namespace WolModButEpic {
         private bool _zoomin;
         private float _originalOriginalCameraSize;
 
-        void Awake() { 
-
-            Logger.LogMessage("I belive in you c:");
+        void Awake() {
 
             Configuratinator();
 
@@ -60,10 +59,19 @@ namespace WolModButEpic {
                             120,
                             "Max distance Coop players are allowed to run from each other.")
                 .Value;
+            useKeys =
+                Config.Bind(configSection,
+                            "Use f-keys",
+                            true,
+                            "Set false to disable pressing f1, f2, and f3 to zoom out, soom in, and reset camera respectively.")
+                .Value;
         }
 
         // This Update() function will run every frame
         void Update() {
+
+            if (!useKeys)
+                return;
 
             // Every frame, we'll check if the user is currently pressing f1 on the keyboard
             if (Input.GetKeyDown(KeyCode.F1)) {
@@ -76,6 +84,13 @@ namespace WolModButEpic {
             if (Input.GetKeyDown(KeyCode.F2)) {
                 CameraController.originalCameraSize -= 0.5f;
                 Logger.LogMessage("zooming the camera in to " + CameraController.originalCameraSize);
+            }
+
+            // pressing f3 to reset to vanilla
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                CameraController.originalCameraSize = _originalOriginalCameraSize;
+                Logger.LogMessage("zooming the to " + CameraController.originalCameraSize);
             }
         }
 
