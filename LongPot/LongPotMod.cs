@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LongPot {
 
-    [BepInPlugin("com.TheTimeSweeper.LongPot", "Teapot Buff Increase", "1.0.0")]
+    [BepInPlugin("TheTimeSweeper.LongPot", "Teapot Buff Increase", "1.0.0")]
     public class LongPotMod : BaseUnityPlugin {
 
         void Awake () {

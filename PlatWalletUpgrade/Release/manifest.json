@@ -1,0 +1,7 @@
+{
+    "name": "MoreMaxGems",
+    "version_number": "1.0.0",
+    "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
+    "description": "Increases the maximum cap of gems. Doesn't affect 'current chaos gems' relics (unless you want it to).",
+    "dependencies": []
+}

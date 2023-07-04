@@ -1,7 +1,7 @@
 {
     "name": "CameraMod",
-    "version_number": "0.1.0",
+    "version_number": "1.0.0",
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
-    "description": "Camera adjustments for your Co-op PVP or solo experience.",
+    "description": "Camera adjustments for your Co-op, PVP, and Solo experiences.",
     "dependencies": []
 }

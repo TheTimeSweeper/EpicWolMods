@@ -1,0 +1,7 @@
+{
+    "name": "TimeWizard",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
+    "description": "Press keys on the keyboard to manipulate the speed of time.",
+    "dependencies": []
+}
