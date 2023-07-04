@@ -7,8 +7,9 @@ using System.Reflection;
 using UnityEngine;
 
 namespace Clothes {
+    //personal mod for fun and to learn about robes.
+    //credit to only_going_up_fr0m_here with tournamentedition
     [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.2.0")]
-
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
@@ -126,7 +127,8 @@ namespace Clothes {
 		}
 	}
 
-	public class ContentLoaderStolen {
+    //stolen from tournamentEdition
+    public class ContentLoaderStolen {
 
 		public static List<Texture2D> palettes = new List<Texture2D>();
 

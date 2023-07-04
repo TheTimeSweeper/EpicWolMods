@@ -14,7 +14,8 @@ namespace ButtonMutiny {
             On.GameUI.LoadInputButtonSprites += GameUI_LoadInputButtonSprites;
             
         }
-
+        //switch button sprites for use with joy cons the way we set them up
+        //if i were to make this an actual mod it would be configurable and maybe also swap triggers with bumpers
         private void GameUI_LoadInputButtonSprites(On.GameUI.orig_LoadInputButtonSprites orig) {
             orig();
 

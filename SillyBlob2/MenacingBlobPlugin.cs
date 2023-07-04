@@ -9,7 +9,7 @@ namespace SillyBlob2 {
     public class MenacingBlobPlugin : BaseUnityPlugin {
 
         float sped;
-
+        
         void Awake() {
 
             sped = Config.Bind("hello", "blobsped", 69, "sped of blob").Value;
