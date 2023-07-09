@@ -93,9 +93,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModAccess.cs" />
+    <Compile Include="Misc\Log.cs" />
+    <Compile Include="States\AirChannelDashGoodState.cs" />
+    <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SillySkillsPlugin.cs" />
+    <Compile Include="States\GustBurstButBigState.cs" />
+    <Compile Include="Misc\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Release\plugins\" />

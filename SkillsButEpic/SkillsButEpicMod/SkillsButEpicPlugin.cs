@@ -40,7 +40,7 @@ namespace SkillsButEpic
 
             On.StatManager.LoadData += StatManager_LoadData_AddSkillsToLoadedData;
 
-            On.Player.InitFSM += Player_InitFSM_AddSkills;
+            On.Player.InitFSM += Player_InitFSM_AddSkillStates;
         }
 
         private static void LootManager_ResetAvailableSkills(On.LootManager.orig_ResetAvailableSkills orig)
@@ -134,7 +134,7 @@ namespace SkillsButEpic
             }
         }
 
-        private static void Player_InitFSM_AddSkills(On.Player.orig_InitFSM orig, Player self)
+        private static void Player_InitFSM_AddSkillStates(On.Player.orig_InitFSM orig, Player self)
         {
             orig(self);
 
@@ -284,13 +284,13 @@ namespace SkillsButEpic
         public float cooldown;
 
         public bool knockbackOverwrite = false;
-        public float knockbackMultiplier;
+        public float knockbackMultiplier = 0.0f;
 
         public bool canHitStun = true;
-        public float hitStunDurationModifier;
+        public float hitStunDurationModifier = 1.0f;
 
         public float sameTargetImmunityTime = 0.0f;
-        public float sameAttackImmunityTime;
+        public float sameAttackImmunityTime = 0.0f;
 
         //used by items to increase your crit values. usually not changed (I think. I need to print all the game's skills' skillstats);
         public float criticalHitChance = 0.05f;

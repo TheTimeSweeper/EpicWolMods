@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TestValueManager : MonoBehaviour
+internal class TestValueManager : MonoBehaviour
 {
 
     //how do doing attributes

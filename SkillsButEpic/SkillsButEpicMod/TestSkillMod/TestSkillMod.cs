@@ -1,6 +1,9 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
 namespace SkillsButEpic
 {
     public class TestSkillMod
@@ -21,10 +24,10 @@ namespace SkillsButEpic
                 DisplayName = "Gust Burst",
                 Description = "Dash forward with such force that enemies in the area are pulled into your wake! (My beloved returns!)",
                 EnhancedDescription = "Creates a secondary burst on landing!",
-                Sprite = null,
+                Sprite = Utils.LoadSprite("AirChannelDashGood"),
                 tier = 1,
                 StateType = typeof(AirChannelDashGoodState),
-                SkillStats = Utils.LoadFromFileJson<SkillStats>("AirChannelDashGoodSkillStats.json")
+                SkillStats = Utils.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json")
             };
             #endregion
             Skills.Register(AirChannelDashGoodSkill);
@@ -40,7 +43,7 @@ namespace SkillsButEpic
                 DisplayName = "Gust Burst but Big",
                 Description = "Create large pulling wind bursts at your position!",
                 EnhancedDescription = "Create a third, larger wind burst!",
-                Sprite = null,
+                Sprite = Utils.LoadSprite("GustBurstButBig"),
                 tier = 3,
                 StateType = typeof(GustBurstButBigState),
                 SkillStats = new SkillStats
@@ -49,10 +52,10 @@ namespace SkillsButEpic
                     elementType = new string[] { "Air" },
                     subElementType = new string[] { "Air" },
                     targetNames = new string[] { "EnemyHurtBox", "DestructibleHurtBox" },
-                    damage = new int[] { 20 },
+                    damage = new int[] { 17, 17 },
                     cooldown = new float[] { 5f },
-                    knockbackMultiplier = new float[] { -20f },
-                    hitStunDurationModifier = new float[] { 0.2f },
+                    knockbackMultiplier = new float[] { -20f, -20f },
+                    hitStunDurationModifier = new float[] { 1.2f, 1.2f },
                     sameAttackImmunityTime = new float[] { 0.25f }
                 },
             };
@@ -84,7 +87,7 @@ namespace SkillsButEpic
                             damage = 20,
                             cooldown = 5f,
                             knockbackMultiplier = -20f,
-                            hitStunDurationModifier = 0.2f,
+                            hitStunDurationModifier = 1.2f,
                             sameAttackImmunityTime = 0.25f,
                         },
                         new SkillStatsLevelInfo
@@ -92,7 +95,7 @@ namespace SkillsButEpic
                             damage = 10,
                             cooldown = 5f,
                             knockbackMultiplier = 10f,
-                            hitStunDurationModifier = 0.2f,
+                            hitStunDurationModifier = 1.2f,
                             sameAttackImmunityTime = 0.25f,
                         }
                     }
@@ -123,7 +126,7 @@ namespace SkillsButEpic
                         damage = 20,
                         cooldown = 5f,
                         knockbackMultiplier = -20f,
-                        hitStunDurationModifier = 0.2f,
+                        hitStunDurationModifier = 1.2f,
                         sameAttackImmunityTime = 0.25f,
                     },
                     new SkillStatsLevelInfo
@@ -131,7 +134,7 @@ namespace SkillsButEpic
                         damage = 10,
                         cooldown = 5f,
                         knockbackMultiplier = 10f,
-                        hitStunDurationModifier = 0.2f,
+                        hitStunDurationModifier = 1.2f,
                         sameAttackImmunityTime = 0.25f,
                     }
                 ).GetSkillStats(),

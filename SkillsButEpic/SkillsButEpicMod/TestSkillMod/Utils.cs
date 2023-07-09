@@ -22,18 +22,18 @@ namespace SkillsButEpic
         {
             return Path.Combine(assemblyDir, Path.Combine(folderName, fileName));
         }
-
+        #region json stuff
         public static void SaveJson<T>(T obj, string filename = "")
         {
             string json = JsonUtility.ToJson(obj, true);
-            string jsonPath = Application.persistentDataPath + $"/attacks/{filename}{obj}{savedJsonCount}.json";
+            string jsonPath = Application.persistentDataPath + $"/ALLTHETHINGS/{filename}{obj}.json";
             savedJsonCount++;
 
             File.WriteAllText(jsonPath, json);
             Log.Warning("printedjson to " + jsonPath);
         }
 
-        public static T LoadFromFileJson<T>(string json)
+        public static T LoadJsonFromFile<T>(string json)
         {
             string jsonString;
 
@@ -47,7 +47,7 @@ namespace SkillsButEpic
             return JsonUtility.FromJson<T>(jsonString);
         }
 
-        public static T LoadFromEmbeddedJson<T>(string json)
+        public static T LoadJsonFromEmbedded<T>(string json)
         {
             string jsonString;
 
@@ -62,10 +62,53 @@ namespace SkillsButEpic
 
             return JsonUtility.FromJson<T>(jsonString);
         }
+        #endregion json stuff
+
+        #region load sprite (stolen from tournamentedition)
+        public static Sprite LoadSprite(string path)
+        {
+            Texture2D texture2D = LoadTex2D(path, true);
+            texture2D.name = path;
+            texture2D.filterMode = FilterMode.Point;
+            texture2D.Apply();
+            Rect rect = new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height);
+            Sprite sprite = Sprite.Create(texture2D, rect, new Vector2(0.5f, 0.5f), 16f);
+            sprite.name = path;
+            return sprite;
+        }
+
+        public static Texture2D LoadTex2D(string spriteFileName, bool pointFilter = false, Texture2D T2D = null, bool overrideFullPath = false)
+        {
+            string path = "Assets/" + spriteFileName + ".png";
+            if (overrideFullPath)
+            {
+                path = spriteFileName;
+            }
+            string text = Path.Combine(assemblyDir, path);
+            Texture2D texture2D = T2D == null ? LoadPNG(text, pointFilter) : T2D;
+            if (pointFilter)
+            {
+                texture2D.filterMode = FilterMode.Point;
+                texture2D.Apply();
+            }
+            return texture2D;
+        }
+
+        public static Texture2D LoadPNG(string filePath, bool pointFilter = false)
+        {
+            Texture2D texture2D = new Texture2D(2, 2);
+            byte[] data = File.ReadAllBytes(filePath);
+            texture2D.LoadImage(data);
+            texture2D.filterMode = (pointFilter ? FilterMode.Point : FilterMode.Bilinear);
+            texture2D.Apply();
+
+            return texture2D;
+        }
+        #endregion load sprite
 
         public static void PrintMyCodePlease()
         {
-            var skillStats = Utils.LoadFromFileJson<SkillStats>("AirChannelDashGoodSkillStats.json");
+            var skillStats = Utils.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json");
 
             string log = "printing " + skillStats.GetType();
 
@@ -164,6 +207,7 @@ namespace SkillsButEpic
 
         public static void PrintList<T>(List<T> list)
         {
+            Log.Warning("Printing list. Count: " + list.Count);
             for (int i = 0; i < list.Count; i++)
             {
                 Log.Warning(list[i]);

@@ -9,9 +9,14 @@ namespace MyBeloved {
     [BepInPlugin("TheTimeSweeper.MyBeloved", "mybeloved", "0.1.0")]
     public class WhyDidYouLeaveMe : BaseUnityPlugin {
 
+        static bool fuckinRan;
+
         void Start() {
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.SkillsButEpic"))
+            //On.GameController.Awake += GameController_Awake_PrintAllTheThings;
+
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.SkillsButEpic") ||
+                BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.SillySkills"))
             {
                 Logger.LogWarning("I'ma let you finish");
                 return;
@@ -28,6 +33,36 @@ namespace MyBeloved {
             //old way
             //On.FSM.AddState += FSM_AddState;
             //On.Attack.SetAttackInfo_string_string_int_bool += Attack_SetAttackInfo_string_string_int_bool_OldReplaceMethod;
+        }
+
+        private static void GameController_Awake_PrintAllTheThings(On.GameController.orig_Awake orig, GameController self)
+        {
+            orig(self);
+
+            if (fuckinRan)
+                return;
+            fuckinRan = true;
+            string statID = StatManager.statFieldStr;
+            string category = StatManager.playerBaseCategory;
+
+            string text = category;
+            if (!StatManager.data.ContainsKey(statID))
+            {
+                StatManager.data[statID] = new Dictionary<string, Dictionary<string, StatData>>();
+            }
+            StatManager.data[statID][text] = new Dictionary<string, StatData>();
+            Dictionary<string, StatData> dictionary = StatManager.data[statID][text];
+            SkillStatContainer skillStatContainer = JsonUtility.FromJson<SkillStatContainer>(ChaosBundle.Get<TextAsset>(StatManager.playerSkillAssetPath).text);
+            int num = skillStatContainer.skillStats.Length;
+            for (int i = 0; i < num; i++)
+            {
+                SkillStats skillStats = skillStatContainer.skillStats[i];
+                skillStats.Initialize();
+
+                string prettyName = TextManager.skillInfoDict.ContainsKey(skillStats.ID[0]) ? TextManager.skillInfoDict[skillStats.ID[0]].displayName : "z_noname";
+
+                Utils.SaveJson(skillStats, prettyName + "_" + skillStats.ID[0]);
+            }
         }
         #region add the man
         private void StatManager_LoadData_AddAirChannelDashToLoadedData(On.StatManager.orig_LoadData orig, string assetPath, string statID, string category, string categoryModifier) {
