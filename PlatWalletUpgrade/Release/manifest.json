@@ -3,5 +3,8 @@
     "version_number": "1.0.0",
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
     "description": "Increases the maximum cap of gems. Doesn't affect 'current chaos gems' relics (unless you want it to).",
-    "dependencies": []
+    "dependencies": [
+        "Modding_Council-BepInExPack_of_Legend-5.4.2100",
+        "Modding_Council-HookGenPatcher-1.2.1"
+    ]
 }

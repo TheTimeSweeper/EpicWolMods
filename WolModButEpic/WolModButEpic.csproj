@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ModAccess.cs" />
-    <Compile Include="CoolEpicModThatDoesThings.cs" />
+    <Compile Include="CoolEpicModThatDoesThingsPlugin.cs" />
     <Compile Include="MyBelovedMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,7 +123,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
-if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\wolBepin\plugins\TheTimesweeper-$(ProjectName)"
+if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\wolBepin\plugins\TheTimesweeper-CameraMod"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

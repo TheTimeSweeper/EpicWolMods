@@ -74,21 +74,21 @@ namespace TimeWizard {
             if (keysDisable)
                 return;
 
-            if (Input.GetKeyDown(KeyCode.I)) {
+            if (Input.GetKeyDown(cfg_increaseKey.Value)) {
                 if (Time.timeScale < 1f) {
                     setTimeScale(Time.timeScale + 0.1f);
                 } else {
                     setTimeScale(Time.timeScale + 0.5f);
                 }
             }
-            if (Input.GetKeyDown(KeyCode.K)) {
+            if (Input.GetKeyDown(cfg_decreaseKey.Value)) {
 
                 setTimeScale(Time.timeScale - 0.1f);
             }
-            if (Input.GetKeyDown(KeyCode.O)) {
+            if (Input.GetKeyDown(cfg_setTo1Key.Value)) {
                 setTimeScale(1);
             }
-            if (Input.GetKeyDown(KeyCode.L)) {
+            if (Input.GetKeyDown(cfg_setTo0Key.Value)) {
                 setTimeScale(0);
             }
         }

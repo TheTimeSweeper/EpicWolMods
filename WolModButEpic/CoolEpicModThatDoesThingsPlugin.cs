@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace WolModButEpic {
 
-    [BepInPlugin("TheTimeSweeper.AlwaysPvpCameraMod", "Always PvP Camera", "1.0.5")]
-    public class CoolEpicModThatDoesThings : BaseUnityPlugin {
+    [BepInPlugin("TheTimeSweeper.CameraMod", "Camera Mod", "1.0.5")]
+    public class CoolEpicModThatDoesThingsPlugin : BaseUnityPlugin {
         
-        private float camSizeMultiplierCoop = 1.2f;
+        private float camSizeMultiplierMulti = 1.2f;
         private float camSizeMultiplierSolo = 1.1f;
         private float playerCameraBuffer = 0.25f;
         private float maxPlayerDistance = 120;
@@ -17,7 +17,7 @@ namespace WolModButEpic {
         private float playerDistCheckMult { get => 1 + (playerCameraBuffer * 2); }
         private static float screenRatio { get { return (float)Screen.width / (float)Screen.height; } }
 
-        private bool _zoomin;
+        private bool _grabOriginalCameraSize;
         private float _originalOriginalCameraSize;
 
         void Awake() {
@@ -32,9 +32,9 @@ namespace WolModButEpic {
 
             string configSection = "youre cool dont forget that";
 
-            camSizeMultiplierCoop =
+            camSizeMultiplierMulti =
                 Config.Bind(configSection,
-                            "Camera Size Multiplier Coop",
+                            "Camera Size Multiplier Multiplayer",
                             1.2f,
                             "Zoom out camera for multiplayer")
                 .Value;
@@ -63,7 +63,7 @@ namespace WolModButEpic {
                 Config.Bind(configSection,
                             "Use f-keys",
                             true,
-                            "Set false to disable pressing f1, f2, and f3 to zoom out, soom in, and reset camera respectively.")
+                            "Set false to disable pressing f1, f2, and f3 to zoom out, zoom in, and reset camera respectively.")
                 .Value;
         }
 
@@ -86,7 +86,7 @@ namespace WolModButEpic {
                 Logger.LogMessage("zooming the camera in to " + CameraController.originalCameraSize);
             }
 
-            // pressing f3 to reset to vanilla
+            // press f3 to reset to vanilla
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 CameraController.originalCameraSize = _originalOriginalCameraSize;
@@ -104,13 +104,13 @@ namespace WolModButEpic {
 
             self.teleportToOtherPlayerRange = Mathf.Max(self.maxVerticalDistBetweenPlayers, self.maxHorizontalDistBetweenPlayers) * 1.2f;
 
-            if (!_zoomin) {
-                _zoomin = true;
+            if (!_grabOriginalCameraSize) {
+                _grabOriginalCameraSize = true;
 
                 _originalOriginalCameraSize = CameraController.originalCameraSize;
             }
 
-            CameraController.originalCameraSize = _originalOriginalCameraSize * (GameController.coopOn ? camSizeMultiplierCoop : camSizeMultiplierSolo);
+            CameraController.originalCameraSize = _originalOriginalCameraSize * (GameController.coopOn || GameController.pvpOn ? camSizeMultiplierMulti : camSizeMultiplierSolo);
         }
 
         private void CameraController_Update(On.CameraController.orig_Update orig, CameraController self) {

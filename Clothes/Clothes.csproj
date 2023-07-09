@@ -37,6 +37,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="StolenFunnyCurse.cs" />
+    <Compile Include="Stolen.cs" />
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClothesPlugin.cs" />
