@@ -50,6 +50,7 @@ namespace SillySkills.States
 
         public GustBurstButBigState(FSM newFSM, Player newEnt) : base("GustBurstButBig", newFSM, newEnt)
         {
+            applyStopElementStatus = true;
             this.SetAnimTimes(0.15f, 0.2f, 0.1f, 0.5f, 0.6f, 0.7f);
         }
         
@@ -59,6 +60,8 @@ namespace SillySkills.States
 
             currentCast = 0;
             stopwatchID = ChaosStopwatch.Begin(0f, true, IsEmpowered ? 0.15f : 0.25f, IsEmpowered ? 3 : 2 , 0);
+
+            parent.ToggleEnemyFloorCollisions(false);
         }
 
         public override void ExecuteSkill()
@@ -118,6 +121,12 @@ namespace SillySkills.States
             parent.FaceTarget(parent.transform.position + ((!switchDirection) ? Vector3.left : Vector3.right));
             parent.anim.PlayDirectional(parent.GSlamAnimStr, -1, givenTime);
             switchDirection = !switchDirection;
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            parent.ToggleEnemyFloorCollisions(true);
         }
     }
 }

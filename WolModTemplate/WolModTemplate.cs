@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WolModTemplate
+namespace $safeprojectname$
 {
-    [BepInPlugin("TheTimeSweeper.WolModTemplate", "WolModTemplate", "0.1.0")]
-    public class WolModTemplatePlugin : BaseUnityPlugin
+    [BepInPlugin("TheTimeSweeper.$safeprojectname$", "$safeprojectname$", "0.1.0")]
+    public class WolModTemplate: BaseUnityPlugin
     {
         void Awake()
         {

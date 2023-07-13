@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using LegendAPI;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -19,13 +18,18 @@ namespace Clothes
         public static bool isDebugPlayerReal => debugPlayer != null;
         public static Player debugPlayer = null;
         public static bool empowered;
+        public static bool TournamentEditionInstalled;
 
         void Awake() {
             PluginInfo = Info;
 
-			Clothes.Init();
+            TournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
 
-			ContentLoaderStolen.Init();
+			Clothes.Init();
+            
+            if (!TournamentEditionInstalled) { 
+			    ContentLoaderStolen.Init();
+            }
 
             On.GameController.Start += GameController_Start_LateInit;
 		}
@@ -36,6 +40,7 @@ namespace Clothes
             //StolenFunnyCurse.Init();
             //broken when not wearing cloak
             //beat sura with infinite halo lol
+            //fixed but just keep it off just to be safe
         }
 
         void Update()
@@ -53,85 +58,7 @@ namespace Clothes
             }
         }
     }
-
-	public class Clothes {
-
-		//public static Dictionary<CustomColor, Texture2D> Palettes = new Dictionary<CustomColor, Texture2D>();
-
-		public static void Init() {
-
-            #region testing tutorial
-            //OutfitInfo outfit = new OutfitInfo();
-            //outfit.name = "Cool Guy";
-            //outfit.outfit = new Outfit(
-            //    "ModName::OutfitID",
-            //    1,
-            //    new List<OutfitModStat>()
-            //    {
-            //        new OutfitModStat(OutfitModStat.OutfitModType.Health,100,0,0,false),
-            //        // more OutfitModStats here
-            //    });
-
-            //LegendAPI.Outfits.Register(outfit);
-
-            //OutfitInfo coolOutfit = new OutfitInfo()
-            //{
-            //    name = "Cool Guy",
-            //    outfit = new Outfit(
-            //        "ModName::OutfitID", 
-            //        1, 
-            //        new List<OutfitModStat>
-            //        {
-            //            new OutfitModStat(OutfitModStat.OutfitModType.Health,100,0,0,false),
-            //            // more OutfitModStats here
-            //        })
-            //};
-
-            //Outfits.Register(coolOutfit);
-            #endregion testing tutorial
-
-            LegendAPI.OutfitInfo DesolateOutfit = new LegendAPI.OutfitInfo() {
-				name = "Desolate",
-				customDesc = _ => { return "Glow Sticks"; },
-				outfit = new Outfit("Sweep_Desolate", ContentLoaderStolen.AssignNewID("Desolate")/*(int)CustomColor.Desolate*/, new List<OutfitModStat> {
-					new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
-					new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
-				})
-			};
-
-			//Palettes[CustomColor.Desolate] = ImgHandlerStolen.LoadTex2D(DesolateOutfit.name);
-
-			LegendAPI.Outfits.Register(DesolateOutfit);
-
-            LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
-            {
-                name = "Analysis",
-                customDesc = _ => { return "- Press G to Empower Arcana"; },
-                outfit = new Outfit("Sweep_Analysis", ContentLoaderStolen.AssignNewID("Anal"), new List<OutfitModStat> {
-                    new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
-                    new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.9f, 0f, false),
-                    new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
-                }),
-                customMod = (player, onoroff, idontevenknow)=>
-                {
-                    ClothesPlugin.debugPlayer = onoroff ? player : null;
-                }
-            };
-
-            LegendAPI.Outfits.Register(TestOutfit);
-
-            foreach (string robeName in ContentLoaderStolen.robeNames)
-            {
-                ContentLoaderStolen.palettes.Add(ImgHandlerStolen.LoadTex2D(robeName));
-            }
-        }
-
-        public enum CustomColor {
-			Desolate = 33
-		}
-	}
 }
-
 
 /*
  * 

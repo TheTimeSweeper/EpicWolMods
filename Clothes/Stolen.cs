@@ -14,6 +14,18 @@ namespace Clothes
     //stolen from tournamentEdition
     public static class ImgHandlerStolen
     {
+        public static Sprite LoadSprite(string path)
+        {
+            Texture2D texture2D = LoadTex2D(path, true);
+            texture2D.name = path;
+            texture2D.filterMode = FilterMode.Point;
+            texture2D.Apply();
+            Rect rect = new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height);
+            Sprite sprite = Sprite.Create(texture2D, rect, new Vector2(0.5f, 0.5f), 16f);
+            sprite.name = path;
+            return sprite;
+        }
+
         public static Texture2D LoadTex2D(string spriteFileName, bool pointFilter = false, Texture2D T2D = null, bool overrideFullPath = false)
         {
             string path = "Assets/" + spriteFileName + ".png";
@@ -41,24 +53,11 @@ namespace Clothes
 
             return texture2D;
         }
-
-        public static Sprite LoadSprite(string path)
-        {
-            Texture2D texture2D = LoadTex2D(path, true);
-            texture2D.name = path;
-            texture2D.filterMode = FilterMode.Point;
-            texture2D.Apply();
-            Rect rect = new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height);
-            Sprite sprite = Sprite.Create(texture2D, rect, new Vector2(0.5f, 0.5f), 16f);
-            sprite.name = path;
-            return sprite;
-        }
     }
 
     //stolen from tournamentEdition
     public class ContentLoaderStolen
     {
-
         public static List<Texture2D> palettes = new List<Texture2D>();
 
         public static bool hasAddedPalettes = false;

@@ -37,9 +37,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="blobzblobzblobzmod.cs" />
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MenacingBlobPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">

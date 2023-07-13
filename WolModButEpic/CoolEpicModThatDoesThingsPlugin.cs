@@ -85,7 +85,7 @@ namespace WolModButEpic {
                 CameraController.originalCameraSize -= 0.5f;
                 Logger.LogMessage("zooming the camera in to " + CameraController.originalCameraSize);
             }
-
+            
             // press f3 to reset to vanilla
             if (Input.GetKeyDown(KeyCode.F3))
             {

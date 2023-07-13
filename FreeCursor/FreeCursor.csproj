@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0886A86D-5519-4641-893F-AF8C07C33CC7}</ProjectGuid>
+    <ProjectGuid>{0871EA5E-E43A-42DF-997F-82B55DC1C7A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WolModTemplate</RootNamespace>
-    <AssemblyName>WolModTemplate</AssemblyName>
+    <RootNamespace>FreeCursor</RootNamespace>
+    <AssemblyName>FreeCursor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -95,7 +95,7 @@
   <ItemGroup>
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WolModTemplate.cs" />
+    <Compile Include="FreeCursorPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Release\plugins\" />
