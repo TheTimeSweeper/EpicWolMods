@@ -64,18 +64,28 @@ OutfitInfo coolerOutfit = new OutfitInfo()
         false), //isLeveling
     customDesc = (showStats) =>
     {
+        string description = "- Gives Cool Effect";
+
         if (showStats)
         {
             string statString = "+ 10 %";
-            string formattedStats= $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
+            string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
 
-            return $"- Gives Cool Effect {formattedStats}";
+            description = $"- Gives Cool Effect {formattedStats}";
         }
-        return "- Gives Cool Effect";
+
+        return description;
     },
     customMod = (player, isEquipping, onEquip) =>
     {
-        //do fun things
+        if (isEquipping)
+        {
+            player.transform.localScale = new UnityEngine.Vector3(2f, 2f, 2f);
+        }
+        else
+        {
+            player.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+        }
     },
     unlockCondition = () =>
     {
