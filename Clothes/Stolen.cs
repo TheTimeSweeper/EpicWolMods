@@ -90,6 +90,9 @@ namespace Clothes
                 {
                     self.p1PieceImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
                     self.p1PieceImage.material.SetTexture("_Palette", newPalette);
+
+                    self.p2PieceImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+                    self.p2PieceImage.material.SetTexture("_Palette", newPalette);
                 }
                 orig(self);
 

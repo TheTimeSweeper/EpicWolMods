@@ -6,6 +6,10 @@ using System.Linq;
 using UnityEngine;
 using Rewired;
 using System.Collections.ObjectModel;
+using System.Reflection;
+using Rewired.Data;
+using Rewired.Data.Mapping;
+using System.IO;
 
 namespace TwinStick
 {
@@ -13,6 +17,7 @@ namespace TwinStick
     public class TwinStickPlugin : BaseUnityPlugin
     {
         public static List<ControllerMap> joystickMaps = new List<ControllerMap>();
+        public static List<Rewired.Player> inittedPlayer = new List<Rewired.Player>();
 
         public static InputAction actionHori = new InputAction
         {
@@ -35,16 +40,50 @@ namespace TwinStick
         void Awake()
         {
             Log.Init(Logger);
+
+            On.Rewired.InputManager_Base.Initialize += InputManager_Base_Initialize;
             On.InputController.AssignControllerToPlayer += InputController_AssignControllerToPlayer;
             On.ChaosInputDevice.GetAimVector += ChaosInputDevice_GetAimVector;
+        }
+
+        private void InputManager_Base_Initialize(On.Rewired.InputManager_Base.orig_Initialize orig, InputManager_Base self)
+        {
+            AddActionsToUserData(self._userData);
+            orig(self);
+        }
+
+        private static void AddActionsToUserData(UserData userData)
+        {
+            if(userData.actions.Find(action =>
+            {
+                return action.descriptiveName == actionHori.descriptiveName;
+            }) != null)
+            {
+                Log.Warning("already added actions");
+                return;
+            }
+            Log.Warning("addinga ctions");
+            userData.actions.Add(actionHori);
+            userData.actionCategoryMap.AddAction(0, actionHori.id);
+            userData.actions.Add(actionVeri);
+            userData.actionCategoryMap.AddAction(0, actionVeri.id);
+
+            userData.actionIdCounter += 2;
         }
 
         private void InputController_AssignControllerToPlayer(On.InputController.orig_AssignControllerToPlayer orig, Rewired.Player player, Controller controller, bool removeFromOtherPlayers, bool ignoreKBMouseCheck)
         {
             orig(player, controller, removeFromOtherPlayers, ignoreKBMouseCheck);
             Log.Message("assign to " + player.name);
+            Log.Warning($"before grabjoystick {player.rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ == ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ}");
             GrabJoystickMaps();
             //printAllJoystickMaps();
+            Log.Warning($"after grabjoystick {player.rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ == ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ}");
+
+            //if(player.rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ != ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ)
+            //{
+            //    player.rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ = ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ;
+            //}
         }
 
         private static void GrabJoystickMaps()
@@ -83,10 +122,10 @@ namespace TwinStick
 
         private static void AddFuckinRightStick(ControllerMap map)
         {
-            if (!_addedActions)
-            {
-                AddToActions();
-            }
+            //if (!_addedActions)
+            //{
+            //    AddToActions();
+            //}
 
             //the key to victory. thank you
                 //tells me what the element ids are of the physical inputs
@@ -117,6 +156,8 @@ namespace TwinStick
 
             Log.Warning("adding actions");
 
+            //fuck your readonly
+            //wait wrong readonly
             //jIqeCvHHKwvAbZSxWMpGqMRrbVY inputActionMapOrSomething = ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ;
             //List<InputAction> newActions = new List<InputAction>(inputActionMapOrSomething.eGEdOfZqjUCXxPJfHFlonVkbGYMe);
             //newActions.Add(actionHori);
@@ -131,15 +172,17 @@ namespace TwinStick
 
             ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ = new jIqeCvHHKwvAbZSxWMpGqMRrbVY(newActions);
 
+            for (int i = 0; i < InputController.Players.Length; i++)
+            {
+                //InputController.Players[i].rAPuZWekEqpVMXBcyhKhmLCZTes.jHwaYSBKfjqqEDgyOzsMdUJnjenj(ReInput.auGwiZGGibyrKvBDxGgbhehskLDE.GetInputBehaviors_Copy());
+
+                //InputController.Players[i].rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ = ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ
+                //InputController.Players[i].rAPuZWekEqpVMXBcyhKhmLCZTes = ReInput.FxMFOeysCIzTEwnCthrzyLLVqtX;
+            }
+
 
             Rewired.Data.UserData userData = ReInput.auGwiZGGibyrKvBDxGgbhehskLDE;
-
-            userData.actions.Add(actionHori);
-            userData.actionCategoryMap.AddAction(0, actionHori.id);
-            userData.actions.Add(actionVeri);
-            userData.actionCategoryMap.AddAction(0, actionVeri.id);
-
-            userData.actionIdCounter += 2;
+            AddActionsToUserData(userData);
 
             //for (int i = 0; i < ReInput.mapping.Actions.Count; i++)
             //{
@@ -215,7 +258,135 @@ namespace TwinStick
                 //PrintAllJoystickMaps();
             }
         }
+
+        public static void AssignControllerToPlayer(Rewired.Player player, Controller controller, bool removeFromOtherPlayers, bool ignoreKBMouseCheck = false)
+        {
+            if (player == null || controller == null || player.controllers.ContainsController(controller))
+            {
+                return;
+            }
+            if (!ignoreKBMouseCheck && (controller.type == ControllerType.Keyboard || controller.type == ControllerType.Mouse))
+            {
+                InputController.AssignKeyboardMouseToPlayer(InputController.tempPlayer);
+                return;
+            }
+            player.controllers.AddController(controller, removeFromOtherPlayers);
+
+            int actionId = 15;
+            //FieldInfo field6 = typeof(UserData).GetField("actions", BindingFlags.Instance | BindingFlags.NonPublic);
+            //FieldInfo field7 = typeof(UserData).GetField("actionCategoryMap", BindingFlags.Instance | BindingFlags.NonPublic);
+            UserData userData_auGwiZGGibyrKvBDxGgbhehskLDE = ReInput.auGwiZGGibyrKvBDxGgbhehskLDE;
+            List<InputAction> userdataActions = userData_auGwiZGGibyrKvBDxGgbhehskLDE.actions;// (List<InputAction>)field6.GetValue(userData_auGwiZGGibyrKvBDxGgbhehskLDE);
+            if (userdataActions == null || userdataActions.Count == 0)
+            {
+                userdataActions = new List<InputAction>();
+            }
+            bool hasLookActions = false;
+            foreach (InputAction inputAction in userdataActions)
+            {
+                if (inputAction.name == "LookHorizontal" || inputAction.name == "LookVertical")
+                {
+                    hasLookActions = true;
+                    break;
+                }
+            }
+            ActionCategoryMap actionCategoryMap = userData_auGwiZGGibyrKvBDxGgbhehskLDE.actionCategoryMap;
+            if (!hasLookActions)
+            {
+                InputAction inputAction2 = new InputAction();
+                inputAction2._id = 15;                            
+                inputAction2._name = "LookHorizontal";            
+                inputAction2._type = InputActionType.Axis;        
+                inputAction2._descriptiveName = "Look Horizontal";
+                inputAction2._userAssignable = true;              
+
+                InputAction inputAction3 = inputAction2.Clone();
+                inputAction3._id = 16;
+                inputAction3._name = "LookVertical";
+                inputAction3._type = InputActionType.Axis;
+                inputAction3._descriptiveName = "Look Vertical";
+                inputAction3._userAssignable = true;
+
+                userdataActions.Add(inputAction2);
+                userdataActions.Add(inputAction3);
+                actionCategoryMap.AddAction(0, inputAction2.id);
+                actionCategoryMap.AddAction(0, inputAction3.id);
+
+                List<EhCCfaJvgOATsGDcTeTuetYjjeMa> list3 = new List<EhCCfaJvgOATsGDcTeTuetYjjeMa>(player.rAPuZWekEqpVMXBcyhKhmLCZTes.xsvieRMeATlfSZDisBBZeHpewPBx);
+                list3.Add(new EhCCfaJvgOATsGDcTeTuetYjjeMa(player.id, inputAction2, ReInput.auGwiZGGibyrKvBDxGgbhehskLDE.inputBehaviors[0], ReInput.SUVgXPPmkhbdHJFpxGwMbKbeZaXC));
+                list3.Add(new EhCCfaJvgOATsGDcTeTuetYjjeMa(player.id, inputAction3, ReInput.auGwiZGGibyrKvBDxGgbhehskLDE.inputBehaviors[0], ReInput.SUVgXPPmkhbdHJFpxGwMbKbeZaXC));
+                player.rAPuZWekEqpVMXBcyhKhmLCZTes.xsvieRMeATlfSZDisBBZeHpewPBx = list3.ToArray();
+                EhCCfaJvgOATsGDcTeTuetYjjeMa[,] ylscsSxGTXlfBcvWRoQioTAinrI = player.rAPuZWekEqpVMXBcyhKhmLCZTes.YlscsSxGTXlfBcvWRoQioTAinrI;
+                EhCCfaJvgOATsGDcTeTuetYjjeMa[,] array = new EhCCfaJvgOATsGDcTeTuetYjjeMa[ylscsSxGTXlfBcvWRoQioTAinrI.GetLength(0), list3.Count];
+                for (int i = 0; i < ylscsSxGTXlfBcvWRoQioTAinrI.GetLength(0); i++)
+                {
+                    for (int j = 0; j < list3.Count; j++)
+                    {
+                        if (ylscsSxGTXlfBcvWRoQioTAinrI.GetLength(1) > j)
+                        {
+                            array[i, j] = ylscsSxGTXlfBcvWRoQioTAinrI[i, j];
+                        }
+                        else
+                        {
+                            array[i, j] = list3[j];
+                        }
+                    }
+                }
+                player.rAPuZWekEqpVMXBcyhKhmLCZTes.YlscsSxGTXlfBcvWRoQioTAinrI = array;
+            }
+
+            jIqeCvHHKwvAbZSxWMpGqMRrbVY eqUBFyqgFrEprcmzfEsQfMRcSahQ = new jIqeCvHHKwvAbZSxWMpGqMRrbVY(userdataActions);
+            ReInput.EqUBFyqgFrEprcmzfEsQfMRcSahQ = eqUBFyqgFrEprcmzfEsQfMRcSahQ;
+            player.rAPuZWekEqpVMXBcyhKhmLCZTes.EqUBFyqgFrEprcmzfEsQfMRcSahQ = eqUBFyqgFrEprcmzfEsQfMRcSahQ;
+
+            userData_auGwiZGGibyrKvBDxGgbhehskLDE.actionIdCounter += 2;
+            userData_auGwiZGGibyrKvBDxGgbhehskLDE.actionCategoryMap = actionCategoryMap;
+            userData_auGwiZGGibyrKvBDxGgbhehskLDE.actions = userdataActions;
+            //ReInput.auGwiZGGibyrKvBDxGgbhehskLDE = userData_auGwiZGGibyrKvBDxGgbhehskLDE;
+
+            string text = "";
+
+            List<ControllerMap> mapList = new List<ControllerMap>();
+            player.controllers.maps.GetAllMaps(ControllerType.Joystick, mapList);
+
+            foreach (ControllerMap controllerMap in mapList)
+            {
+                if (controllerMap.controller != null)
+                {
+                    player.controllers.maps.RemoveMap(ControllerType.Joystick, controller.id, controllerMap.id);
+                    foreach (ControllerElementIdentifier controllerElementIdentifier in controllerMap.controller.ElementIdentifiers)
+                    {
+                        text = string.Concat(new object[]
+                        {
+                    text,
+                    "Name: ",
+                    controllerElementIdentifier.name,
+                    "\nID:",
+                    controllerElementIdentifier.id,
+                    "\n"
+                        });
+                        int id = controllerElementIdentifier.id;
+                        if (!controllerMap.ContainsElementIdentifier(id))
+                        {
+                            ElementAssignment elementAssignment = new ElementAssignment(id, actionId, false);
+                            controllerMap.CreateElementMap(elementAssignment);
+                            if (!controllerMap.ContainsAction(actionId++))
+                            {
+                                text += "Assignment Failed\n";
+                            }
+                            else
+                            {
+                                text += "Assignment Succeded\n";
+                            }
+                        }
+                    }
+                    player.controllers.maps.AddMap(ControllerType.Joystick, controller.id, controllerMap);
+                }
+            }
+            File.WriteAllText("TestAdd.txt", text);
+        }
     }
+
 }
 
 /*

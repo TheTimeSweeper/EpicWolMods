@@ -93,7 +93,7 @@ OutfitInfo coolerOutfit = new OutfitInfo()
     }
 };
 
-            LegendAPI.Outfits.Register(coolerOutfit);
+            //LegendAPI.Outfits.Register(coolerOutfit);
 
 
             #endregion testing tutorial
@@ -101,23 +101,67 @@ OutfitInfo coolerOutfit = new OutfitInfo()
             int desolateOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Desolate") : 3;
             LegendAPI.OutfitInfo DesolateOutfit = new LegendAPI.OutfitInfo() {
 				name = "Desolate",
-				customDesc = _ => { return "Glow Sticks"; },
 				outfit = new Outfit(
                     "Sweep_Desolate", 
                     desolateOutfitColor/*(int)CustomColor.Desolate*/, 
                     new List<OutfitModStat> {
 					    new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
 					    new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
-				    })
+				    }),
+				customDesc = _ => { return "Glow Sticks"; },
 			};
 			//Palettes[CustomColor.Desolate] = ImgHandlerStolen.LoadTex2D(DesolateOutfit.name);
 			LegendAPI.Outfits.Register(DesolateOutfit);
+
+            int joeOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Joe") : 4;
+            LegendAPI.OutfitInfo joeOutfit = new LegendAPI.OutfitInfo()
+            {
+                name = "Joe",
+                outfit = new Outfit(
+                    "Sweep_Joe",
+                    joeOutfitColor/*(int)CustomColor.Desolate*/,
+                    new List<OutfitModStat> {
+                        new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.2f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, -0.1f, 0f, false),
+                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false)
+                    }),
+                customDesc = (showStats) =>
+                {
+                    string description = "- Increases Attack Speed";
+
+                    if (showStats)
+                    {
+                        string statString = "+ 50 %";
+                        string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
+
+                        description = $"- Increases Attack Speed {formattedStats}";
+                    }
+
+                    return description;
+                },
+                customMod = (player, isEquipping, onEquip) =>
+                {
+                    UnityEngine.Debug.LogWarning("nig " + onEquip);
+                    NumVarStatMod animSpeedMod = new NumVarStatMod("JoeAnimSpeed", 0.50f, 10, VarStatModType.Additive, false);
+                    player.animSpeedHandler.Modify(animSpeedMod, isEquipping);
+                    //if (isEquipping)
+                    //{
+                    //    player.animSpeedHandler.Modify(animSpeedMod, isEquipping);
+                    //}
+                    //else
+                    //{
+                    //    player.transform.localScale = new UnityEngine.Vector3(1, 1, 1);
+                    //}
+                },
+            };
+            //Palettes[CustomColor.Desolate] = ImgHandlerStolen.LoadTex2D(DesolateOutfit.name);
+            LegendAPI.Outfits.Register(joeOutfit);
 
             int analOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal") : 21;
             LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Analysis",
-                customDesc = _ => { return "- Press G to Empower Arcana"; },
                 outfit = new Outfit(
                     "Sweep_Analysis", 
                     analOutfitColor, 
@@ -126,6 +170,7 @@ OutfitInfo coolerOutfit = new OutfitInfo()
                         new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.9f, 0f, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
                     }),
+                customDesc = _ => { return "- Press G to Empower Arcana"; },
                 customMod = (player, onoroff, idontevenknow)=>
                 {
                     ClothesPlugin.debugPlayer = onoroff ? player : null;
@@ -133,17 +178,18 @@ OutfitInfo coolerOutfit = new OutfitInfo()
             };
             LegendAPI.Outfits.Register(TestOutfit);
 
+            int analOutfitColor2 = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal3") : 22;
             LegendAPI.OutfitInfo TestOutfit2 = new LegendAPI.OutfitInfo()
             {
                 name = "Analysis2",
-                customDesc = _ => { return "- Press G to Empower Arcana"; },
                 outfit = new Outfit(
                     "Sweep_Analysis2",
-                    analOutfitColor, 
+                    analOutfitColor2,
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
                     }),
+                customDesc = _ => { return "- Press G to Empower Arcana"; },
                 customMod = (player, onoroff, idontevenknow) =>
                 {
                     ClothesPlugin.debugPlayer = onoroff ? player : null;

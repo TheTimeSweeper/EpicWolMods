@@ -58,6 +58,9 @@
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\_lib\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="MMHOOK_Rewired_Core">
+      <HintPath>..\_lib\MMHOOK_Rewired_Core.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\_lib\Mono.Cecil.dll</HintPath>
     </Reference>
