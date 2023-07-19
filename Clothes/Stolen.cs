@@ -76,138 +76,46 @@ namespace Clothes
             nextAssignableID += 1;
             return nextAssignableID - 1;
         }
-
+        
         public static void Init()
         {
-
             basePalette = ImgHandlerStolen.LoadSprite("Base");
 
-            On.Player.SetPlayerOutfitColor += Us_AddOutfit;
+            On.ChaosBundle.Get += ChaosBundle_Get;
 
-            On.GameProgressBoard.SetPlayerColors += (On.GameProgressBoard.orig_SetPlayerColors orig, GameProgressBoard self) =>
-            {
-                if (newPalette != null)
-                {
-                    self.p1PieceImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                    self.p1PieceImage.material.SetTexture("_Palette", newPalette);
-
-                    self.p2PieceImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                    self.p2PieceImage.material.SetTexture("_Palette", newPalette);
-                }
-                orig(self);
-
-            };
-
-            On.OutfitMenu.LoadMenu += (On.OutfitMenu.orig_LoadMenu orig, OutfitMenu self, Player p) => {
-                self.outfitImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                self.outfitImage.material.SetTexture("_Palette", newPalette);
-                orig(self, p);
-            };
-
-            On.DeathSummaryUI.Activate += (On.DeathSummaryUI.orig_Activate orig, DeathSummaryUI self, float f) => {
-                orig(self, f);
-                if (newPalette != null)
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        self.playerRefs[i].outfitImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                        self.playerRefs[i].outfitImage.material.SetTexture("_Palette", newPalette);
-                    }
-                }
-            };
-
-            On.WardrobeUI.LoadOutfits += (On.WardrobeUI.orig_LoadOutfits orig, WardrobeUI self) => {
-                orig(self);
-                if (newPalette != null)
-                {
-                    for (int j = 0; j < self.totalOutfitCount; j++)
-                    {
-
-                        self.wrRef.outfitImageArray[j].material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                        self.wrRef.outfitImageArray[j].material.SetTexture("_Palette", newPalette);
-                    }
-                }
-            };
-            On.DialogManager.Activate += (On.DialogManager.orig_Activate orig, DialogManager self, DialogMessage m, bool b, bool s) => {
-                orig(self, m, b, s);
-                if (m.rightActive && m.RightSpeaker != null && newPalette != null)
-                {
-                    self.rightPlayerImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                    self.rightPlayerImage.material.SetTexture("_Palette", newPalette);
-                }
-            };
-            On.UnlockNotifier.SetNotice += (On.UnlockNotifier.orig_SetNotice orig, UnlockNotifier self, UnlockNotifier.NoticeVars vars) => {
-                orig(self, vars);
-                if (newPalette != null)
-                {
-                    self.outfitIconImage.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                    self.outfitIconImage.material.SetTexture("_Palette", newPalette);
-                }
-            };
-            On.WardrobeUI.UpdateOutfits += (On.WardrobeUI.orig_UpdateOutfits orig, WardrobeUI self, int givenIndex) => {
-                orig(self, givenIndex);
-                if (newPalette != null)
-                {
-                    self.wrRef.playerImages[self.currentPlayerImageIndex].material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                    self.wrRef.playerImages[self.currentPlayerImageIndex].material.SetTexture("_Palette", newPalette);
-                }
-            };
-            On.OutfitStoreItem.Start += (On.OutfitStoreItem.orig_Start orig, OutfitStoreItem self) => {
-                orig(self);
-                self.itemSpriteRenderer.material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                self.itemSpriteRenderer.material.SetTexture("_Palette", newPalette);
-            };
-            On.WardrobeUI.AssignOutfit += (On.WardrobeUI.orig_AssignOutfit orig, WardrobeUI self, Outfit o, int i) => {
-                self.wrRef.outfitImageArray[i].material.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                self.wrRef.outfitImageArray[i].material.SetTexture("_Palette", newPalette);
-                orig(self, o, i);
-            };
-            On.PlayerStatusBar.Awake += (On.PlayerStatusBar.orig_Awake orig, PlayerStatusBar self) => {
-                orig(self);
-                self.gameObject.AddComponent<StatusBarMod>().self = self;
-            };
-
-            On.OutfitMenu.LoadMenu += (On.OutfitMenu.orig_LoadMenu orig, OutfitMenu self, Player p) => {
-                orig(self, p);
-                if (hasAddedPalettes)
-                {
-                    self.outfitImage.material.SetTexture("_Palette", newPalette);
-                }
-            };
-            On.OutfitMenu.SwapFocus += (On.OutfitMenu.orig_SwapFocus orig, OutfitMenu self, bool n) => {
-                orig(self, n);
-                if (hasAddedPalettes)
-                {
-                    self.outfitImage.material.SetTexture("_Palette", newPalette);
-                }
-            };
-
-            /*On.Player.InitComponents += (On.Player.orig_InitComponents orig, Player self) =>
-            {
-                orig(self);
-                Debug.Log("Old Sprite Name: " + self.transform.Find("PlayerSprite").GetComponent<SpriteRenderer>().sprite.name);
-                self.transform.Find("PlayerSprite").GetComponent<SpriteRenderer>().sprite = newPlayerSprite;
-                Debug.Log("Set new palette: "+ self.transform.Find("PlayerSprite").GetComponent<SpriteRenderer>().sprite.name);
-            };*/
-
+            //HookAllTheThings();
         }
 
-
-        public static void Us_AddOutfit(On.Player.orig_SetPlayerOutfitColor orig, Player self, NumVarStatMod mod, bool givenStatus)
+        private static GameObject ChaosBundle_Get(On.ChaosBundle.orig_Get orig, string assetPath)
         {
-            orig(self, mod, givenStatus);
+            if (hasAddedPalettes)
+                return orig(assetPath);
 
-            //if (!loadedWizSprites) {
-            //	loadedWizSprites = true;
+            CreatePaletteTexture();
 
-            //	Texture2D text = new Texture2D(1, 1); text.LoadImage(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Sprites/Walter2.png")));
-            //	Texture2D texture2 = self.spriteRenderer.sprite.texture;
-            //	texture2.SetPixels32(text.GetPixels32());
-            //	texture2.Apply();
-            //	EXPOSED = texture2;
-            //	StartCoroutine("BootUpCredits");
-            //}
+            Material playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwap.mat");
 
+            playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+            playerMaterial.SetTexture("_Palette", newPalette);
+
+            playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
+
+            playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+            playerMaterial.SetTexture("_Palette", newPalette);
+
+            //unlock notifier
+
+            return orig(assetPath);
+        }
+
+        private static void ChaosBundle_LoadBundle(On.ChaosBundle.orig_LoadBundle orig)
+        {
+            orig();
+        }
+
+        private static void CreatePaletteTexture()
+        {
+            Debug.LogWarning("palette");
             Texture2D baseTexture = basePalette.texture;// (Texture2D) self.spriteMaterial.GetTexture("_Palette");
             if (newPalette == null)
             {
@@ -246,19 +154,13 @@ namespace Clothes
                         //Debug.Log("Out of loop 2 for " + te.name);
                         newT.filterMode = FilterMode.Point;
                         newT.Apply();
+
                         newPalette = newT;
+                        Debug.LogWarning("palette added");
                         h += 2;
                     }
                 }
             }
-
-            if (hasAddedPalettes)
-            {
-                self.spriteMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-                self.spriteMaterial.SetTexture("_Palette", newPalette);
-            }
-
-            //orig(self, mod, givenStatus);
         }
 
         public static Texture2D FillColorAlpha(Texture2D tex2D, Color32? fillColor = null)

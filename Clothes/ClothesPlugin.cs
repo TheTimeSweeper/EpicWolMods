@@ -9,8 +9,8 @@ using UnityEngine;
 namespace Clothes
 {
     //personal mod for fun and to learn about robes.
-    //credit to only_going_up_fr0m_here with tournamentedition
-    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.3.0")]
+    //credit for some code goes to only_going_up_fr0m_here with tournamentedition
+    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.4.0")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
@@ -22,6 +22,7 @@ namespace Clothes
 
         void Awake() {
             PluginInfo = Info;
+            Log.Init(Logger);
 
             TournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
 
@@ -39,7 +40,7 @@ namespace Clothes
             orig(self);
             //StolenFunnyCurse.Init();
             //broken when not wearing cloak
-            //beat sura with infinite halo lol
+                //beat sura with infinite halo lol
             //fixed but just keep it off just to be safe
         }
 
