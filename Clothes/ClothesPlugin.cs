@@ -18,21 +18,23 @@ namespace Clothes
         public static bool isDebugPlayerReal => debugPlayer != null;
         public static Player debugPlayer = null;
         public static bool empowered;
-        public static bool TournamentEditionInstalled;
+        public static bool tournamentEditionInstalled;
 
         void Awake() {
             PluginInfo = Info;
             Log.Init(Logger);
 
-            TournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
+            tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
 
 			Clothes.Init();
             
-            if (!TournamentEditionInstalled) { 
+            if (!tournamentEditionInstalled) { 
 			    ContentLoaderStolen.Init();
             }
 
             On.GameController.Start += GameController_Start_LateInit;
+
+            //gameObject.AddComponent<TestValueManager>();
 		}
 
         private void GameController_Start_LateInit(On.GameController.orig_Start orig, GameController self)

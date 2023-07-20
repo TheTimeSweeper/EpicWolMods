@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeCursor", "FreeCursor\Fr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwinStick", "TwinStick\TwinStick.csproj", "{2EAEDD3B-E3A9-4EBC-AB9F-DEBA58B7F95F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShutUpTomi", "ShutUpTomi\ShutUpTomi.csproj", "{95ACC31A-30D2-4643-9433-A2330A22ED2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{2EAEDD3B-E3A9-4EBC-AB9F-DEBA58B7F95F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EAEDD3B-E3A9-4EBC-AB9F-DEBA58B7F95F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EAEDD3B-E3A9-4EBC-AB9F-DEBA58B7F95F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95ACC31A-30D2-4643-9433-A2330A22ED2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95ACC31A-30D2-4643-9433-A2330A22ED2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95ACC31A-30D2-4643-9433-A2330A22ED2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95ACC31A-30D2-4643-9433-A2330A22ED2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

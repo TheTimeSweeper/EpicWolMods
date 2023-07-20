@@ -1,5 +1,7 @@
 ﻿using LegendAPI;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
 namespace Clothes
 {
@@ -20,13 +22,37 @@ namespace Clothes
 
             AnalOutfits();
 
-            if (!ClothesPlugin.TournamentEditionInstalled)
+            if (!ClothesPlugin.tournamentEditionInstalled)
             {
                 foreach (string robeName in ContentLoaderStolen.robeNames)
                 {
                     ContentLoaderStolen.palettes.Add(ImgHandlerStolen.LoadTex2D(robeName));
                 }
             }
+
+            IL.TailorNpc.UpgradePlayerOutfit += TailorNpc_UpgradePlayerOutfit;
+        }
+
+        private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            c.GotoNext(MoveType.After,
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<TailorNpc>("currentMod"),
+                x => x.MatchLdfld<OutfitModStat>("modType"),
+                x => x.MatchLdcI4(1)
+                );
+            c.Index --;
+            Log.Message(c);
+            Log.Message("Remove");
+            c.Remove();
+            Log.Message(c);
+            Log.Message("Emit");
+            c.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
+            Log.Message(c);
+            Log.Message("next opcode beq");
+            c.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
+            Log.Message(c);
         }
 
         private static void TutorialOutfits()
@@ -121,7 +147,7 @@ namespace Clothes
 
         private static void SimpleOutfits()
         {
-            int desolateOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Desolate") : 3;
+            int desolateOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Desolate") : 3;
             LegendAPI.OutfitInfo DesolateOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Desolate",
@@ -139,7 +165,7 @@ namespace Clothes
 
         private static void JoeOutfit()
         {
-            int joeOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Joe") : 4;
+            int joeOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Joe") : 4;
             LegendAPI.OutfitInfo joeOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Joe",
@@ -157,7 +183,8 @@ namespace Clothes
 
                     if (showStats)
                     {
-                        string statString = "+ 10 %";
+
+                        string statString = "+ 15 %";
                         string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
 
                         description = $"- Reduces attack end time {formattedStats}";
@@ -245,16 +272,44 @@ namespace Clothes
             #endregion test joes
 
             On.Player.SkillState.ExitToSkillOrRunOrIdle += SkillState_ExitToSkillOrRunOrIdle;
-            //On.Player.SkillState.SetAnimTimes += SkillState_SetAnimTimes;
-            //On.Player.SlideState.cctor += SlideState_cctor;
             On.Player.SlideState.OnEnter += SlideState_OnEnter;
+            //On.Player.SkillState.SetAnimTimes += SkillState_SetAnimTimes;
+        }
+
+        private static bool SkillState_ExitToSkillOrRunOrIdle(On.Player.SkillState.orig_ExitToSkillOrRunOrIdle orig, Player.SkillState self)
+        {
+            if (!CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
+                return orig(self);
+
+            float reduction = 0.15f;
+            float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
+
+            float origCancel = self.cancelThreshold;
+            float origRun =    self.runThreshold;
+            float origExit =   self.exitThreshold;
+
+            self.cancelThreshold *= multiplier;
+            self.runThreshold *= multiplier;
+            self.exitThreshold *= multiplier;
+
+            bool returnOrig = orig(self);
+
+            self.cancelThreshold = origCancel   ;
+            self.runThreshold    = origRun      ;
+            self.exitThreshold = origExit;
+
+            return returnOrig;
+
         }
 
         private static void SlideState_OnEnter(On.Player.SlideState.orig_OnEnter orig, Player.SlideState self)
         {
-            if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe"))
+            if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
             {
-                self.slideStopwatch.SetDelay(0.1f/*0.25f * 0.8f*/);
+                float reduction = 0.25f;
+                float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
+
+                self.slideStopwatch.SetDelay(0.25f * multiplier);
             }
             else
             {
@@ -262,36 +317,6 @@ namespace Clothes
             }
 
             orig(self);
-
-
-        }
-
-        private static bool SkillState_ExitToSkillOrRunOrIdle(On.Player.SkillState.orig_ExitToSkillOrRunOrIdle orig, Player.SkillState self)
-        {
-            if (!CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe"))
-                return orig(self);
-
-            float origCancel = self.cancelThreshold;
-            float origRun =    self.runThreshold;
-            float origExit =   self.exitThreshold;
-
-            self.cancelThreshold *= 0.7f;
-            self.runThreshold    *= 0.7f;
-            self.exitThreshold *= 0.7f;
-
-            bool returnOrig = orig(self);
-
-            self.cancelThreshold = origCancel;
-            self.runThreshold    = origRun;
-            self.exitThreshold = origExit;
-
-            return returnOrig;
-
-        }
-
-        private static void SlideState_cctor(On.Player.SlideState.orig_cctor orig)
-        {
-            orig();
         }
 
         private static void SkillState_SetAnimTimes(On.Player.SkillState.orig_SetAnimTimes orig, Player.SkillState self, float newStart, float newHold, float newExecute, float newCancel, float newRun, float newExit)
@@ -312,7 +337,7 @@ namespace Clothes
 
         private static void AnalOutfits()
         {
-            int analOutfitColor = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal") : 21;
+            int analOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal") : 21;
             LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Analysis",
@@ -332,7 +357,7 @@ namespace Clothes
             };
             LegendAPI.Outfits.Register(TestOutfit);
 
-            int analOutfitColor2 = !ClothesPlugin.TournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal3") : 22;
+            int analOutfitColor2 = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal3") : 22;
             LegendAPI.OutfitInfo TestOutfit2 = new LegendAPI.OutfitInfo()
             {
                 name = "Appraisal",

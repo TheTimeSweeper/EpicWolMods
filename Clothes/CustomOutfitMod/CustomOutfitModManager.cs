@@ -12,7 +12,7 @@ namespace Clothes
 
             if (isEquipping)
             {
-                if (customMod == null)
+                if (customMod == null || customMod.player != player)
                 {
                     customMod = new T().PoorMansConstructor(player, id);
                     CustomMods.Add(customMod);
@@ -33,7 +33,23 @@ namespace Clothes
         }
         public static bool PlayerHasMod(Player player, string ID)
         {
-            return CustomMods.Find(outfitMod => outfitMod.player == player && outfitMod.ID == ID) != null;
+            return PlayerHasMod(player, ID, out _);
+        }
+
+        public static bool PlayerHasMod(Player player, string ID, out bool upgraded)
+        {
+            bool hasMod = CustomMods.Find(outfitMod => outfitMod.player == player && outfitMod.ID == ID) != null;
+
+            if (hasMod)
+            {
+                upgraded = TailorNpc.playerBuffed[player.playerID];
+            }
+            else
+            {
+                upgraded = false;
+            }
+
+            return hasMod;
         }
     }
 }

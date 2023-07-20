@@ -98,10 +98,10 @@ namespace Clothes
             playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
             playerMaterial.SetTexture("_Palette", newPalette);
 
-            playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
+            Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
 
-            playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
-            playerMaterial.SetTexture("_Palette", newPalette);
+            playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+            playerMaterial2.SetTexture("_Palette", newPalette);
 
             //unlock notifier
 

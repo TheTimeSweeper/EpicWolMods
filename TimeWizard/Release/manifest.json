@@ -4,6 +4,6 @@
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
     "description": "Press keys on the keyboard to manipulate the speed of time.",
     "dependencies": [
-        "Modding_Council-BepInExPack_of_Legend-5.4.2100",
+        "Modding_Council-BepInExPack_of_Legend-5.4.2100"
     ]
 }

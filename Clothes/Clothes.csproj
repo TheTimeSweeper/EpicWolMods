@@ -37,17 +37,18 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Clothes.cs" />
-    <Compile Include="CustomOutfitMod.cs" />
-    <Compile Include="CustomOutfitModManager.cs" />
-    <Compile Include="JoeOutfitMod.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="StolenFunnyCurse.cs" />
-    <Compile Include="Stolen.cs" />
-    <Compile Include="ModAccess.cs" />
+    <Compile Include="Content\Clothes.cs" />
+    <Compile Include="CustomOutfitMod\CustomOutfitMod.cs" />
+    <Compile Include="CustomOutfitMod\CustomOutfitModManager.cs" />
+    <Compile Include="CustomOutfitMod\JoeOutfitMod.cs" />
+    <Compile Include="Misc\Log.cs" />
+    <Compile Include="Stolen\StolenFunnyCurse.cs" />
+    <Compile Include="Stolen\Stolen.cs" />
+    <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClothesPlugin.cs" />
-    <Compile Include="StatusBarMod.cs" />
+    <Compile Include="Stolen\StatusBarMod.cs" />
+    <Compile Include="Misc\TestValueManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
