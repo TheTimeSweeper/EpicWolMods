@@ -11,6 +11,7 @@ namespace FreeCursor {
             On.OptionsMenu.SetCursorLock += OptionsMenu_SetCursorLock;
             On.ChaosMouseCursor.Toggle += ChaosMouseCursor_Toggle;
             On.GameUI.TogglePause += GameUI_TogglePause;
+            SetConfined();
         }
 
         private void GameUI_TogglePause(On.GameUI.orig_TogglePause orig)
@@ -35,6 +36,8 @@ namespace FreeCursor {
 
         private static void SetConfined()
         {
+            Cursor.lockState = CursorLockMode.None;
+            return;
             bool paused = GameUI.pauseMenu ? GameUI.pauseMenu.paused : false;
             if (Application.loadedLevelName == "TitleScreen")
                 paused = true;

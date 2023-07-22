@@ -34,7 +34,10 @@ namespace Clothes
 
             On.GameController.Start += GameController_Start_LateInit;
 
-            //gameObject.AddComponent<TestValueManager>();
+            if (TestValueManager.testingEnabled)
+            {
+                gameObject.AddComponent<TestValueManager>();
+            }
 		}
 
         private void GameController_Start_LateInit(On.GameController.orig_Start orig, GameController self)

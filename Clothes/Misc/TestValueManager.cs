@@ -6,14 +6,14 @@ internal class TestValueManager : MonoBehaviour
     //how do doing attributes
     //[debugfloat("valuename", KeyCode.U, KeyCode.J, 5)] on any static value elsewhere
     //would be neat
-
+    
     private float _tim;
     private float _holdTime = 0.4f;
 
     //compiler flags when
-    private bool _testingEnabled => true;
-
-    public static float value1 = 0.1f;
+    public static bool testingEnabled = false;
+    
+    public static float value1 = 0.05f;
     public static float value2 = 0.2f;
 
     public static float value3 = 0.5f;
@@ -24,13 +24,13 @@ internal class TestValueManager : MonoBehaviour
 
     void Update()
     {
-        if (!_testingEnabled)
+        if (!testingEnabled)
             return;
 
         if (!Input.GetKey(KeyCode.LeftAlt))
             return;
 
-        manageTestValue(ref value1, "cancel", KeyCode.Keypad7, KeyCode.Keypad4, 0.01f);
+        manageTestValue(ref value1, "shorten", KeyCode.Keypad7, KeyCode.Keypad4, 0.01f);
         manageTestValue(ref value2, "slkide", KeyCode.Keypad8, KeyCode.Keypad5, 0.01f);
         manageTestValue(ref value3, "upgraded", KeyCode.Keypad9, KeyCode.Keypad6, 1);
 

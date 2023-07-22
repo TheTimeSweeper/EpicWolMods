@@ -161,6 +161,19 @@ namespace Clothes
                 customDesc = _ => { return "Glow Sticks"; },
             };
             LegendAPI.Outfits.Register(DesolateOutfit);
+            LegendAPI.OutfitInfo DesolateOutfit2 = new LegendAPI.OutfitInfo()
+            {
+                name = "Desolate5",
+                outfit = new Outfit(
+                    "Sweep_Desolate5",
+                    desolateOutfitColor,
+                    new List<OutfitModStat> {
+                        new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
+                    }),
+                customDesc = _ => { return "Glow Sticks"; },
+            };
+            LegendAPI.Outfits.Register(DesolateOutfit2);
         }
 
         private static void JoeOutfit()
@@ -176,18 +189,26 @@ namespace Clothes
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.2f, 0f, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, -0.2f, 0f, false),
+                        //#region tesuto
+                        //new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0, -0.9f, 0f, false),
+                        //new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0, -1, 0, false)
+                        //#endregion
                     }),
                 customDesc = (showStats) =>
                 {
-                    string description = "- Reduces attack end time";
-
+                    string description = "- Reduces arcana end time";
+                    
                     if (showStats)
                     {
-
-                        string statString = "+ 15 %";
+                        float modValue = 15;
+                        if(CustomOutfitModManager.PlayerHasMod("Sweep_Joe", out bool upgraded))
+                        {
+                            if (upgraded) modValue *= 1.5f;
+                        }
+                        string statString = $"+ {modValue} %";
                         string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
 
-                        description = $"- Reduces attack end time {formattedStats}";
+                        description = $"- Reduces arcana end time {formattedStats}";
                     }
 
                     return description;
@@ -270,7 +291,7 @@ namespace Clothes
             //};
             //LegendAPI.Outfits.Register(joeOutfit3);
             #endregion test joes
-
+            
             On.Player.SkillState.ExitToSkillOrRunOrIdle += SkillState_ExitToSkillOrRunOrIdle;
             On.Player.SlideState.OnEnter += SlideState_OnEnter;
             //On.Player.SkillState.SetAnimTimes += SkillState_SetAnimTimes;
@@ -282,11 +303,24 @@ namespace Clothes
                 return orig(self);
 
             float reduction = 0.15f;
+
+            //don't fully reduce end duration of basic arcana combos
+                //because they're already kinda redeuced
+            Player.MeleeAttackState basicState = self as Player.MeleeAttackState;
+            if (basicState != null)
+            {
+                if (basicState.HitsRemaining != 0)
+                {
+                    reduction = 0.05f;
+                }
+            }
+
             float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
 
             float origCancel = self.cancelThreshold;
             float origRun =    self.runThreshold;
             float origExit =   self.exitThreshold;
+
 
             self.cancelThreshold *= multiplier;
             self.runThreshold *= multiplier;
@@ -306,7 +340,7 @@ namespace Clothes
         {
             if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
             {
-                float reduction = 0.25f;
+                float reduction = 0.3f;
                 float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
 
                 self.slideStopwatch.SetDelay(0.25f * multiplier);
