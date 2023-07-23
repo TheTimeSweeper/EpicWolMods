@@ -129,7 +129,7 @@ namespace Clothes
                         //Debug.Log("Iterating over " + te.name);
                         newT = new Texture2D(newPalette.width, newPalette.height + 2, TextureFormat.RGBA32, false);
                         newT = FillColorAlpha(newT);
-                        for (int x = 1; x < newT.width; x++)
+                        for (int x = 0; x < newT.width; x++)
                         {
                             for (int y = 0; y < newPalette.height; y++)
                             {
@@ -137,11 +137,11 @@ namespace Clothes
                             }
                         }
                         // Debug.Log("Out of loop for " + te.name);
-                        for (int x = 1; x < newT.width; x++)
+                        for (int x = 0; x < newT.width; x++)
                         {
                             newT.SetPixel(x, h, texture.GetPixel(x, h));
                         }
-                        for (int x = 1; x < newT.width; x++)
+                        for (int x = 0; x < newT.width; x++)
                         {
                             newT.SetPixel(x, h + 1, texture.GetPixel(x, h + 1));
                         }

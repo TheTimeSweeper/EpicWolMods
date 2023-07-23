@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace MyBeloved {
 
+    [BepInDependency("TheTimeSweeper.SkillsButEpic", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("TheTimeSweeper.SillySkills", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("TheTimeSweeper.MyBeloved", "mybeloved", "0.1.0")]
     public class WhyDidYouLeaveMe : BaseUnityPlugin {
 

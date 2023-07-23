@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomPalettes
@@ -9,7 +10,7 @@ namespace CustomPalettes
 
         public static int lastAssignableID = 31;
 
-        public static Texture2D newPalette = null;
+        //public static Texture2D newPalette = null;
 
         public static int AddPalette(string fullPath)
         {
@@ -41,80 +42,74 @@ namespace CustomPalettes
             Material playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwap.mat");
 
             playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count);
-            playerMaterial.SetTexture("_Palette", newPalette);
 
             Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
 
             playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count);
-            playerMaterial2.SetTexture("_Palette", newPalette);
-
-            //unlock notifier
 
             return orig(assetPath);
         }
 
         private static void CreatePaletteTexture()
         {
-            //basePalette = ImgHandler.LoadSpriteFromAssets("Base.png");
-            //Debug.LogWarning("palette");
-            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");//basePalette.texture;// (Texture2D) self.spriteMaterial.GetTexture("_Palette");
-            if (newPalette == null)
+            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");
+
+            printPixel0(baseTexture, "base");
+
+            int height = baseTexture.height;
+            List<Color32> colors = new List<Color32>();
+            colors.AddRange(baseTexture.GetPixels32());
+            foreach (Texture2D paletteTexture in palettes)
             {
-                //Debug.Log("1");
-                newPalette = baseTexture;
-                //Debug.Log("2");
-                Texture2D t = newPalette;
-                Texture2D newT;
-                int h = t.height;
-                //Debug.Log("3");
-                foreach (Texture2D texture in palettes)
-                {
-                    //Debug.Log("Iterating over " + te.name);
-                    newT = new Texture2D(newPalette.width, newPalette.height + 2, TextureFormat.RGBA32, false);
-                    newT = FillColorAlpha(newT);
-                    for (int x = 1; x < newT.width; x++)
-                    {
-                        for (int y = 0; y < newPalette.height; y++)
-                        {
-                            newT.SetPixel(x, y, newPalette.GetPixel(x, y));
-                        }
-                    }
-                    // Debug.Log("Out of loop for " + te.name);
-                    for (int x = 1; x < newT.width; x++)
-                    {
-                        newT.SetPixel(x, h, texture.GetPixel(x, h));
-                    }
-                    for (int x = 1; x < newT.width; x++)
-                    {
-                        newT.SetPixel(x, h + 1, texture.GetPixel(x, h + 1));
-                    }
-
-                    //Debug.Log("Out of loop 2 for " + te.name);
-                    newT.filterMode = FilterMode.Point;
-                    newT.Apply();
-
-                    newPalette = newT;
-                    //Debug.LogWarning("palette added");
-                    h += 2;
-                }
-
+                colors.AddRange(paletteTexture.GetPixels32());
             }
+            baseTexture.Resize(baseTexture.width, baseTexture.height + palettes.Count * 2);
+            baseTexture.SetPixels32(colors.ToArray());
+            baseTexture.Apply();
+
+            printPixel0(baseTexture, "damn kvad");
+
+            //Texture2D originalBaseTexture = new Texture2D(baseTexture.height, baseTexture.width, TextureFormat.RGBA32, false);
+            //Graphics.CopyTexture(baseTexture, originalBaseTexture);
+
+            //printPixel0(originalBaseTexture, "original base");
+
+            //int additionalHeight = palettes.Count * 2;
+            //baseTexture.Resize(baseTexture.width, baseTexture.height + additionalHeight);
+
+            //printPixel0(baseTexture, "base after resize");
+
+            //int paletteHeight = baseTexture.height;
+
+            //for (int i = 0; i < palettes.Count; i++)
+            //{
+            //    Texture2D paletteTexture = palettes[i];
+
+            //    for (int x = 1; x < baseTexture.width; x++)
+            //    {
+            //        baseTexture.SetPixel(x, paletteHeight, paletteTexture.GetPixel(x, 0));
+            //    }
+            //    for (int x = 1; x < baseTexture.width; x++)
+            //    {
+            //        baseTexture.SetPixel(x, paletteHeight + 1, paletteTexture.GetPixel(x, 1));
+            //    }
+
+            //    baseTexture.Apply();
+
+            //    paletteHeight += 2;
+
+            //    printPixel0(baseTexture, i.ToString());
+            //}
         }
 
-        private static Texture2D FillColorAlpha(Texture2D tex2D, Color32? fillColor = null)
+        private static void printPixel0(Texture2D baseTexture, string log)
         {
-            if (fillColor == null)
+            for (int i = 0; i < baseTexture.height; i++)
             {
-                fillColor = UnityEngine.Color.clear;
+                log += $"\n{baseTexture.GetPixel(0, i)}";
             }
-            Color32[] fillPixels = new Color32[tex2D.width * tex2D.height];
-            for (int i = 0; i < fillPixels.Length; i++)
-            {
-                fillPixels[i] = (Color32)fillColor;
-            }
-            tex2D.SetPixels32(fillPixels);
-            return tex2D;
+            
+            Debug.LogWarning(log);
         }
-
     }
 }

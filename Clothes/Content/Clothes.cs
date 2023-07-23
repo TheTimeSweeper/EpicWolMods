@@ -44,7 +44,7 @@ namespace Clothes
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static int TryGetCustomPalette(string fileName)
         {
-            return CustomPalettes.CustomPalettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName));
+            return CustomPalettes.CustomPalettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName);
         }
 
         private static void TutorialOutfits()
@@ -328,7 +328,7 @@ namespace Clothes
         {
             if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
             {
-                float reduction = 0.36f;
+                float reduction = 0.2f;
                 float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
 
                 self.slideStopwatch.SetDelay(0.25f * multiplier);

@@ -6,6 +6,9 @@ using UnityEngine;
 namespace Clothes
 {
     //credit for custom palette code goes to only_going_up_fr0m_here with tournamentedition
+
+    [BepInDependency("Amber.TournamentEdition", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.4.0")]
     public class ClothesPlugin : BaseUnityPlugin {
 
@@ -25,7 +28,6 @@ namespace Clothes
 
             tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
             palettesPluginInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.CustomPalettes");
-
 
             Clothes.Init();
             
