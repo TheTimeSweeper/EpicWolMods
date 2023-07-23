@@ -14,7 +14,7 @@ internal class TestValueManager : MonoBehaviour
     public static bool testingEnabled = false;
     
     public static float value1 = 0.05f;
-    public static float value2 = 0.2f;
+    public static float value2 = 0.3f;
 
     public static float value3 = 0.5f;
     public static float value4 = 0.1f;

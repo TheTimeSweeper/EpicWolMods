@@ -14,7 +14,7 @@ namespace Clothes
     //stolen from tournamentEdition
     public static class ImgHandlerStolen
     {
-        public static Sprite LoadSprite(string path)
+        public static Sprite LoadSpriteFromAssets(string path)
         {
             Texture2D texture2D = LoadTex2D(path, true);
             texture2D.name = path;
@@ -28,7 +28,7 @@ namespace Clothes
 
         public static Texture2D LoadTex2D(string spriteFileName, bool pointFilter = false, Texture2D T2D = null, bool overrideFullPath = false)
         {
-            string path = "Assets/" + spriteFileName + ".png";
+            string path = Path.Combine("Assets", spriteFileName);
             if (overrideFullPath)
             {
                 path = spriteFileName;
@@ -64,14 +64,11 @@ namespace Clothes
         public static Texture2D newPalette = null;
         public static Sprite basePalette;
 
-
         public static int nextAssignableID = 32;
-
-        public static List<string> robeNames = new List<string>();
 
         public static int AssignNewID(string file)
         {
-            robeNames.Add(file);
+            palettes.Add(ImgHandlerStolen.LoadTex2D(file));
 
             nextAssignableID += 1;
             return nextAssignableID - 1;
@@ -79,11 +76,9 @@ namespace Clothes
         
         public static void Init()
         {
-            basePalette = ImgHandlerStolen.LoadSprite("Base");
+            basePalette = ImgHandlerStolen.LoadSpriteFromAssets("Base.png");
 
             On.ChaosBundle.Get += ChaosBundle_Get;
-
-            //HookAllTheThings();
         }
 
         private static GameObject ChaosBundle_Get(On.ChaosBundle.orig_Get orig, string assetPath)
@@ -95,15 +90,15 @@ namespace Clothes
 
             Material playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwap.mat");
 
-            playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+            playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count);
             playerMaterial.SetTexture("_Palette", newPalette);
 
             Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
 
-            playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count /*Clothes.Palettes.Count*/);
+            playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count);
             playerMaterial2.SetTexture("_Palette", newPalette);
 
-            //unlock notifier
+            //check unlock notifier
 
             return orig(assetPath);
         }
@@ -116,7 +111,7 @@ namespace Clothes
         private static void CreatePaletteTexture()
         {
             Debug.LogWarning("palette");
-            Texture2D baseTexture = basePalette.texture;// (Texture2D) self.spriteMaterial.GetTexture("_Palette");
+            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");// basePalette.texture;// (Texture2D) self.spriteMaterial.GetTexture("_Palette");
             if (newPalette == null)
             {
                 //Debug.Log("1");

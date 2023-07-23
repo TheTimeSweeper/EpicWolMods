@@ -1,44 +1,80 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using LegendAPI;
-using System;
-using System.IO;
-using System.Reflection;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using UnityEngine;
 
 namespace Clothes
 {
-    //personal mod for fun and to learn about robes.
-    //credit for some code goes to only_going_up_fr0m_here with tournamentedition
+    //credit for custom palette code goes to only_going_up_fr0m_here with tournamentedition
     [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.4.0")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
 
-        public static bool isDebugPlayerReal => debugPlayer != null;
-        public static Player debugPlayer = null;
         public static bool empowered;
         public static bool tournamentEditionInstalled;
+        public static bool palettesPluginInstalled;
+        public static bool cfg_anal;
+        public static bool cfg_funny;
 
         void Awake() {
             PluginInfo = Info;
             Log.Init(Logger);
 
-            tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
+            DoConfig();
 
-			Clothes.Init();
+            tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
+            palettesPluginInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.CustomPalettes");
+
+
+            Clothes.Init();
             
-            if (!tournamentEditionInstalled) { 
+            if (!tournamentEditionInstalled && !palettesPluginInstalled) { 
 			    ContentLoaderStolen.Init();
             }
-
-            On.GameController.Start += GameController_Start_LateInit;
 
             if (TestValueManager.testingEnabled)
             {
                 gameObject.AddComponent<TestValueManager>();
             }
-		}
+
+            On.GameController.Start += GameController_Start_LateInit;
+
+            IL.TailorNpc.UpgradePlayerOutfit += TailorNpc_UpgradePlayerOutfit;
+        }
+
+        private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)
+        {
+            //changing this.currentMod.modType == OutfitModStat.OutfitModType.Health 
+            //to this.currentMod.modType != OutfitModStat.OutfitModType.Cooldown
+            //for the upgrade outfit code to exclude negative modifiers
+            ILCursor c = new ILCursor(il);
+            c.GotoNext(MoveType.After,
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<TailorNpc>("currentMod"),
+                x => x.MatchLdfld<OutfitModStat>("modType"),
+                x => x.MatchLdcI4(1)
+                );
+            c.Index--;
+            c.Remove();
+            c.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
+            c.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
+        }
+
+        private void DoConfig()
+        {
+            cfg_anal =
+                Config.Bind("you are cool",
+                            "Analysis",
+                            false,
+                            "Enable debug robes.").Value;
+
+            cfg_funny =
+                Config.Bind("you are cool",
+                            "Funny names",
+                            false,
+                            "Just for me.").Value;
+        }
 
         private void GameController_Start_LateInit(On.GameController.orig_Start orig, GameController self)
         {
@@ -53,12 +89,20 @@ namespace Clothes
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                if (debugPlayer != null)
+                for (int i = 0; i < GameController.activePlayers.Length; i++)
                 {
-                    empowered = !empowered;
-                    foreach (Player.SkillState skillState in debugPlayer.skillsDict.Values)
+                    Player player = GameController.activePlayers[i];
+                    if (CustomOutfitModManager.PlayerHasMod(player, "Sweep_Anal"))
                     {
-                        skillState.SetEmpowered(empowered, EmpowerStatMods.DefaultEmpowerMod);
+                        bool? empowered = null;
+                        foreach (Player.SkillState skillState in player.skillsDict.Values)
+                        {
+                            if(empowered == null)
+                            {
+                                empowered = skillState.IsEmpowered;
+                            }
+                            skillState.SetEmpowered(!empowered.Value, EmpowerStatMods.DefaultEmpowerMod);
+                        }
                     }
                 }
             }

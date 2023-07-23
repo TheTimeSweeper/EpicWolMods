@@ -93,9 +93,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomPalettes.cs" />
+    <Compile Include="ImgHandler.cs" />
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WolModTemplate.cs" />
+    <Compile Include="CustomPalettesPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Release\plugins\" />
@@ -107,6 +109,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
+if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\..\_lib"
 if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\wolBepin\plugins\TheTimesweeper-$(ProjectName)"
 </PostBuildEvent>
   </PropertyGroup>

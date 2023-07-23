@@ -38,16 +38,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Content\Clothes.cs" />
-    <Compile Include="CustomOutfitMod\CustomOutfitMod.cs" />
-    <Compile Include="CustomOutfitMod\CustomOutfitModManager.cs" />
-    <Compile Include="CustomOutfitMod\JoeOutfitMod.cs" />
+    <Compile Include="Content\CustomOutfitMod\CustomOutfitMod.cs" />
+    <Compile Include="Content\CustomOutfitMod\CustomOutfitModManager.cs" />
+    <Compile Include="Content\CustomOutfitMod\JoeOutfitMod.cs" />
     <Compile Include="Misc\Log.cs" />
     <Compile Include="Stolen\StolenFunnyCurse.cs" />
-    <Compile Include="Stolen\Stolen.cs" />
+    <Compile Include="Stolen\StolenAndMangled.cs" />
     <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClothesPlugin.cs" />
-    <Compile Include="Stolen\StatusBarMod.cs" />
     <Compile Include="Misc\TestValueManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +73,9 @@
     <Reference Include="BepInEx.Preloader, Version=5.4.9.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_lib\BepInEx.Preloader.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomPalettes">
+      <HintPath>..\_lib\CustomPalettes.dll</HintPath>
     </Reference>
     <Reference Include="HarmonyXInterop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

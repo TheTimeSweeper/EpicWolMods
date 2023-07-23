@@ -1,7 +1,7 @@
 ﻿using LegendAPI;
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Clothes
 {
@@ -10,9 +10,9 @@ namespace Clothes
         {
             return $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
         }
-		//public static Dictionary<CustomColor, Texture2D> Palettes = new Dictionary<CustomColor, Texture2D>();
+        //public static Dictionary<CustomColor, Texture2D> Palettes = new Dictionary<CustomColor, Texture2D>();
 
-		public static void Init()
+        public static void Init()
         {
             TutorialOutfits();
 
@@ -22,42 +22,33 @@ namespace Clothes
 
             AnalOutfits();
 
-            if (!ClothesPlugin.tournamentEditionInstalled)
-            {
-                foreach (string robeName in ContentLoaderStolen.robeNames)
-                {
-                    ContentLoaderStolen.palettes.Add(ImgHandlerStolen.LoadTex2D(robeName));
-                }
-            }
+            PandemoniumCloak();
 
-            IL.TailorNpc.UpgradePlayerOutfit += TailorNpc_UpgradePlayerOutfit;
         }
 
-        private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)
+        private static int GetCustomColor(string fileName, int fallback)
         {
-            ILCursor c = new ILCursor(il);
-            c.GotoNext(MoveType.After,
-                x => x.MatchLdarg(0),
-                x => x.MatchLdfld<TailorNpc>("currentMod"),
-                x => x.MatchLdfld<OutfitModStat>("modType"),
-                x => x.MatchLdcI4(1)
-                );
-            c.Index --;
-            Log.Message(c);
-            Log.Message("Remove");
-            c.Remove();
-            Log.Message(c);
-            Log.Message("Emit");
-            c.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
-            Log.Message(c);
-            Log.Message("next opcode beq");
-            c.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
-            Log.Message(c);
+            if (ClothesPlugin.palettesPluginInstalled)
+            {
+                return TryGetCustomPalette(fileName);
+            }
+
+            if (!ClothesPlugin.tournamentEditionInstalled)
+            {
+                return ContentLoaderStolen.AssignNewID(fileName);
+            }
+
+            return fallback;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static int TryGetCustomPalette(string fileName)
+        {
+            return CustomPalettes.CustomPalettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName));
         }
 
         private static void TutorialOutfits()
         {
-
             #region testing tutorial
             //OutfitInfo outfit = new OutfitInfo();
             //outfit.name = "Cool Guy";
@@ -147,41 +138,38 @@ namespace Clothes
 
         private static void SimpleOutfits()
         {
-            int desolateOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Desolate") : 3;
+            int desolateOutfitColor = GetCustomColor("Desolate.png", 3);
+
+            List<OutfitModStat> modStats = new List<OutfitModStat>
+            {
+                new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
+                new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.09f, 0f, false)
+            };
+
+            if (ClothesPlugin.cfg_funny)
+            {
+                modStats.Insert(0, new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false));
+            }
+
             LegendAPI.OutfitInfo DesolateOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Desolate",
                 outfit = new Outfit(
                     "Sweep_Desolate",
                     desolateOutfitColor,
-                    new List<OutfitModStat> {
-                        new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
-                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
-                    }),
+                    modStats),
                 customDesc = _ => { return "Glow Sticks"; },
             };
             LegendAPI.Outfits.Register(DesolateOutfit);
-            LegendAPI.OutfitInfo DesolateOutfit2 = new LegendAPI.OutfitInfo()
-            {
-                name = "Desolate5",
-                outfit = new Outfit(
-                    "Sweep_Desolate5",
-                    desolateOutfitColor,
-                    new List<OutfitModStat> {
-                        new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
-                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
-                    }),
-                customDesc = _ => { return "Glow Sticks"; },
-            };
-            LegendAPI.Outfits.Register(DesolateOutfit2);
         }
 
+        #region joe
         private static void JoeOutfit()
         {
-            int joeOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Joe") : 4;
+            int joeOutfitColor = GetCustomColor("Joe.png", 4);
             LegendAPI.OutfitInfo joeOutfit = new LegendAPI.OutfitInfo()
             {
-                name = "Joe",
+                name = ClothesPlugin.cfg_funny ? "Joe" : "Impatience",
                 outfit = new Outfit(
                     "Sweep_Joe",
                     joeOutfitColor,
@@ -340,10 +328,14 @@ namespace Clothes
         {
             if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
             {
-                float reduction = 0.3f;
+                float reduction = 0.36f;
                 float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
 
                 self.slideStopwatch.SetDelay(0.25f * multiplier);
+            }
+            else if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Anal"))
+            {
+                self.slideStopwatch.SetDelay(0);
             }
             else
             {
@@ -368,10 +360,12 @@ namespace Clothes
 
             orig(self, newStart, newHold, newExecute, newCancel, newRun, newExit);
         }
+        #endregion joe
 
+        #region anal
         private static void AnalOutfits()
         {
-            int analOutfitColor = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal") : 21;
+            int analOutfitColor = GetCustomColor("Anal.png", 21);
             LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Analysis",
@@ -386,12 +380,12 @@ namespace Clothes
                 customDesc = _ => { return "- Press G to Empower Arcana"; },
                 customMod = (player, onoroff, idontevenknow) =>
                 {
-                    ClothesPlugin.debugPlayer = onoroff ? player : null;
+                    CustomOutfitModManager.EvaluateMod("Sweep_Anal", player, onoroff);
                 }
             };
             LegendAPI.Outfits.Register(TestOutfit);
 
-            int analOutfitColor2 = !ClothesPlugin.tournamentEditionInstalled ? ContentLoaderStolen.AssignNewID("Anal3") : 22;
+            int analOutfitColor2 = GetCustomColor("Anal3.png", 22);
             LegendAPI.OutfitInfo TestOutfit2 = new LegendAPI.OutfitInfo()
             {
                 name = "Appraisal",
@@ -405,10 +399,16 @@ namespace Clothes
                 customDesc = _ => { return "- Press G to Empower Arcana"; },
                 customMod = (player, onoroff, idontevenknow) =>
                 {
-                    ClothesPlugin.debugPlayer = onoroff ? player : null;
+                    CustomOutfitModManager.EvaluateMod("Sweep_Anal", player, onoroff);
                 }
             };
             LegendAPI.Outfits.Register(TestOutfit2);
+        }
+        #endregion anal
+
+        private static void PandemoniumCloak()
+        {
+            //what the fuck
         }
     }
 }

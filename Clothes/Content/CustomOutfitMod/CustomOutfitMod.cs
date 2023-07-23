@@ -1,6 +1,6 @@
 ﻿namespace Clothes
 {
-    public abstract class CustomOutfitMod
+    public class CustomOutfitMod
     {
         public Player player;
         public string ID;
@@ -11,6 +11,6 @@
             return this;
         }
 
-        public abstract void OnEquip(Player player, bool equipStatus);
+        public virtual void OnEquip(Player player, bool equipStatus) { }
     }
 }

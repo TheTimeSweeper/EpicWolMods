@@ -2,6 +2,18 @@
 {
     public static class StolenFunnyCurse
     {
+        private static bool isDebugPlayerReal
+        {
+            get
+            {
+                for (int i = 0; i < GameController.activePlayers.Length; i++)
+                {
+                    if (CustomOutfitModManager.PlayerHasMod(GameController.activePlayers[i], "Sweep_Anal"))
+                        return true;
+                }
+                return false;
+            }
+        }
         public static void Init()
         {
             On.RelicChestUI.LoadPlayerRelics += RelicChestUI_LoadPlayerRelics_MimiHook;
@@ -36,7 +48,7 @@
         private static void RelicChestUI_LoadPlayerRelics_MimiHook(On.RelicChestUI.orig_LoadPlayerRelics orig, global::RelicChestUI self)
         {
             orig(self);
-            if (!ClothesPlugin.isDebugPlayerReal)
+            if (!isDebugPlayerReal)
                 return;
             foreach (string text in global::LootManager.cursedItemIDList)
             {
@@ -54,13 +66,13 @@
 
         private static bool Item_IsUnlocked(On.Item.orig_IsUnlocked orig, string givenID, bool setUnlocked)
         {
-            return orig(givenID, setUnlocked) || (LootManager.completeItemDict[givenID].isCursed && ClothesPlugin.isDebugPlayerReal);
+            return orig(givenID, setUnlocked) || (LootManager.completeItemDict[givenID].isCursed && isDebugPlayerReal);
         }
 
         private static void Player_GiveDesignatedItem(On.Player.orig_GiveDesignatedItem orig, Player self, string givenID)
         {
             bool givenIDIsCursed = givenID != null && givenID != string.Empty && global::LootManager.completeItemDict[givenID].isCursed;
-            if (givenIDIsCursed && ClothesPlugin.isDebugPlayerReal)
+            if (givenIDIsCursed && isDebugPlayerReal)
             {
                 self.inventory.AddItem(givenID, false, false);
             }
@@ -75,7 +87,7 @@
             //bool flag2 = !b3 && global::LootManager.completeItemDict[s].isCursed && self.parentEntity is global::Player;
             //if (flag2)
             {
-                forceOverride |= ClothesPlugin.isDebugPlayerReal;
+                forceOverride |= isDebugPlayerReal;
             }
             return orig(self, givenItemID, forceOverride, showNotice);
         }
