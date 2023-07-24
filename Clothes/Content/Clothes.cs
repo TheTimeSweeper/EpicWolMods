@@ -23,7 +23,6 @@ namespace Clothes
             AnalOutfits();
 
             PandemoniumCloak();
-
         }
 
         private static int GetCustomColor(string fileName, int fallback)
@@ -35,7 +34,7 @@ namespace Clothes
 
             if (!ClothesPlugin.tournamentEditionInstalled)
             {
-                return ContentLoaderStolen.AssignNewID(fileName);
+                return Palettes.AssignNewID(fileName);
             }
 
             return fallback;
@@ -44,12 +43,12 @@ namespace Clothes
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static int TryGetCustomPalette(string fileName)
         {
-            return CustomPalettes.CustomPalettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName);
+            return CustomPalettes.Palettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName);
         }
 
+        #region testing tutorial
         private static void TutorialOutfits()
         {
-            #region testing tutorial
             //OutfitInfo outfit = new OutfitInfo();
             //outfit.name = "Cool Guy";
             //outfit.outfit = new Outfit(
@@ -131,15 +130,11 @@ namespace Clothes
             };
 
             //LegendAPI.Outfits.Register(coolerOutfit);
-
-
-            #endregion testing tutorial
         }
+        #endregion testing tutorial
 
         private static void SimpleOutfits()
         {
-            int desolateOutfitColor = GetCustomColor("Desolate.png", 3);
-
             List<OutfitModStat> modStats = new List<OutfitModStat>
             {
                 new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
@@ -156,11 +151,29 @@ namespace Clothes
                 name = "Desolate",
                 outfit = new Outfit(
                     "Sweep_Desolate",
-                    desolateOutfitColor,
+                    GetCustomColor("Desolate.png", 3),
                     modStats),
                 customDesc = _ => { return "Glow Sticks"; },
             };
             LegendAPI.Outfits.Register(DesolateOutfit);
+
+            for (int i = 10; i < 20; i++)
+            {
+                
+            LegendAPI.OutfitInfo BoosOutfit = new LegendAPI.OutfitInfo()
+            {
+                name = "Boos",
+                outfit = new Outfit(
+                    $"Sweep_Boos{i}",
+                    GetCustomColor("Boos1.png", 19),
+                    new List<OutfitModStat>
+                    {
+                        new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.09f, 0f, false)
+                    }),
+            };
+            LegendAPI.Outfits.Register(BoosOutfit);
+            }
         }
 
         #region joe
@@ -365,13 +378,12 @@ namespace Clothes
         #region anal
         private static void AnalOutfits()
         {
-            int analOutfitColor = GetCustomColor("Anal.png", 21);
             LegendAPI.OutfitInfo TestOutfit = new LegendAPI.OutfitInfo()
             {
                 name = "Analysis",
                 outfit = new Outfit(
                     "Sweep_Analysis",
-                    analOutfitColor,
+                    GetCustomColor("Anal.png", 21),
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
@@ -385,13 +397,12 @@ namespace Clothes
             };
             LegendAPI.Outfits.Register(TestOutfit);
 
-            int analOutfitColor2 = GetCustomColor("Anal3.png", 22);
             LegendAPI.OutfitInfo TestOutfit2 = new LegendAPI.OutfitInfo()
             {
                 name = "Appraisal",
                 outfit = new Outfit(
                     "Sweep_Analysis2",
-                    analOutfitColor2,
+                    GetCustomColor("Anal3.png", 22),
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),

@@ -93,7 +93,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomPalettes.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Palettes.cs" />
     <Compile Include="ImgHandler.cs" />
     <Compile Include="ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

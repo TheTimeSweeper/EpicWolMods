@@ -32,7 +32,7 @@ namespace Clothes
             Clothes.Init();
             
             if (!tournamentEditionInstalled && !palettesPluginInstalled) { 
-			    ContentLoaderStolen.Init();
+			    Palettes.Init();
             }
 
             if (TestValueManager.testingEnabled)

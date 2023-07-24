@@ -42,8 +42,9 @@
     <Compile Include="Content\CustomOutfitMod\CustomOutfitModManager.cs" />
     <Compile Include="Content\CustomOutfitMod\JoeOutfitMod.cs" />
     <Compile Include="Misc\Log.cs" />
+    <Compile Include="Stolen\ImgHandlerStolen.cs" />
     <Compile Include="Stolen\StolenFunnyCurse.cs" />
-    <Compile Include="Stolen\StolenAndMangled.cs" />
+    <Compile Include="Palettes.cs" />
     <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClothesPlugin.cs" />

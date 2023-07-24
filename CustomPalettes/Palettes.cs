@@ -4,18 +4,17 @@ using UnityEngine;
 
 namespace CustomPalettes
 {
-    public class CustomPalettes
+    public class Palettes
     {
         public static List<Texture2D> palettes = new List<Texture2D>();
 
         public static int lastAssignableID = 31;
 
-        //public static Texture2D newPalette = null;
-
         public static int AddPalette(string fullPath)
         {
             return AddPalette(ImgHandler.LoadPNG(fullPath));
         }
+
         public static int AddPalette(string assemblyDir, string folderName, string fileName)
         {
             return AddPalette(ImgHandler.LoadPNG(assemblyDir, folderName, fileName));
@@ -28,35 +27,66 @@ namespace CustomPalettes
             return lastAssignableID;
         }
 
+
+        internal static void Start()
+        {
+            Log.Warning("start");
+            CreateAndApplyPalettes();
+        }
         internal static void Init()
         {
+            Log.Warning("init");
             On.ChaosBundle.Get += ChaosBundle_Get;
+            On.ChaosBundle.LoadBundle += ChaosBundle_LoadBundle;
+            On.UnlockNotifier.Awake += UnlockNotifier_Awake;
+            On.GameController.InitializeScene += GameController_InitializeScene;
+        }
+
+        private static void GameController_InitializeScene(On.GameController.orig_InitializeScene orig, GameController self)
+        {
+            orig(self);
+            Log.Warning("GameController_InitializeScene");
+        }
+
+        private static void UnlockNotifier_Awake(On.UnlockNotifier.orig_Awake orig, UnlockNotifier self)
+        {
+            orig(self);
+            Log.Warning("helo wolrd");
+        }
+
+        private static void ChaosBundle_LoadBundle(On.ChaosBundle.orig_LoadBundle orig)
+        {
+            Log.Warning("lodabundle");
+            On.ChaosBundle.LoadBundle -= ChaosBundle_LoadBundle;
+            orig();
+            CreateAndApplyPalettes();
         }
 
         private static GameObject ChaosBundle_Get(On.ChaosBundle.orig_Get orig, string assetPath)
         {
+            Log.Warning("bundle get");
             On.ChaosBundle.Get -= ChaosBundle_Get;
 
+            CreateAndApplyPalettes();
+
+            return orig(assetPath);
+        }
+
+        private static void CreateAndApplyPalettes()
+        {
             CreatePaletteTexture();
 
             Material playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwap.mat");
-
             playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count);
 
             Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
-
             playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count);
-
-            return orig(assetPath);
         }
 
         private static void CreatePaletteTexture()
         {
             Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");
 
-            printPixel0(baseTexture, "base");
-
-            int height = baseTexture.height;
             List<Color32> colors = new List<Color32>();
             colors.AddRange(baseTexture.GetPixels32());
             foreach (Texture2D paletteTexture in palettes)
@@ -66,50 +96,6 @@ namespace CustomPalettes
             baseTexture.Resize(baseTexture.width, baseTexture.height + palettes.Count * 2);
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();
-
-            printPixel0(baseTexture, "damn kvad");
-
-            //Texture2D originalBaseTexture = new Texture2D(baseTexture.height, baseTexture.width, TextureFormat.RGBA32, false);
-            //Graphics.CopyTexture(baseTexture, originalBaseTexture);
-
-            //printPixel0(originalBaseTexture, "original base");
-
-            //int additionalHeight = palettes.Count * 2;
-            //baseTexture.Resize(baseTexture.width, baseTexture.height + additionalHeight);
-
-            //printPixel0(baseTexture, "base after resize");
-
-            //int paletteHeight = baseTexture.height;
-
-            //for (int i = 0; i < palettes.Count; i++)
-            //{
-            //    Texture2D paletteTexture = palettes[i];
-
-            //    for (int x = 1; x < baseTexture.width; x++)
-            //    {
-            //        baseTexture.SetPixel(x, paletteHeight, paletteTexture.GetPixel(x, 0));
-            //    }
-            //    for (int x = 1; x < baseTexture.width; x++)
-            //    {
-            //        baseTexture.SetPixel(x, paletteHeight + 1, paletteTexture.GetPixel(x, 1));
-            //    }
-
-            //    baseTexture.Apply();
-
-            //    paletteHeight += 2;
-
-            //    printPixel0(baseTexture, i.ToString());
-            //}
-        }
-
-        private static void printPixel0(Texture2D baseTexture, string log)
-        {
-            for (int i = 0; i < baseTexture.height; i++)
-            {
-                log += $"\n{baseTexture.GetPixel(0, i)}";
-            }
-            
-            Debug.LogWarning(log);
         }
     }
 }
