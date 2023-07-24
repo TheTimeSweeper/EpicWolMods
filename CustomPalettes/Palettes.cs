@@ -27,44 +27,13 @@ namespace CustomPalettes
             return lastAssignableID;
         }
 
-
-        internal static void Start()
-        {
-            Log.Warning("start");
-            CreateAndApplyPalettes();
-        }
         internal static void Init()
         {
-            Log.Warning("init");
             On.ChaosBundle.Get += ChaosBundle_Get;
-            On.ChaosBundle.LoadBundle += ChaosBundle_LoadBundle;
-            On.UnlockNotifier.Awake += UnlockNotifier_Awake;
-            On.GameController.InitializeScene += GameController_InitializeScene;
-        }
-
-        private static void GameController_InitializeScene(On.GameController.orig_InitializeScene orig, GameController self)
-        {
-            orig(self);
-            Log.Warning("GameController_InitializeScene");
-        }
-
-        private static void UnlockNotifier_Awake(On.UnlockNotifier.orig_Awake orig, UnlockNotifier self)
-        {
-            orig(self);
-            Log.Warning("helo wolrd");
-        }
-
-        private static void ChaosBundle_LoadBundle(On.ChaosBundle.orig_LoadBundle orig)
-        {
-            Log.Warning("lodabundle");
-            On.ChaosBundle.LoadBundle -= ChaosBundle_LoadBundle;
-            orig();
-            CreateAndApplyPalettes();
         }
 
         private static GameObject ChaosBundle_Get(On.ChaosBundle.orig_Get orig, string assetPath)
         {
-            Log.Warning("bundle get");
             On.ChaosBundle.Get -= ChaosBundle_Get;
 
             CreateAndApplyPalettes();
