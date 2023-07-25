@@ -6,6 +6,7 @@ using BepInEx.Configuration;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 namespace Clothes
 {
@@ -56,6 +57,8 @@ namespace Clothes
             baseTexture.Resize(baseTexture.width, baseTexture.height + palettes.Count * 2);
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();
+
+            File.WriteAllBytes("FunnyPalette.png", baseTexture.EncodeToPNG());
         }
     }
 }

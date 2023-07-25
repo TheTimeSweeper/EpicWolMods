@@ -9,7 +9,7 @@ namespace Clothes
 
     [BepInDependency("Amber.TournamentEdition", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.4.0")]
+    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.5.0")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
@@ -23,6 +23,8 @@ namespace Clothes
         void Awake() {
             PluginInfo = Info;
             Log.Init(Logger);
+
+            Assets.Init();
 
             DoConfig();
 

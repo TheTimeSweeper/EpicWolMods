@@ -12,7 +12,7 @@ namespace CustomPalettes
         }
         void Start()
         {
-            Palettes.Start();
+            //Palettes.Start();
         }
     }
 }

@@ -37,11 +37,14 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Misc\Assets.cs" />
     <Compile Include="Content\Clothes.cs" />
     <Compile Include="Content\CustomOutfitMod\CustomOutfitMod.cs" />
     <Compile Include="Content\CustomOutfitMod\CustomOutfitModManager.cs" />
     <Compile Include="Content\CustomOutfitMod\JoeOutfitMod.cs" />
     <Compile Include="Misc\Log.cs" />
+    <Compile Include="Misc\StripContainer.cs" />
+    <Compile Include="Misc\Tesuto.cs" />
     <Compile Include="Stolen\ImgHandlerStolen.cs" />
     <Compile Include="Stolen\StolenFunnyCurse.cs" />
     <Compile Include="Palettes.cs" />
@@ -127,9 +130,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
+    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(ProjectDir)\..\_MoreEpicWolProject\AssetBundles\clothes" "$(ProjectDir)\Release\plugins\Assets"
+
+if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
 if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins\TheTimesweeper-$(ProjectName)"
-if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\EnforcerBuild\wolPlugins\TheTimesweeper-$(ProjectName)"
-</PostBuildEvent>
+if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\EnforcerBuild\wolPlugins\TheTimesweeper-$(ProjectName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

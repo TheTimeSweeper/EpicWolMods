@@ -135,7 +135,7 @@ namespace Clothes
 
         private static void SimpleOutfits()
         {
-            List<OutfitModStat> modStats = new List<OutfitModStat>
+            List<OutfitModStat> desoModStats = new List<OutfitModStat>
             {
                 new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
                 new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.09f, 0f, false)
@@ -143,7 +143,7 @@ namespace Clothes
 
             if (ClothesPlugin.cfg_funny)
             {
-                modStats.Insert(0, new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false));
+                desoModStats.Insert(0, new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false));
             }
 
             LegendAPI.OutfitInfo DesolateOutfit = new LegendAPI.OutfitInfo()
@@ -152,28 +152,38 @@ namespace Clothes
                 outfit = new Outfit(
                     "Sweep_Desolate",
                     GetCustomColor("Desolate.png", 3),
-                    modStats),
+                    desoModStats),
                 customDesc = _ => { return "Glow Sticks"; },
             };
             LegendAPI.Outfits.Register(DesolateOutfit);
-
-            for (int i = 10; i < 20; i++)
-            {
-                
+ 
             LegendAPI.OutfitInfo BoosOutfit = new LegendAPI.OutfitInfo()
             {
-                name = "Boos",
+                name = ClothesPlugin.cfg_funny? "Boos": "Credence",
                 outfit = new Outfit(
-                    $"Sweep_Boos{i}",
+                    $"Sweep_Boos",
                     GetCustomColor("Boos1.png", 19),
                     new List<OutfitModStat>
                     {
-                        new OutfitModStat(OutfitModStat.OutfitModType.Gold, 0f, 0.069f, 0f, false),
-                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.09f, 0f, false)
+                        new OutfitModStat(OutfitModStat.OutfitModType.Evade, 0f, 0.1f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.ODRate, 0f, 0.1f, 0f, false)
                     }),
             };
             LegendAPI.Outfits.Register(BoosOutfit);
-            }
+            
+            LegendAPI.OutfitInfo AquaOutfit = new LegendAPI.OutfitInfo()
+            {
+                name = "Aqua",
+                outfit = new Outfit(
+                    $"Sweep_Aqua",
+                    GetCustomColor("Aqua.png", 5),
+                    new List<OutfitModStat>
+                    {
+                        new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.HealCrit, 0.1f, 0.0f, 0f, false)
+                    }),
+            };
+            LegendAPI.Outfits.Register(AquaOutfit);
         }
 
         #region joe
@@ -374,7 +384,7 @@ namespace Clothes
             orig(self, newStart, newHold, newExecute, newCancel, newRun, newExit);
         }
         #endregion joe
-
+        
         #region anal
         private static void AnalOutfits()
         {
@@ -429,7 +439,7 @@ namespace Clothes
 				Outfit.basePatience,
 				new Outfit("Vigor", 20, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)1, 0f, 0.1f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, 0.1f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
 				}, false, false),
 				new Outfit("Grit", 17, new List<OutfitModStat>
@@ -449,17 +459,17 @@ namespace Clothes
 				}, false, false),
 				new Outfit("Pace", 3, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)2, 0f, 0.15f, 0f, false),
-					new OutfitModStat((OutfitModStat.OutfitModType)3, 0f, -0.3f, 0f, false)
+					new OutfitModStat(OutfitModStat.OutfitModType.Speed, 0f, 0.15f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Run, 0f, -0.3f, 0f, false)
 				}, false, false),
 				new Outfit("Tempo", 5, new List<OutfitModStat>
 				{
 					new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.15f, 0f, false),
-					new OutfitModStat((OutfitModStat.OutfitModType)2, 0f, 0.1f, 0f, false)
+					new OutfitModStat(OutfitModStat.OutfitModType.Speed, 0f, 0.1f, 0f, false)
 				}, false, false),
 				new Outfit("Switch", 4, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)4, 0.1f, 0f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Evade, 0.1f, 0f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0.05f, 0f, 0f, false)
 				}, false, false),
 				new Outfit("Awe", 6, new List<OutfitModStat>
@@ -479,27 +489,50 @@ namespace Clothes
 				}, false, false),
 				new Outfit(Outfit.lvlStr, 7, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)1, 0f, -0.5f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.5f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, -0.5f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.ODRate, 0f, -0.5f, 0f, false)
 				}, false, true),
 				new Outfit("Venture", 2, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)1, 0f, -0.4f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.4f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, 0.1f, 0f, false),
-					new OutfitModStat((OutfitModStat.OutfitModType)2, 0f, 0.1f, 0f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Speed, 0f, 0.1f, 0f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false)
 				}, false, false),
 				new Outfit("Fall", 9, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)1, 0f, 0f, 100f, false),
-					new OutfitModStat((OutfitModStat.OutfitModType)11, 0f, 0f, 0f, true),
+					new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, 0f, 100f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Fall, 0f, 0f, 0f, true),
 					new OutfitModStat(OutfitModStat.OutfitModType.AllowUpgrade, 0f, 0f, 0f, false)
 				}, false, false),
 				new Outfit("Pride", 15, new List<OutfitModStat>
 				{
-					new OutfitModStat((OutfitModStat.OutfitModType)1, 0f, 0f, 1f, false),
-					new OutfitModStat((OutfitModStat.OutfitModType)10, 0f, 0f, -1f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, 0f, 1f, false),
+					new OutfitModStat(OutfitModStat.OutfitModType.Pride, 0f, 0f, -1f, false),
 					new OutfitModStat(OutfitModStat.OutfitModType.AllowUpgrade, 0f, 0f, 0f, false)
 				}, false, false)
+
+	public enum OutfitModType
+	{
+		None,
+		Health,
+		Speed,
+		Run,
+		Evade,
+		Armor,
+		CritChance,
+		CritDamage,
+		Damage,
+		Cooldown,
+		Pride,
+		Fall,
+		ODRate,
+		ODDamage,
+		HealAmount,
+		HealCrit,
+		Gold,
+		Platinum,
+		AllowUpgrade
+	}
  */
