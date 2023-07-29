@@ -16,9 +16,10 @@ namespace Clothes
 
         public static int nextAssignableID = 32;
 
-        public static int AssignNewID(string file)
+        public static int AssignNewID(string file) => AssignNewID(ImgHandlerStolen.LoadTex2D(file));
+        public static int AssignNewID(Texture2D texture)
         {
-            palettes.Add(ImgHandlerStolen.LoadTex2D(file));
+            palettes.Add(texture);
 
             nextAssignableID += 1;
             return nextAssignableID - 1;
@@ -34,7 +35,7 @@ namespace Clothes
             On.ChaosBundle.Get -= ChaosBundle_Get;
 
             CreatePaletteTexture();
-
+            
             Material playerMaterial = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwap.mat");
             playerMaterial.SetFloat("_PaletteCount", 32 + palettes.Count);
 
@@ -58,7 +59,10 @@ namespace Clothes
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();
 
-            File.WriteAllBytes("FunnyPalette.png", baseTexture.EncodeToPNG());
+            if (Configger.anal)
+            {
+                File.WriteAllBytes("FunnyPalette.png", baseTexture.EncodeToPNG());
+            }
         }
     }
 }

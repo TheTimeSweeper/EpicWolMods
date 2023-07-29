@@ -1,7 +1,10 @@
 ﻿using LegendAPI;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Linq;
+using UnityEngine;
 
 namespace Clothes
 {
@@ -20,12 +23,29 @@ namespace Clothes
 
             JoeOutfit();
 
-            AnalOutfits();
+            if (Configger.anal)
+            {
+                AnalOutfits();
+            }
 
-            PandemoniumCloak();
+            PandemoniumCloak.Init();
         }
 
-        private static int GetCustomColor(string fileName, int fallback)
+        public static int GetCustomColor(Texture2D texture, int fallback)
+        {
+            if (ClothesPlugin.palettesPluginInstalled)
+            {
+                return TryGetCustomPalette(texture);
+            }
+
+            if (!ClothesPlugin.tournamentEditionInstalled)
+            {
+                return Palettes.AssignNewID(texture);
+            }
+
+            return fallback;
+        }
+        public static int GetCustomColor(string fileName, int fallback)
         {
             if (ClothesPlugin.palettesPluginInstalled)
             {
@@ -44,6 +64,11 @@ namespace Clothes
         private static int TryGetCustomPalette(string fileName)
         {
             return CustomPalettes.Palettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName);
+        }
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static int TryGetCustomPalette(Texture2D texture)
+        {
+            return CustomPalettes.Palettes.AddPalette(texture);
         }
 
         #region testing tutorial
@@ -141,7 +166,7 @@ namespace Clothes
                 new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.09f, 0f, false)
             };
 
-            if (ClothesPlugin.cfg_funny)
+            if (Configger.funny)
             {
                 desoModStats.Insert(0, new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false));
             }
@@ -159,7 +184,7 @@ namespace Clothes
  
             LegendAPI.OutfitInfo BoosOutfit = new LegendAPI.OutfitInfo()
             {
-                name = ClothesPlugin.cfg_funny? "Boos": "Credence",
+                name = Configger.funny? "Boos": "Credence",
                 outfit = new Outfit(
                     $"Sweep_Boos",
                     GetCustomColor("Boos1.png", 19),
@@ -192,7 +217,7 @@ namespace Clothes
             int joeOutfitColor = GetCustomColor("Joe.png", 4);
             LegendAPI.OutfitInfo joeOutfit = new LegendAPI.OutfitInfo()
             {
-                name = ClothesPlugin.cfg_funny ? "Joe" : "Impatience",
+                name = Configger.funny ? "Joe" : "Impatience",
                 outfit = new Outfit(
                     "Sweep_Joe",
                     joeOutfitColor,
@@ -372,7 +397,6 @@ namespace Clothes
         {
             if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe"))
             {
-                Log.Warning("sweepin");
                 newStart *= 0.7f;
                 newHold *= 0.7f;
                 newExecute *= 0.7f;
@@ -426,11 +450,6 @@ namespace Clothes
             LegendAPI.Outfits.Register(TestOutfit2);
         }
         #endregion anal
-
-        private static void PandemoniumCloak()
-        {
-            //what the fuck
-        }
     }
 }
 

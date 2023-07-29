@@ -2,7 +2,6 @@
 
 internal class TestValueManager : MonoBehaviour
 {
-
     //how do doing attributes
     //[debugfloat("valuename", KeyCode.U, KeyCode.J, 5)] on any static value elsewhere
     //would be neat
@@ -40,23 +39,19 @@ internal class TestValueManager : MonoBehaviour
 
     private void manageTestValue(ref float value, string valueName, KeyCode upKey, KeyCode downKey, float incrementAmount)
     {
-
         if (Input.GetKeyDown(upKey))
         {
-
             value = setTestValue(value + incrementAmount, valueName);
         }
 
         if (Input.GetKeyDown(downKey))
         {
-
             value = setTestValue(value - incrementAmount, valueName);
         }
 
 
         if (Input.GetKey(upKey) || Input.GetKey(downKey))
         {
-
             float amount = incrementAmount * (Input.GetKey(upKey) ? 1 : -1);
 
             _tim += Time.deltaTime;
@@ -68,12 +63,10 @@ internal class TestValueManager : MonoBehaviour
             }
         }
 
-
         if (Input.GetKeyUp(upKey) || Input.GetKeyUp(downKey))
         {
             _tim = 0;
         }
-
     }
 
     private float setTestValue(float value, string print)

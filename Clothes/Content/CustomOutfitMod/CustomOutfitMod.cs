@@ -1,4 +1,6 @@
-﻿namespace Clothes
+﻿using System;
+
+namespace Clothes
 {
     public class CustomOutfitMod
     {
@@ -12,5 +14,9 @@
         }
 
         public virtual void OnEquip(Player player, bool equipStatus) { }
+
+        public virtual void Update() { }
+
+        public virtual void OnPlayerDestroyed() { }
     }
 }

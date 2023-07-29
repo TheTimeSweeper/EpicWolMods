@@ -1,15 +1,48 @@
 ﻿using BepInEx;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Clothes
 {
     //credit for custom palette code goes to only_going_up_fr0m_here with tournamentedition
 
+    public class Configger
+    {
+        public static bool anal;
+        public static bool funny;
+
+        public static int pandemoniumColors;
+
+        public static void DoConfig(BepInEx.Configuration.ConfigFile config)
+        {
+            string section = "you are cool";
+            anal =
+                config.Bind(section,
+                            "Analysis",
+                            false,
+                            "Enable debug robes.").Value;
+
+            funny =
+                config.Bind(section,
+                            "Funny names",
+                            false,
+                            "Just for me.").Value;
+            string pandemoniumSection = "Pandemonium Robe";
+
+            pandemoniumColors =
+                config.Bind(pandemoniumSection,
+                            "Random Robe Colors",
+                            37,
+                            "Amount of random robe colors generated. recommend prime numbers. (doesn't work with TournamentEdition installed (atm)").Value;
+        }
+    }
+
     [BepInDependency("Amber.TournamentEdition", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.5.0")]
+    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.0")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
@@ -17,8 +50,6 @@ namespace Clothes
         public static bool empowered;
         public static bool tournamentEditionInstalled;
         public static bool palettesPluginInstalled;
-        public static bool cfg_anal;
-        public static bool cfg_funny;
 
         void Awake() {
             PluginInfo = Info;
@@ -26,7 +57,7 @@ namespace Clothes
 
             Assets.Init();
 
-            DoConfig();
+            Configger.DoConfig(this.Config);
 
             tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
             palettesPluginInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.CustomPalettes");
@@ -47,6 +78,23 @@ namespace Clothes
             IL.TailorNpc.UpgradePlayerOutfit += TailorNpc_UpgradePlayerOutfit;
         }
 
+        void Start()
+        {
+            if (tournamentEditionInstalled)
+            {
+                SetFunnyMax();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private void SetFunnyMax()
+        {
+            try
+            {
+                PandemoniumCloak.RandomEndIndex = Mythical.ContentLoader.palettes.Count + 32;
+            } catch { }
+        }
+
         private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)
         {
             //changing this.currentMod.modType == OutfitModStat.OutfitModType.Health 
@@ -63,21 +111,6 @@ namespace Clothes
             c.Remove();
             c.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
             c.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
-        }
-
-        private void DoConfig()
-        {
-            cfg_anal =
-                Config.Bind("you are cool",
-                            "Analysis",
-                            false,
-                            "Enable debug robes.").Value;
-
-            cfg_funny =
-                Config.Bind("you are cool",
-                            "Funny names",
-                            false,
-                            "Just for me.").Value;
         }
 
         private void GameController_Start_LateInit(On.GameController.orig_Start orig, GameController self)
@@ -110,6 +143,8 @@ namespace Clothes
                     }
                 }
             }
+
+            CustomOutfitModManager.UpdateMods();
         }
     }
 }

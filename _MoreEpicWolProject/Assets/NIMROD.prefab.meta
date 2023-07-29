@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: 0f623a34d1a5aa244a5e39e898f08e3c
-timeCreated: 1690248666
-licenseType: Pro
-NativeFormatImporter:
-  mainObjectFileID: 100100000
+PrefabImporter:
+  externalObjects: {}
   userData: 
-  assetBundleName: clothes
+  assetBundleName: 
   assetBundleVariant: 

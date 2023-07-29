@@ -37,10 +37,14 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Content\PandemoniumHUD.cs" />
+    <Compile Include="Content\PandemoniumViewCycler.cs" />
+    <Compile Include="Content\PandemoniumCloak.cs" />
+    <Compile Include="Content\CustomOutfitMod\PandemoniumMod.cs" />
     <Compile Include="Misc\Assets.cs" />
     <Compile Include="Content\Clothes.cs" />
     <Compile Include="Content\CustomOutfitMod\CustomOutfitMod.cs" />
-    <Compile Include="Content\CustomOutfitMod\CustomOutfitModManager.cs" />
+    <Compile Include="CustomOutfitModManager.cs" />
     <Compile Include="Content\CustomOutfitMod\JoeOutfitMod.cs" />
     <Compile Include="Misc\Log.cs" />
     <Compile Include="Misc\StripContainer.cs" />
@@ -115,6 +119,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_lib\MonoMod.Utils.dll</HintPath>
     </Reference>
+    <Reference Include="Tournament Edition">
+      <HintPath>..\_lib\Tournament Edition.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_lib\UnityEngine.dll</HintPath>
@@ -128,9 +135,14 @@
       <HintPath>..\_lib\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Release\manifest.json" />
+    <None Include="Release\README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(ProjectDir)\..\_MoreEpicWolProject\AssetBundles\clothes" "$(ProjectDir)\Release\plugins\Assets"
+if "$(Username)" == "Erikbir" copy /Y "$(ProjectDir)\..\_EpicUnityProject\AssetBundles\clothes2" "$(ProjectDir)\Release\plugins\Assets"
 
 if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
 if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins\TheTimesweeper-$(ProjectName)"

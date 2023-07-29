@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0532e13f4b8d099419e91c1ffef4b67e, type: 3}
+  m_Name: RandomStrips
+  m_EditorClassIdentifier: 
+  CapeTextures:
+  - {fileID: 2800000, guid: 62f4615b45b40454090f5b10119f4c61, type: 3}
+  - {fileID: 2800000, guid: 23dca7f78f7fe5045892c871aa619174, type: 3}
+  - {fileID: 2800000, guid: b1c299904fe5e8e41841e0af36f26277, type: 3}
+  - {fileID: 2800000, guid: 9b63941b38a6da6409f18d36ceaf7c7d, type: 3}
+  - {fileID: 2800000, guid: bd7c16eb71cffd846a3f071684e0f5b8, type: 3}
+  - {fileID: 2800000, guid: 6c67fdcc168653d41a917d8fef107141, type: 3}
+  - {fileID: 2800000, guid: a845c6f705562884e955c6fcc560db63, type: 3}
+  - {fileID: 2800000, guid: 18b26332e223f6b4d97d90243a87113f, type: 3}
+  - {fileID: 2800000, guid: 673cc9807505d454381f18592b225d5e, type: 3}
+  - {fileID: 2800000, guid: 8ea7219872c2a20478f6d74c466f1bda, type: 3}
+  - {fileID: 2800000, guid: 7febe0df5b7312c44af014349e0148ac, type: 3}
+  - {fileID: 2800000, guid: 5b367448a60a4c849b428df3ea926a74, type: 3}
+  - {fileID: 2800000, guid: 4acedf45de3e8e34688e562c48c81dbc, type: 3}
+  - {fileID: 2800000, guid: dea91eb739970d34ca21e092e3ddb5c0, type: 3}
+  CapeUnderTextures:
+  - {fileID: 2800000, guid: 86824a773c479e5438201bfcf13bb656, type: 3}
+  - {fileID: 2800000, guid: 2675037cf8bed9b49b3aa34b545eed58, type: 3}
+  - {fileID: 2800000, guid: c191cd3b845f0fc42b5b6375e4268575, type: 3}
+  - {fileID: 2800000, guid: b4c46f4ceb421b946a9f2b33fff0f324, type: 3}
+  - {fileID: 2800000, guid: cdb7262ea344bf14e9e4fc915044f143, type: 3}
+  - {fileID: 2800000, guid: b5a38269017f0dc4ba335568d796bf6a, type: 3}
+  - {fileID: 2800000, guid: d5c8a4cfa11deb646b37bc1650155317, type: 3}
+  - {fileID: 2800000, guid: 60c8ce6946ced664788908a7659c51da, type: 3}
+  - {fileID: 2800000, guid: 568dda58ac96a7c4da43ce3df55331e3, type: 3}
+  - {fileID: 2800000, guid: 6c60bb919a206094d8eca45e606c3404, type: 3}
+  - {fileID: 2800000, guid: c1f589b75b3d67e4c99acd151447060d, type: 3}
+  - {fileID: 2800000, guid: bfd15df0b9d5c3042b1e9355b28ec6ff, type: 3}
+  - {fileID: 2800000, guid: 9960a59176ad6c347b4e55479c59933c, type: 3}
+  - {fileID: 2800000, guid: 061f8b8cdaeb56b45b94e43d45e97bbd, type: 3}
+  UnderGarmentTextures:
+  - {fileID: 2800000, guid: 6392a4497d4fbd949bef36a53d4e5c80, type: 3}
+  - {fileID: 2800000, guid: 08b68455703145843909b6b3c3779c50, type: 3}
+  - {fileID: 2800000, guid: b61a65a6d57f6634d9482764250c7e1f, type: 3}
+  - {fileID: 2800000, guid: e94891fab5373a34a9cae91de6aac098, type: 3}
+  - {fileID: 2800000, guid: 6ff40f613556e134bb8d76352ddcce73, type: 3}
+  - {fileID: 2800000, guid: 12c6207d8bf6d7641931771a4978459f, type: 3}
+  - {fileID: 2800000, guid: 9bd7e426f6c66ce448b79e73a29b2438, type: 3}
+  - {fileID: 2800000, guid: 9fe676e3fc7d6d748ba0eead52d196c3, type: 3}
+  - {fileID: 2800000, guid: 85481defab0cd1a40a6763791eac8fb0, type: 3}
+  - {fileID: 2800000, guid: d0378c7336418b445be6a76a95fcb42e, type: 3}
+  ShinyTextures:
+  - {fileID: 2800000, guid: f34a3095dcfc7e349897e093bcfa23ee, type: 3}
+  - {fileID: 2800000, guid: 333b2c2b326c56e45a3b98085cf1b55e, type: 3}
+  - {fileID: 2800000, guid: a82c1893645c7fd4bb06c6bd84cc6082, type: 3}
+  - {fileID: 2800000, guid: a4775a78dbda65140878c65f0bb4437d, type: 3}
+  - {fileID: 2800000, guid: 02dfd225018bf414ab9ea38b6cac7984, type: 3}
+  - {fileID: 2800000, guid: 32d84d92898c4ae4c9128411f7831bad, type: 3}
+  - {fileID: 2800000, guid: c1bda7e10329b624d8d67c1af1d2ba56, type: 3}
+  - {fileID: 2800000, guid: c2728a59313a158408e0e323d732bca7, type: 3}
+  - {fileID: 2800000, guid: eadc59d95481cb2428eae40b90442811, type: 3}
+  - {fileID: 2800000, guid: c58d8f852e4fa334aadccaef03ab7909, type: 3}
+  SkinTextures:
+  - {fileID: 2800000, guid: 92de0e4b006f4394e834df2fbfae04b7, type: 3}
+  - {fileID: 2800000, guid: 65a924658df846449b79addecf0e1e40, type: 3}
+  - {fileID: 2800000, guid: 00b1ec4f82defb447811a0ca59f4ba5c, type: 3}
+  - {fileID: 2800000, guid: adadbd164cfc30147aefebd2b25a9f93, type: 3}
+  - {fileID: 2800000, guid: 3a7f52bb1d664084bbfa447ff2dc24ca, type: 3}

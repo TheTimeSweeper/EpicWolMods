@@ -120,7 +120,7 @@ namespace TwinStick
                 {
                     if (!joystickMaps.Contains(map))
                     {
-                        PrintJoystickMap(map);
+                        //PrintJoystickMap(map);
                         Log.Debug("adding new joystick " + map.name);
                         joystickMaps.Add(map);
                         AddFuckinRightStick(map);
@@ -137,11 +137,11 @@ namespace TwinStick
         {
             //the key to victory. thank you
                 //tells me what the element ids are of the physical inputs
-            for (int i = 0; i < map.controller.ElementIdentifiers.Count; i++)
-            {
-                var item = map.controller.ElementIdentifiers[i];
-                Log.Warning($"id {item.id}, name {item.name}");
-            }            
+            //for (int i = 0; i < map.controller.ElementIdentifiers.Count; i++)
+            //{
+            //    var item = map.controller.ElementIdentifiers[i];
+            //    Log.Warning($"id {item.id}, name {item.name}");
+            //}            
 
             map.CreateElementMap(new ElementAssignment(2,
                                                        actionHori.id,
@@ -197,12 +197,12 @@ namespace TwinStick
                 _lastValidLookVector = lookVector;
             }
 
-            if (/*ChaosInputDevice.lockControllerAim &&*/ moveVector == Vector2.zero &&
+            if (ChaosInputDevice.lockControllerAim && moveVector == Vector2.zero &&
                lookVector == Vector2.zero && _lastValidLookVector != Vector2.zero)
             {
                 return _lastValidLookVector;
             }
-
+            
             return lookVector;
         }
 

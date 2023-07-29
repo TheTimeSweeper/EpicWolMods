@@ -12,5 +12,7 @@ public class StripContainer : ScriptableObject {
     [SerializeField]
     public List<Texture2D> UnderGarmentTextures;
     [SerializeField]
+    public List<Texture2D> ShinyTextures;
+    [SerializeField]
     public List<Texture2D> SkinTextures;
 }
