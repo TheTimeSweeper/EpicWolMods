@@ -1,8 +1,8 @@
 {
     "name": "Clothes",
-    "version_number": "0.5.0",
+    "version_number": "0.6.1",
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
-    "description": "Adds custom robes that actually do things!",
+    "description": "Adds custom robes that actually do things! | New Pandemonium Robe!",
     "dependencies": [
         "Modding_Council-BepInExPack_of_Legend-5.4.2100",
         "Modding_Council-HookGenPatcher-1.2.1"

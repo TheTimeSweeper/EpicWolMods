@@ -31,7 +31,7 @@ namespace Clothes
                 name = "Pandemonium",
                 outfit = new Outfit(
                     "Sweep_Pandemonium",
-                    Clothes.GetCustomColor("RGB.png", 6),
+                    Clothes.GetCustomColor("RGB.png"),
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false),
                     }),
@@ -55,18 +55,31 @@ namespace Clothes
 
             for (int i = 0; i < indicesList.Count; i++)
             {
-                int[] indices = indicesList[i];
+                Texture2D stripTexture = CreateStrip(indicesList[i]);
 
-                Texture2D stripTexture = CreateStrip(indices);
-
-                int palette = Clothes.GetCustomColor(stripTexture, 32);
+                int palette = Clothes.GetCustomColor(stripTexture);
                 if (RandomStartIndex == 0)
                 {
                     RandomStartIndex = palette;
                 }
                 if (i == indicesList.Count - 1)
                 {
-                    RandomEndIndex = palette == 0 ? 19 : palette;
+                    RandomEndIndex = palette;
+                }
+            }
+
+            for (int i = 0; i < indicesList.Count; i++)
+            {
+                Texture2D stripTexture = CreateShadowStrip(indicesList[i]);
+
+                int palette = Clothes.GetCustomColor(stripTexture);
+                if (ShadowStartIndex == 0)
+                {
+                    ShadowStartIndex = palette;
+                }
+                if (i == indicesList.Count - 1)
+                {
+                    ShadowEndIndex = palette;
                 }
             }
         }
@@ -151,7 +164,7 @@ namespace Clothes
                 name = $"Pandemonium{cape}{capeUnder}{under}{skin}",
                 outfit = new Outfit(
                     $"Sweep_Random{cape}{capeUnder}{under}{skin}",
-                    Clothes.GetCustomColor(stripTexture, 0),
+                    Clothes.GetCustomColor(stripTexture),
                     new List<OutfitModStat>
                     {
                     },
@@ -174,7 +187,7 @@ namespace Clothes
             for (int i = 0; i < _cachedStripPixelsList.Count; i++)
             {
                 Color32 stripPixel = _cachedStripPixelsList[i];
-                stripPixel.a /= 2;
+                stripPixel.a = stripPixel.a == (byte)0 ? (byte)0 : (byte)220;
                 stripPixel.r /= 2;
                 stripPixel.g /= 2;
                 stripPixel.b /= 2;

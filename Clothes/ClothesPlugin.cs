@@ -7,42 +7,9 @@ using UnityEngine;
 
 namespace Clothes
 {
-    //credit for custom palette code goes to only_going_up_fr0m_here with tournamentedition
-
-    public class Configger
-    {
-        public static bool anal;
-        public static bool funny;
-
-        public static int pandemoniumColors;
-
-        public static void DoConfig(BepInEx.Configuration.ConfigFile config)
-        {
-            string section = "you are cool";
-            anal =
-                config.Bind(section,
-                            "Analysis",
-                            false,
-                            "Enable debug robes.").Value;
-
-            funny =
-                config.Bind(section,
-                            "Funny names",
-                            false,
-                            "Just for me.").Value;
-            string pandemoniumSection = "Pandemonium Robe";
-
-            pandemoniumColors =
-                config.Bind(pandemoniumSection,
-                            "Random Robe Colors",
-                            37,
-                            "Amount of random robe colors generated. recommend prime numbers. (doesn't work with TournamentEdition installed (atm)").Value;
-        }
-    }
-
     [BepInDependency("Amber.TournamentEdition", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.0")]
+    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.1")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;
@@ -94,7 +61,7 @@ namespace Clothes
                 PandemoniumCloak.RandomEndIndex = Mythical.ContentLoader.palettes.Count + 32;
             } catch { }
         }
-
+        
         private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)
         {
             //changing this.currentMod.modType == OutfitModStat.OutfitModType.Health 

@@ -12,6 +12,8 @@ namespace Clothes
 {
     internal class Palettes
     {
+        public const bool DEBUG = true;
+
         public static List<Texture2D> palettes = new List<Texture2D>();
 
         public static int nextAssignableID = 32;
@@ -59,7 +61,7 @@ namespace Clothes
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();
 
-            if (Configger.anal)
+            if (DEBUG)
             {
                 File.WriteAllBytes("FunnyPalette.png", baseTexture.EncodeToPNG());
             }

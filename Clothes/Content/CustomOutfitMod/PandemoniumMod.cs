@@ -34,7 +34,7 @@ namespace Clothes
         private static List<OutfitModType> statModTypeList = new List<OutfitModType>(statModScoreMultipliers.Keys);
 
         public const float RAINBOW_INTERVAL = 0.09f;
-        private const float RANDOMIZE_INTERVAL = 3f;
+        private const float RANDOMIZE_INTERVAL = 13f;
         private const float START_RAINBOW_INTERVAL = 1.2f;
         #endregion constant values
 
@@ -46,6 +46,7 @@ namespace Clothes
         private List<OutfitModType> _randomModTypes;
 
         private int startIndex => (!ClothesPlugin.tournamentEditionInstalled && player.outfitID == "Chaos") ? PandemoniumCloak.ShadowStartIndex : PandemoniumCloak.RandomStartIndex;
+        private int endIndex => (!ClothesPlugin.tournamentEditionInstalled && player.outfitID == "Chaos") ? PandemoniumCloak.ShadowEndIndex : PandemoniumCloak.RandomEndIndex;
 
         private int _colorIndex = PandemoniumCloak.RandomStartIndex;
         private float _rainbowTim;
@@ -59,7 +60,7 @@ namespace Clothes
         {
             _randomizeTim = -1;
             _rainbowTim = -1;
-            _colorIndex = Random.Range(PandemoniumCloak.RandomStartIndex, PandemoniumCloak.RandomEndIndex);
+            _colorIndex = Random.Range(startIndex, endIndex);
             if (_paletteMod == null) { 
                 _paletteMod = new NumVarStatMod(ID, _colorIndex, 10, VarStatModType.Override, false); 
             }
@@ -283,22 +284,10 @@ namespace Clothes
             {
                 _paletteMod.modValue++;
             }
-
-
-            //if (player.outfitID != "Chaos")
-            //{
-                if (_paletteMod.modValue > PandemoniumCloak.RandomEndIndex || _paletteMod.modValue < PandemoniumCloak.RandomStartIndex)
-                {
-                    _paletteMod.modValue = PandemoniumCloak.RandomStartIndex;
-                }
-            //} 
-            //else
-            //{
-            //    if (_paletteMod.modValue > PandemoniumCloak.ShadowEndIndex || _paletteMod.modValue < PandemoniumCloak.ShadowStartIndex)
-            //    {
-            //        _paletteMod.modValue = PandemoniumCloak.ShadowStartIndex;
-            //    }
-            //}
+            if (_paletteMod.modValue > endIndex || _paletteMod.modValue < startIndex)
+            {
+                _paletteMod.modValue = startIndex;
+            }
 
             player.SetPlayerOutfitColor(_paletteMod, true);
         }

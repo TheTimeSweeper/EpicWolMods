@@ -31,33 +31,23 @@ namespace Clothes
             PandemoniumCloak.Init();
         }
 
-        public static int GetCustomColor(Texture2D texture, int fallback)
+        public static int GetCustomColor(Texture2D texture)
         {
             if (ClothesPlugin.palettesPluginInstalled)
             {
                 return TryGetCustomPalette(texture);
             }
 
-            if (!ClothesPlugin.tournamentEditionInstalled)
-            {
-                return Palettes.AssignNewID(texture);
-            }
-
-            return fallback;
+            return Palettes.AssignNewID(texture);
         }
-        public static int GetCustomColor(string fileName, int fallback)
+        public static int GetCustomColor(string fileName)
         {
             if (ClothesPlugin.palettesPluginInstalled)
             {
                 return TryGetCustomPalette(fileName);
             }
-
-            if (!ClothesPlugin.tournamentEditionInstalled)
-            {
-                return Palettes.AssignNewID(fileName);
-            }
-
-            return fallback;
+            
+            return Palettes.AssignNewID(fileName);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
@@ -176,7 +166,7 @@ namespace Clothes
                 name = "Desolate",
                 outfit = new Outfit(
                     "Sweep_Desolate",
-                    GetCustomColor("Desolate.png", 3),
+                    GetCustomColor("Desolate.png"),
                     desoModStats),
                 customDesc = _ => { return "Glow Sticks"; },
             };
@@ -187,7 +177,7 @@ namespace Clothes
                 name = Configger.funny? "Boos": "Credence",
                 outfit = new Outfit(
                     $"Sweep_Boos",
-                    GetCustomColor("Boos1.png", 19),
+                    GetCustomColor("Boos1.png"),
                     new List<OutfitModStat>
                     {
                         new OutfitModStat(OutfitModStat.OutfitModType.Evade, 0f, 0.1f, 0f, false),
@@ -201,7 +191,7 @@ namespace Clothes
                 name = "Aqua",
                 outfit = new Outfit(
                     $"Sweep_Aqua",
-                    GetCustomColor("Aqua.png", 5),
+                    GetCustomColor("Aqua.png"),
                     new List<OutfitModStat>
                     {
                         new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.1f, 0f, false),
@@ -214,7 +204,7 @@ namespace Clothes
         #region joe
         private static void JoeOutfit()
         {
-            int joeOutfitColor = GetCustomColor("Joe.png", 4);
+            int joeOutfitColor = GetCustomColor("Joe.png");
             LegendAPI.OutfitInfo joeOutfit = new LegendAPI.OutfitInfo()
             {
                 name = Configger.funny ? "Joe" : "Impatience",
@@ -417,7 +407,7 @@ namespace Clothes
                 name = "Analysis",
                 outfit = new Outfit(
                     "Sweep_Analysis",
-                    GetCustomColor("Anal.png", 21),
+                    GetCustomColor("Anal.png"),
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
@@ -436,7 +426,7 @@ namespace Clothes
                 name = "Appraisal",
                 outfit = new Outfit(
                     "Sweep_Analysis2",
-                    GetCustomColor("Anal3.png", 22),
+                    GetCustomColor("Anal3.png"),
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),

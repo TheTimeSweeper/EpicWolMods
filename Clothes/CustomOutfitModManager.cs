@@ -24,6 +24,7 @@ namespace Clothes
         public static void EvaluateMod(string id, Player player, bool isEquipping) => EvaluateMod<CustomOutfitMod>(id, player, isEquipping);
         public static void EvaluateMod<T>(string id, Player player, bool isEquipping) where T : CustomOutfitMod, new()
         {
+            Log.Warning("evaluate " + id + " " + isEquipping);
             CustomOutfitMod customMod = CustomMods.Find(mod => mod.ID == id);
 
             if (isEquipping)
