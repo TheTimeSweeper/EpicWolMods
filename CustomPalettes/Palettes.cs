@@ -61,7 +61,7 @@ namespace CustomPalettes
             Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
             playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count);
 
-            //the only one that escaped
+            //the only one that escaped (as far as I know)
             On.UnlockNotifier.SetNotice += (On.UnlockNotifier.orig_SetNotice orig, UnlockNotifier self, UnlockNotifier.NoticeVars vars) =>
             {
                 self.outfitIconImage.material = playerMaterial2;

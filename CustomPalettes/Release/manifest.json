@@ -1,8 +1,8 @@
 {
     "name": "CustomPalettes",
-    "version_number": "0.1.0",
+    "version_number": "1.0.0",
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
-    "description": "Hav fun.",
+    "description": "A Tool for other mods to add Custom Robe Colors.",
     "dependencies": [
         "Modding_Council-BepInExPack_of_Legend-5.4.2100",
         "Modding_Council-HookGenPatcher-1.2.1"
