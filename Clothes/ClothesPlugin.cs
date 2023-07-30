@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Clothes
 {
-    [BepInDependency("Amber.TournamentEdition", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.1")]
     public class ClothesPlugin : BaseUnityPlugin {
@@ -15,7 +14,6 @@ namespace Clothes
         public static PluginInfo PluginInfo;
 
         public static bool empowered;
-        public static bool tournamentEditionInstalled;
         public static bool palettesPluginInstalled;
 
         void Awake() {
@@ -24,15 +22,15 @@ namespace Clothes
 
             Assets.Init();
 
-            Configger.DoConfig(this.Config);
+            Configger.DoConfig(Config);
 
-            tournamentEditionInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Amber.TournamentEdition");
             palettesPluginInstalled = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("TheTimeSweeper.CustomPalettes");
 
             Clothes.Init();
-            
-            if (!tournamentEditionInstalled && !palettesPluginInstalled) { 
-			    Palettes.Init();
+
+            if (!palettesPluginInstalled)
+            {
+                Palettes.Init();
             }
 
             if (TestValueManager.testingEnabled)
@@ -43,23 +41,6 @@ namespace Clothes
             On.GameController.Start += GameController_Start_LateInit;
 
             IL.TailorNpc.UpgradePlayerOutfit += TailorNpc_UpgradePlayerOutfit;
-        }
-
-        void Start()
-        {
-            if (tournamentEditionInstalled)
-            {
-                SetFunnyMax();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private void SetFunnyMax()
-        {
-            try
-            {
-                PandemoniumCloak.RandomEndIndex = Mythical.ContentLoader.palettes.Count + 32;
-            } catch { }
         }
         
         private static void TailorNpc_UpgradePlayerOutfit(MonoMod.Cil.ILContext il)

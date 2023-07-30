@@ -35,11 +35,11 @@ namespace Clothes
                     new List<OutfitModStat> {
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false),
                     }),
-                customDesc = (showStats) =>
+                customDesc = (showStats, outfitModStat) =>
                 {
                     return "- <i>HEE HEE HEE</i>";
                 },
-                customMod = (player, isEquipping, onEquip) =>
+                customMod = (player, isEquipping, onEquip, outfitModStat) =>
                 {
                     CustomOutfitModManager.EvaluateMod<PandemoniumMod>("Sweep_Pandemonium", player, isEquipping);
                 },
@@ -57,6 +57,7 @@ namespace Clothes
             {
                 Texture2D stripTexture = CreateStrip(indicesList[i]);
 
+                //CreateTestOutfit(indicesList[i][0], indicesList[i][1], indicesList[i][2], indicesList[i][3], indicesList[i][4]);
                 int palette = Clothes.GetCustomColor(stripTexture);
                 if (RandomStartIndex == 0)
                 {
@@ -161,14 +162,14 @@ namespace Clothes
 
             LegendAPI.OutfitInfo testOutfit = new LegendAPI.OutfitInfo()
             {
-                name = $"Pandemonium{cape}{capeUnder}{under}{skin}",
+                name = $"Pandemonium{cape}{capeUnder}{under}{eyes}{skin}",
                 outfit = new Outfit(
-                    $"Sweep_Random{cape}{capeUnder}{under}{skin}",
+                    $"Sweep_Random{cape}{capeUnder}{under}{eyes}{skin}",
                     Clothes.GetCustomColor(stripTexture),
                     new List<OutfitModStat>
                     {
                     },
-                    true),
+                    false),
             };
             LegendAPI.Outfits.Register(testOutfit);
         }
@@ -242,6 +243,10 @@ namespace Clothes
         {
             for (int i = 0; i < sourceColors.Length; i++)
             {
+                //skip 6th pixel because walter uses it for outline
+                if (ClothesPlugin.palettesPluginInstalled && i == 6)
+                    continue;
+
                 if (sourceColors[i].a > 0)
                 {
                     _cachedStripColorsList[i] = sourceColors[i];

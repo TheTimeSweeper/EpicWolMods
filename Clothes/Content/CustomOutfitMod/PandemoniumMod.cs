@@ -45,8 +45,8 @@ namespace Clothes
         private OutfitModStat _customModStat;
         private List<OutfitModType> _randomModTypes;
 
-        private int startIndex => (!ClothesPlugin.tournamentEditionInstalled && player.outfitID == "Chaos") ? PandemoniumCloak.ShadowStartIndex : PandemoniumCloak.RandomStartIndex;
-        private int endIndex => (!ClothesPlugin.tournamentEditionInstalled && player.outfitID == "Chaos") ? PandemoniumCloak.ShadowEndIndex : PandemoniumCloak.RandomEndIndex;
+        private int startIndex => (player.outfitID == "Chaos") ? PandemoniumCloak.ShadowStartIndex : PandemoniumCloak.RandomStartIndex;
+        private int endIndex => (player.outfitID == "Chaos") ? PandemoniumCloak.ShadowEndIndex : PandemoniumCloak.RandomEndIndex;
 
         private int _colorIndex = PandemoniumCloak.RandomStartIndex;
         private float _rainbowTim;

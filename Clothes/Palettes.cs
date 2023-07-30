@@ -60,7 +60,7 @@ namespace Clothes
             baseTexture.Resize(baseTexture.width, baseTexture.height + palettes.Count * 2);
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();
-
+            
             if (DEBUG)
             {
                 File.WriteAllBytes("FunnyPalette.png", baseTexture.EncodeToPNG());

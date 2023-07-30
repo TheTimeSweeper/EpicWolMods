@@ -21,17 +21,16 @@ namespace Clothes
             }
         }
 
-        public static void EvaluateMod(string id, Player player, bool isEquipping) => EvaluateMod<CustomOutfitMod>(id, player, isEquipping);
-        public static void EvaluateMod<T>(string id, Player player, bool isEquipping) where T : CustomOutfitMod, new()
+        public static void EvaluateMod(string id, Player player, bool isEquipping, OutfitModStat outfitModStat = null) => EvaluateMod<CustomOutfitMod>(id, player, isEquipping, outfitModStat);
+        public static void EvaluateMod<T>(string id, Player player, bool isEquipping, OutfitModStat outfitModStat = null) where T : CustomOutfitMod, new()
         {
-            Log.Warning("evaluate " + id + " " + isEquipping);
             CustomOutfitMod customMod = CustomMods.Find(mod => mod.ID == id);
 
             if (isEquipping)
             {
                 if (customMod == null || customMod.player != player)
                 {
-                    customMod = new T().PoorMansConstructor(player, id);
+                    customMod = new T().PoorMansConstructor(player, id, outfitModStat);
                     CustomMods.Add(customMod);
                 }
             }
@@ -59,21 +58,25 @@ namespace Clothes
             return false;
         }
 
-        public static bool PlayerHasMod(Player player, string ID) => PlayerHasMod(player, ID, out _);
-        public static bool PlayerHasMod(Player player, string ID, out bool upgraded)
+        public static bool PlayerHasMod(Player player, string ID) => PlayerHasMod(player, ID, out _, out _);
+        public static bool PlayerHasMod(Player player, string ID, out bool upgraded) => PlayerHasMod(player, ID, out upgraded, out _);
+        public static bool PlayerHasMod(Player player, string ID, out OutfitModStat outfitModStat) => PlayerHasMod(player, ID, out _, out outfitModStat);
+        public static bool PlayerHasMod(Player player, string ID, out bool upgraded, out OutfitModStat outfitModStat)
         {
-            bool hasMod = CustomMods.Find(outfitMod => outfitMod.player == player && outfitMod.ID == ID) != null;
+            CustomOutfitMod outfitMod = CustomMods.Find(mod => mod.player == player && mod.ID == ID);
 
-            if (hasMod)
+            if (outfitMod != null)
             {
                 upgraded = TailorNpc.playerBuffed[player.playerID];
+                outfitModStat = outfitMod.outfitModStat;
+                return true;
             }
             else
             {
                 upgraded = false;
+                outfitModStat = null;
+                return false;
             }
-
-            return hasMod;
         }
     }
 }

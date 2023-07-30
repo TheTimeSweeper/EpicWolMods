@@ -14,10 +14,9 @@ namespace CustomPalettes
         {
             return AddPalette(ImgHandler.LoadPNG(fullPath));
         }
-
-        public static int AddPalette(string assemblyDir, string folderName, string fileName)
+        public static int AddPalette(params string[] pathDirectories)
         {
-            return AddPalette(ImgHandler.LoadPNG(assemblyDir, folderName, fileName));
+            return AddPalette(ImgHandler.LoadPNG(pathDirectories));
         }
         public static int AddPalette(Texture2D palleteTexture)
         {
@@ -36,9 +35,20 @@ namespace CustomPalettes
         {
             On.ChaosBundle.Get -= ChaosBundle_Get;
 
+            ApplyWalterToPlayerSprite();
+
             CreateAndApplyPalettes();
 
             return orig(assetPath);
+        }
+
+        private static void ApplyWalterToPlayerSprite()
+        {
+            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/NewWizard.png");
+            Texture2D newTexture = ImgHandler.LoadTex2DFromAssets("Walter2.png");
+            Color32[] Pixels = newTexture.GetPixels32();
+            baseTexture.SetPixels32(Pixels);
+            baseTexture.Apply();
         }
 
         private static void CreateAndApplyPalettes()
@@ -50,18 +60,35 @@ namespace CustomPalettes
 
             Material playerMaterial2 = ChaosBundle.Get<Material>("Assets/materials/WizardPaletteSwapUnlit.mat");
             playerMaterial2.SetFloat("_PaletteCount", 32 + palettes.Count);
+
+            //the only one that escaped
+            On.UnlockNotifier.SetNotice += (On.UnlockNotifier.orig_SetNotice orig, UnlockNotifier self, UnlockNotifier.NoticeVars vars) =>
+            {
+                self.outfitIconImage.material = playerMaterial2;
+                orig(self, vars);
+            };
         }
 
         private static void CreatePaletteTexture()
         {
-            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");
-
+            Texture2D newTexture = ImgHandler.LoadTex2DFromAssets("Base.png");
             List<Color32> colors = new List<Color32>();
-            colors.AddRange(baseTexture.GetPixels32());
+            colors.AddRange(newTexture.GetPixels32());
+            
+            Color32 transparent = new Color32(0, 0, 0, 0);
             foreach (Texture2D paletteTexture in palettes)
             {
-                colors.AddRange(paletteTexture.GetPixels32());
+                //ugly fix to some strips having black pixels at the end
+                Color32[] palettePixels = paletteTexture.GetPixels32();
+                palettePixels[54] = transparent;
+                palettePixels[55] = transparent;
+                palettePixels[110] = transparent;
+                palettePixels[111] = transparent;
+
+                colors.AddRange(palettePixels);
             }
+
+            Texture2D baseTexture = ChaosBundle.Get<Texture2D>("Assets/sprites/player/WizardPalette.png");
             baseTexture.Resize(baseTexture.width, baseTexture.height + palettes.Count * 2);
             baseTexture.SetPixels32(colors.ToArray());
             baseTexture.Apply();

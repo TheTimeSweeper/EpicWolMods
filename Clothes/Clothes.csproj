@@ -37,6 +37,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Misc\Configger.cs" />
     <Compile Include="Content\PandemoniumHUD.cs" />
     <Compile Include="Content\PandemoniumViewCycler.cs" />
     <Compile Include="Content\PandemoniumCloak.cs" />
@@ -89,8 +90,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\_lib\HarmonyXInterop.dll</HintPath>
     </Reference>
-    <Reference Include="LegendApi">
-      <HintPath>E:\Abbas's stuff VII I think\1337 haxx\ror2lol\Chikara ga minegitte kuru\Cloudburst\Cloudburst\libs\LegendApi.dll</HintPath>
+    <Reference Include="LegendApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_lib\LegendApi.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

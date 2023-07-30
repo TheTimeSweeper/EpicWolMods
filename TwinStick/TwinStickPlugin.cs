@@ -44,9 +44,37 @@ namespace TwinStick
             On.Rewired.InputManager_Base.Initialize += InputManager_Base_Initialize;
             On.InputController.AssignControllerToPlayer += InputController_AssignControllerToPlayer;
             On.ChaosInputDevice.GetAimVector += ChaosInputDevice_GetAimVector;
+            //affects dashes woops
+            //innovation from 1996 is too much
+            //On.ChaosInputDevice.GetMoveVector += ChaosInputDevice_GetMoveVector;
+
+            On.Player.MeleeAttackState.MovementCheck += MeleeAttackState_MovementCheck;
 
             On.GameUI.LoadInputButtonSprites += GameUI_LoadInputButtonSprites;
             //On.Player.BaseDashState.
+        }
+
+        private bool MeleeAttackState_MovementCheck(On.Player.MeleeAttackState.orig_MovementCheck orig, Player.MeleeAttackState self)
+        {
+            bool origReturn = orig(self);
+            if (!self.parent.inputDevice.IsMouseAim && GetLookVectorRaw(self.parent.inputDevice).magnitude < 0.9f)
+                return false;
+            return origReturn;
+        }
+
+        private Vector2 ChaosInputDevice_GetMoveVector(On.ChaosInputDevice.orig_GetMoveVector orig, ChaosInputDevice self)
+        {
+            if(self.rewiredPlayer == null)
+            {
+                return orig(self);
+            }
+            self.HandleInputSchemeSwitch();
+            Vector2 axis2D = self.rewiredPlayer.GetAxis2D("MoveHorizontal", "MoveVertical") * 2;
+            if(axis2D.sqrMagnitude > 1)
+            {
+                return orig(self);
+            }
+            return axis2D;
         }
 
         private void GameUI_LoadInputButtonSprites(On.GameUI.orig_LoadInputButtonSprites orig)
@@ -209,6 +237,12 @@ namespace TwinStick
         private Vector2 GetLookVector(ChaosInputDevice self)
         {
             return self.rewiredPlayer.GetAxis2D("LookHorizontal", "LookVertical").normalized;
+        }
+
+        private Vector2 GetLookVectorRaw(ChaosInputDevice self)
+        {
+            Vector2 raw = self.rewiredPlayer.GetAxis2D("LookHorizontal", "LookVertical");
+            return raw.sqrMagnitude > 1 ? raw.normalized : raw;
         }
 
         private static void PrintAction(InputAction actin)

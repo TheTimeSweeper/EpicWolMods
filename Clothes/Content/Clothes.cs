@@ -53,7 +53,11 @@ namespace Clothes
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static int TryGetCustomPalette(string fileName)
         {
-            return CustomPalettes.Palettes.AddPalette(Path.GetDirectoryName(ClothesPlugin.PluginInfo.Location), "Assets", fileName);
+            if (ClothesPlugin.palettesPluginInstalled)
+            {
+                fileName = $"Walter{fileName}";
+            }
+            return CustomPalettes.Palettes.AddPalette(Assets.safeBundle.LoadAsset<Texture2D>(fileName));
         }
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static int TryGetCustomPalette(Texture2D texture)
@@ -85,7 +89,7 @@ namespace Clothes
                     1, //newColorIndex
                     new List<OutfitModStat>
                     {
-            new OutfitModStat(OutfitModStat.OutfitModType.Health,
+                        new OutfitModStat(OutfitModStat.OutfitModType.Health,
                               100, //addValue
                               0, //multiValue
                               0, //override value
@@ -107,13 +111,13 @@ namespace Clothes
                     1, //newColorIndex
                     new List<OutfitModStat>
                     {
-            new OutfitModStat(OutfitModStat.OutfitModType.Health,100,0,0,false),
-            new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Health,100,0,0,false),
+                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         // more OutfitModStats here
                     },
                     true, //isUnlocked
                     false), //isLeveling
-                customDesc = (showStats) =>
+                customDesc = (bool showStats, OutfitModStat modStat) =>
                 {
                     string description = "- Gives Cool Effect";
 
@@ -127,7 +131,7 @@ namespace Clothes
 
                     return description;
                 },
-                customMod = (player, isEquipping, onEquip) =>
+                customMod = (Player player, bool isEquipping, bool onEquip, OutfitModStat outfitModStat) =>
                 {
                     if (isEquipping)
                     {
@@ -168,7 +172,7 @@ namespace Clothes
                     "Sweep_Desolate",
                     GetCustomColor("Desolate.png"),
                     desoModStats),
-                customDesc = _ => { return "Glow Sticks"; },
+                customDesc = (showStats, modStat) => { return "Glow Sticks"; },
             };
             LegendAPI.Outfits.Register(DesolateOutfit);
  
@@ -176,7 +180,7 @@ namespace Clothes
             {
                 name = Configger.funny? "Boos": "Credence",
                 outfit = new Outfit(
-                    $"Sweep_Boos",
+                    "Sweep_Boos",
                     GetCustomColor("Boos1.png"),
                     new List<OutfitModStat>
                     {
@@ -190,7 +194,7 @@ namespace Clothes
             {
                 name = "Aqua",
                 outfit = new Outfit(
-                    $"Sweep_Aqua",
+                    "Sweep_Aqua",
                     GetCustomColor("Aqua.png"),
                     new List<OutfitModStat>
                     {
@@ -212,7 +216,7 @@ namespace Clothes
                     "Sweep_Joe",
                     joeOutfitColor,
                     new List<OutfitModStat> {
-                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, false),
+                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 15, 0, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.2f, 0f, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, -0.2f, 0f, false),
                         //#region tesuto
@@ -220,26 +224,21 @@ namespace Clothes
                         //new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0, -1, 0, false)
                         //#endregion
                     }),
-                customDesc = (showStats) =>
+                customDesc = (showStats, outfitModStat) =>
                 {
-                    string description = "- Reduces arcana end time";
+                    string description = "- Decreases arcana end time";
                     
                     if (showStats)
                     {
-                        float modValue = 15;
-                        if(CustomOutfitModManager.PlayerHasMod("Sweep_Joe", out bool upgraded))
-                        {
-                            if (upgraded) modValue *= 1.5f;
-                        }
-                        string statString = $"+ {modValue} %";
+                        string statString = $"- {outfitModStat.multiModifier.modValue} %";
                         string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
 
-                        description = $"- Reduces arcana end time {formattedStats}";
+                        description = $"- Decreases arcana end time {formattedStats}";
                     }
 
                     return description;
                 },
-                customMod = (player, isEquipping, onEquip) =>
+                customMod = (player, isEquipping, onEquip, outfitModStat) =>
                 {
                     CustomOutfitModManager.EvaluateMod<JoeOutfitMod>("Sweep_Joe", player, isEquipping);
                 },
@@ -413,8 +412,8 @@ namespace Clothes
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Cooldown, 0f, -0.9f, 0f, false),
                     }),
-                customDesc = _ => { return "- Press G to Empower Arcana"; },
-                customMod = (player, onoroff, idontevenknow) =>
+                customDesc = (showStats, outfitModStat) => { return "- Press G to Empower Arcana"; },
+                customMod = (player, onoroff, idontevenknow, outfitModStat) =>
                 {
                     CustomOutfitModManager.EvaluateMod("Sweep_Anal", player, onoroff);
                 }
@@ -431,8 +430,8 @@ namespace Clothes
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         new OutfitModStat(OutfitModStat.OutfitModType.CritChance, 0f, 0f, -1f, false),
                     }),
-                customDesc = _ => { return "- Press G to Empower Arcana"; },
-                customMod = (player, onoroff, idontevenknow) =>
+                customDesc = (showStats, outfitModStat) => { return "- Press G to Empower Arcana"; },
+                customMod = (player, onoroff, idontevenknow, outfitModStat) =>
                 {
                     CustomOutfitModManager.EvaluateMod("Sweep_Anal", player, onoroff);
                 }

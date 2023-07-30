@@ -49,10 +49,13 @@ namespace CustomPalettes
             return texture2D;
         }
 
-        public static Texture2D LoadPNG(string assemblyDir, string folderName, string fileName)
+        public static Texture2D LoadPNG(params string[] pathDirectories)
         {
-            string fullFilePath = Path.Combine(assemblyDir, folderName);
-            fullFilePath = Path.Combine(fullFilePath, fileName);
+            string fullFilePath = pathDirectories[0];
+            for (int i = 1; i < pathDirectories.Length; i++)
+            {
+                fullFilePath = Path.Combine(fullFilePath, pathDirectories[i]);
+            }
 
             return LoadPNG(fullFilePath);
         }

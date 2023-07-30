@@ -6,10 +6,12 @@ namespace Clothes
     {
         public Player player;
         public string ID;
-        public CustomOutfitMod PoorMansConstructor(Player player, string ID)
+        public OutfitModStat outfitModStat;
+        public CustomOutfitMod PoorMansConstructor(Player player, string ID, OutfitModStat outfitModStat)
         {
             this.player = player;
             this.ID = ID;
+            this.outfitModStat = outfitModStat;
             return this;
         }
 
