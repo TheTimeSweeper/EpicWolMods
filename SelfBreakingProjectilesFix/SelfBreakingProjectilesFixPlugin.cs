@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System.Reflection;
 
 namespace SelfBreakingProjectilesFix {
     [BepInPlugin("TheTimeSweeper.SelfBreakingProjectilesFix", "SelfBreakingProjectilesFix", "0.1.0")]
@@ -38,7 +39,37 @@ namespace SelfBreakingProjectilesFix {
 
         private void DragonGrade_CreateCircle(ILContext il)
         {
+            BindingFlags AllFlags =
+            BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
 
+            ILCursor cursor = new ILCursor(il);
+            cursor.GotoNext(MoveType.After,
+                instruction => instruction.MatchStloc(0),
+                instruction => instruction.MatchLdloc(0),
+                instruction => instruction.MatchLdcI4(1)
+                );
+            cursor.Index -= 2;
+            Logger.LogWarning(cursor);
+            cursor.Emit(OpCodes.Ldarg_0);
+            Logger.LogWarning(cursor);
+            cursor.Emit(OpCodes.Ldfld, typeof(DragonGrade).GetField("skillCat", AllFlags));
+            Logger.LogWarning(cursor);
+            cursor.Emit(OpCodes.Ldloc_0);
+            Logger.LogWarning(cursor);
+            cursor.EmitDelegate<Action<string, ChaosCircle>>((cat, circle) =>
+            {
+                circle.GetComponentInChildren<NegateProjectiles>().skillCategory = cat;
+            });
+            Logger.LogWarning(cursor);
+            //cursor.Emit(OpCodes.Ldloc_0);
+            //Logger.LogWarning(cursor);
+            cursor.Index ++;
+            Logger.LogWarning(cursor);
+        }
+
+        private void DragonGrade_CreateCircle1(ILContext il)
+        {
             ILCursor cursor = new ILCursor(il);
             cursor.GotoNext(MoveType.After,
                 instruction => instruction.MatchStloc(0),
@@ -51,6 +82,7 @@ namespace SelfBreakingProjectilesFix {
             {
                 circle.GetComponentInChildren<NegateProjectiles>().skillCategory = "Player0";
             });
+            Logger.LogWarning(cursor);
             cursor.Emit(OpCodes.Ldloc_0);
             Logger.LogWarning(cursor);
         }
