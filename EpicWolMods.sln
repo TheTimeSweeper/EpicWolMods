@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShutUpTomi", "ShutUpTomi\Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPalettes", "CustomPalettes\CustomPalettes.csproj", "{56EE9292-D16A-492E-8444-58CF986386A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldCounter", "GoldCounter\GoldCounter.csproj", "{22EA8288-E640-4AF6-AF76-7A59501DD8B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfBreakingProjectilesFix", "SelfBreakingProjectilesFix\SelfBreakingProjectilesFix.csproj", "{8BD2B2F1-C22A-469C-8413-C1277E795406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,14 @@ Global
 		{56EE9292-D16A-492E-8444-58CF986386A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56EE9292-D16A-492E-8444-58CF986386A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56EE9292-D16A-492E-8444-58CF986386A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22EA8288-E640-4AF6-AF76-7A59501DD8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EA8288-E640-4AF6-AF76-7A59501DD8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22EA8288-E640-4AF6-AF76-7A59501DD8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22EA8288-E640-4AF6-AF76-7A59501DD8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
