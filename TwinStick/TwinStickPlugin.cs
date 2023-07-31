@@ -51,7 +51,6 @@ namespace TwinStick
             On.Player.MeleeAttackState.MovementCheck += MeleeAttackState_MovementCheck;
 
             On.GameUI.LoadInputButtonSprites += GameUI_LoadInputButtonSprites;
-            //On.Player.BaseDashState.
         }
 
         private bool MeleeAttackState_MovementCheck(On.Player.MeleeAttackState.orig_MovementCheck orig, Player.MeleeAttackState self)

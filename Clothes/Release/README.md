@@ -22,6 +22,10 @@ ___
 - drag the contents of this mod's `plugins` folder into this new folder.
 
 ### Changelog:
+`0.6.2`
+- migrated to new Custom Palettes api
+- fixed Impatience improperly speeding up basics' final hits with combo gloves
+
 `0.6.1`
 - removed some accidentally left in debug code
 

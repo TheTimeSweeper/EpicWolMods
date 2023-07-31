@@ -7,7 +7,8 @@ using UnityEngine;
 namespace FreeCursor {
     [BepInPlugin("TheTimeSweeper.FreeCursor", "FreeCursor", "0.1.0")]
     public class FreeCursorPlugin : BaseUnityPlugin {
-        void Awake() {
+        void Awake()
+        {
             On.OptionsMenu.SetCursorLock += OptionsMenu_SetCursorLock;
             On.ChaosMouseCursor.Toggle += ChaosMouseCursor_Toggle;
             On.GameUI.TogglePause += GameUI_TogglePause;

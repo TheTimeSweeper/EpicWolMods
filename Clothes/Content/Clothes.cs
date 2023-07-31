@@ -334,7 +334,7 @@ namespace Clothes
             Player.MeleeAttackState basicState = self as Player.MeleeAttackState;
             if (basicState != null)
             {
-                if (basicState.HitsRemaining != 0)
+                if (basicState.maxComboCount - basicState.comboCounter != 0)
                 {
                     reduction = 0.05f;
                 }

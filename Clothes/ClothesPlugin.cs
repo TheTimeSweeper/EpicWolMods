@@ -48,17 +48,17 @@ namespace Clothes
             //changing this.currentMod.modType == OutfitModStat.OutfitModType.Health 
             //to this.currentMod.modType != OutfitModStat.OutfitModType.Cooldown
             //for the upgrade outfit code to exclude negative modifiers
-            ILCursor c = new ILCursor(il);
-            c.GotoNext(MoveType.After,
-                x => x.MatchLdarg(0),
-                x => x.MatchLdfld<TailorNpc>("currentMod"),
-                x => x.MatchLdfld<OutfitModStat>("modType"),
-                x => x.MatchLdcI4(1)
+            ILCursor cursor = new ILCursor(il);
+            cursor.GotoNext(MoveType.After,
+                instruction => instruction.MatchLdarg(0),
+                instruction => instruction.MatchLdfld<TailorNpc>("currentMod"),
+                instruction => instruction.MatchLdfld<OutfitModStat>("modType"),
+                instruction => instruction.MatchLdcI4(1)
                 );
-            c.Index--;
-            c.Remove();
-            c.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
-            c.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
+            cursor.Index--;
+            cursor.Remove();
+            cursor.Emit(OpCodes.Ldc_I4_S, (sbyte)9);
+            cursor.Next.OpCode = Mono.Cecil.Cil.OpCodes.Beq;
         }
 
         private void GameController_Start_LateInit(On.GameController.orig_Start orig, GameController self)
