@@ -5,6 +5,7 @@ namespace SillySkills.States
 {
     public class GustBurstButBigState : Player.SkillState
     {
+        public new static string staticID = "GustBurstButBig";
         private WindBurst currentWB;
         private float burstScale = 5f;
 
@@ -48,7 +49,7 @@ namespace SillySkills.States
         //    startLifetime = new float?(0.6f)
         //};
 
-        public GustBurstButBigState(FSM newFSM, Player newEnt) : base("GustBurstButBig", newFSM, newEnt)
+        public GustBurstButBigState(FSM newFSM, Player newEnt) : base(staticID, newFSM, newEnt)
         {
             applyStopElementStatus = true;
             this.SetAnimTimes(0.15f, 0.2f, 0.1f, 0.5f, 0.6f, 0.7f);
@@ -66,8 +67,6 @@ namespace SillySkills.States
 
         public override void ExecuteSkill()
         {
-            //base.ExecuteSkill();
-
             if (base.CancelToDash(false))
                 return;
 

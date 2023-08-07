@@ -10,7 +10,7 @@ You'll want to pass in a 2x56 texture that looks something like this
 ![palette strip](https://raw.githubusercontent.com/TheTimeSweeper/EpicWolMods/master/_EpicUnityProject/Assets/Bundo/Strips/WalterBoos1.png)  
 ![palette strip](https://github.com/TheTimeSweeper/EpicWolMods/blob/master/CustomPalettes/Release/readme/WalterBoos1Big.png?raw=true)
 
-Using `CustomPalettes.Palettes.AddPalette` and its overloads:
+By using `CustomPalettes.Palettes.AddPalette` and its overloads:
 ```csharp
 CustomPalettes.Palettes.AddPalette(string fullPath)
 CustomPalettes.Palettes.AddPalette(params string[] pathDirectories)
@@ -41,7 +41,7 @@ int myPalette = CustomPalettes.Palettes.AddPalette(textureLoadedFromAssetBundleO
 ___
 Any questions or feedback or mind exploding issues, ping/message `thetimesweeper` on Discord
 ### This mod does not add anything by itself. It is a tool for other mods to use.
-Some Examples of mods that use custom palettes:
+Some mods that use custom palettes:
 - [Tournament Edition](https://wizard-of-legend.thunderstore.io/package/Team_Mythic/TournamentEdition/) by Team_Mythic
 - [Clothes](https://wizard-of-legend.thunderstore.io/package/TheTimesweeper/Clothes/) by TheTimesweeper
 ___

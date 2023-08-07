@@ -93,13 +93,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc\Assets.cs" />
     <Compile Include="Misc\Log.cs" />
+    <Compile Include="Misc\TestValueManager.cs" />
     <Compile Include="States\AirChannelDashGoodState.cs" />
     <Compile Include="Misc\ModAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SillySkillsPlugin.cs" />
+    <Compile Include="States\GustBurstButEarth\FloorSpike.cs" />
     <Compile Include="States\GustBurstButBigState.cs" />
     <Compile Include="Misc\Utils.cs" />
+    <Compile Include="States\GustBurstButEarthState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Release\plugins\" />
@@ -110,7 +114,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
+    <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(ProjectDir)\..\_ThunderAssetBundles\skillsbundle" "$(ProjectDir)\Release\plugins\Assets"
+if "$(Username)" == "Erikbir" copy /Y "$(ProjectDir)\..\_EpicUnityProject\AssetBundles\skillsunfunny" "$(ProjectDir)\Release\plugins\Assets"
+
+if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
 if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\wolBepin\plugins\TheTimesweeper-$(ProjectName)"
 </PostBuildEvent>
   </PropertyGroup>

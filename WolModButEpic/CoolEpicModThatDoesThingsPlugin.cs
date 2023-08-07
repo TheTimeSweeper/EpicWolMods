@@ -77,24 +77,25 @@ namespace WolModButEpic {
             if (Input.GetKeyDown(KeyCode.F1)) {
                 //if they just pressed f1 this frame, let's zoom the camera out
                 CameraController.originalCameraSize += 0.5f;
-                Logger.LogMessage("zooming the camera out to " + CameraController.originalCameraSize);
+                PrintCameraSize();
             }
 
             // same as above, but pressing f2 to zoom in
             if (Input.GetKeyDown(KeyCode.F2)) {
                 CameraController.originalCameraSize -= 0.5f;
-                Logger.LogMessage("zooming the camera in to " + CameraController.originalCameraSize);
+                PrintCameraSize();
             }
-            
+
             // press f3 to reset to vanilla
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 CameraController.originalCameraSize = _originalOriginalCameraSize;
-                Logger.LogMessage("zooming the to " + CameraController.originalCameraSize);
+                PrintCameraSize();
             }
         }
 
-        private void CameraController_Awake(On.CameraController.orig_Awake orig, CameraController self) {
+        private void CameraController_Awake(On.CameraController.orig_Awake orig, CameraController self)
+        {
 
             orig(self);
 
@@ -104,13 +105,20 @@ namespace WolModButEpic {
 
             self.teleportToOtherPlayerRange = Mathf.Max(self.maxVerticalDistBetweenPlayers, self.maxHorizontalDistBetweenPlayers) * 1.2f;
 
-            if (!_grabOriginalCameraSize) {
+            if (!_grabOriginalCameraSize)
+            {
                 _grabOriginalCameraSize = true;
 
                 _originalOriginalCameraSize = CameraController.originalCameraSize;
             }
 
             CameraController.originalCameraSize = _originalOriginalCameraSize * (GameController.coopOn || GameController.pvpOn ? camSizeMultiplierMulti : camSizeMultiplierSolo);
+            PrintCameraSize();
+        }
+
+        private void PrintCameraSize()
+        {
+            Logger.LogMessage($"zooming the camera to {CameraController.originalCameraSize} ({CameraController.originalCameraSize / _originalOriginalCameraSize})");
         }
 
         private void CameraController_Update(On.CameraController.orig_Update orig, CameraController self) {
@@ -137,28 +145,5 @@ namespace WolModButEpic {
             Camera.main.orthographicSize = playerDistance > CameraController.originalCameraSize ? playerDistance : CameraController.originalCameraSize;
             
         }
-
-        //void Update() {
-
-            //if (Input.GetKeyDown(KeyCode.U)) {
-            //    camSizeMultiplierCoop += 0.05f;
-            //    CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
-            //}
-            //if (Input.GetKeyDown(KeyCode.J)) {
-            //    camSizeMultiplierCoop -= 0.05f;
-            //    CameraController.originalCameraSize = _originalOriginalCameraSize * camSizeMultiplierCoop;
-            //}
-
-            //if (Input.GetKeyDown(KeyCode.I)) {
-
-            //    playerCameraBuffer += 0.02f;
-            //    Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
-            //}
-            //if (Input.GetKeyDown(KeyCode.K)) {
-
-            //    playerCameraBuffer -= 0.02f;
-            //    Logger.LogWarning($"cam buffer {playerCameraBuffer.ToString("0.00")} | dist multi {playerDistCheckMult.ToString("0.00")} ");
-            //}
-        //}
     }
 }

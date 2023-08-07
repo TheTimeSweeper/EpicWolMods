@@ -6,99 +6,6 @@ using UnityEngine;
 
 namespace SillySkills
 {
-    public class AssetLoading
-    {
-        public static BepInEx.PluginInfo pluginInfo;
-
-        internal static string assemblyDir
-        {
-            get
-            {
-                return System.IO.Path.GetDirectoryName(pluginInfo.Location);
-            }
-        }
-
-        internal static string GetFilePathFromPlugin(string folderName, string fileName)
-        {
-            return Path.Combine(assemblyDir, Path.Combine(folderName, fileName));
-        }
-        #region json stuff
-
-        public static T LoadJsonFromFile<T>(string json)
-        {
-            string jsonString;
-
-            string path = GetFilePathFromPlugin("Assets", json);
-
-            using (StreamReader reader = new StreamReader(path))
-            {
-                jsonString = reader.ReadToEnd();
-            }
-
-            return JsonUtility.FromJson<T>(jsonString);
-        }
-
-        public static T LoadJsonFromEmbedded<T>(string json)
-        {
-            string jsonString;
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = $"SkillsButEpic.Assets.{json}";
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                jsonString = reader.ReadToEnd();
-            }
-
-            return JsonUtility.FromJson<T>(jsonString);
-        }
-        #endregion json stuff
-
-        #region load sprite (stolen from tournamentedition)
-        public static Sprite LoadSprite(string path)
-        {
-            Texture2D texture2D = LoadTex2D(path, true);
-            texture2D.name = path;
-            texture2D.filterMode = FilterMode.Point;
-            texture2D.Apply();
-            Rect rect = new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height);
-            Sprite sprite = Sprite.Create(texture2D, rect, new Vector2(0.5f, 0.5f), 16f);
-            sprite.name = path;
-            return sprite;
-        }
-
-        public static Texture2D LoadTex2D(string spriteFileName, bool pointFilter = false, Texture2D T2D = null, bool overrideFullPath = false)
-        {
-            string path = "Assets/" + spriteFileName + ".png";
-            if (overrideFullPath)
-            {
-                path = spriteFileName;
-            }
-            string text = Path.Combine(assemblyDir, path);
-            Texture2D texture2D = T2D == null ? LoadPNG(text, pointFilter) : T2D;
-            if (pointFilter)
-            {
-                texture2D.filterMode = FilterMode.Point;
-                texture2D.Apply();
-            }
-            return texture2D;
-        }
-
-        public static Texture2D LoadPNG(string filePath, bool pointFilter = false)
-        {
-            Texture2D texture2D = new Texture2D(2, 2);
-            byte[] data = File.ReadAllBytes(filePath);
-            texture2D.LoadImage(data);
-            texture2D.filterMode = (pointFilter ? FilterMode.Point : FilterMode.Bilinear);
-            texture2D.Apply();
-
-            return texture2D;
-        }
-        #endregion load sprite
-
-    }
-
     public class Utils
     {
         private static int savedJsonCount;
@@ -115,7 +22,7 @@ namespace SillySkills
 
         public static void PrintMyCodePlease()
         {
-            var skillStats = AssetLoading.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json");
+            var skillStats = Assets.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json");
 
             string log = "printing " + skillStats.GetType();
 
@@ -218,6 +125,21 @@ namespace SillySkills
             {
                 Log.Warning(list[i]);
             }
+        }
+
+        //credit to komradespectre
+        public static List<Vector3> DistributePointsEvenlyAroundCircle(int points, float radius, Vector3 origin)
+        {
+            List<Vector3> pointsList = new List<Vector3>();
+                double theta = (Math.PI * 2) / points;
+            for (int i = 0; i < points; i++)
+            {
+                double angle = theta * i;
+                Vector3 positionChosen = new Vector3((float)(radius * Math.Cos(angle) + origin.x), (float)(radius * Math.Sin(angle) + origin.y), origin.z);
+                pointsList.Add(positionChosen);
+            }
+
+            return pointsList;
         }
     }
 }

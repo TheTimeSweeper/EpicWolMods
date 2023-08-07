@@ -14,9 +14,18 @@ namespace SillySkills {
         void Awake()
         {
             Log.Init(Logger);
-            AssetLoading.pluginInfo = Info;
+            Assets.Init(Info);
+            if (TestValueManager.testingEnabled)
+            {
+                gameObject.AddComponent<TestValueManager>();
+            }
 
             InitSkills();
+        }
+
+        void Start()
+        {
+            Assets.LateInit();
         }
 
         private static void InitSkills()
@@ -28,10 +37,11 @@ namespace SillySkills {
                 displayName = "Gust Burst",
                 description = "Dash forward with such force that enemies in the area are pulled into your wake! (My beloved returns!)",
                 enhancedDescription = "Creates a secondary burst on landing!",
-                icon = AssetLoading.LoadSprite("AirChannelDashGood"),
+                icon = Assets.LoadSprite("AirChannelDashGood"),
                 tier = 1,
                 stateType = typeof(AirChannelDashGoodState),
-                skillStats = AssetLoading.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json")
+                skillStats = Assets.LoadJsonFromFile<SkillStats>("AirChannelDashGoodSkillStats.json"),
+                priceMultiplier = 4
             };
             #endregion
             Skills.Register(AirChannelDashGoodSkill);
@@ -39,16 +49,16 @@ namespace SillySkills {
             #region gustburstbutbig
             SkillInfo GustBurstButBigSkill = new SkillInfo()
             {
-                ID = "GustBurstButBig",
+                ID = GustBurstButBigState.staticID,
                 displayName = "Gale Burst",
                 description = "Create large pulling wind bursts at your position!",
                 enhancedDescription = "Create a third, larger wind burst!",
-                icon = AssetLoading.LoadSprite("GustBurstButBig"),
+                icon = Assets.LoadSprite("GustBurstButBig"),
                 tier = 3,
                 stateType = typeof(GustBurstButBigState),
                 skillStats = new SkillStats
                 {
-                    ID = new string[] { "GustBurstButBig" },
+                    ID = new string[] { GustBurstButBigState.staticID },
                     elementType = new string[] { "Air" },
                     subElementType = new string[] { "Air" },
                     targetNames = new string[] { "EnemyHurtBox", "DestructibleHurtBox" },
@@ -57,10 +67,41 @@ namespace SillySkills {
                     knockbackMultiplier = new float[] { -20f, -17f },
                     hitStunDurationModifier = new float[] { 1.2f },
                     sameAttackImmunityTime = new float[] { 0.25f }
-                },
+                },  
+                priceMultiplier = 6
             };
             #endregion gustburstbutbig
             Skills.Register(GustBurstButBigSkill);
+
+
+            #region gustburstbutert
+            SkillInfo GustBurstButEarthSkill = new SkillInfo()
+            {
+                ID = GustBurstButEarthState.staticID,
+                displayName = "Stone Outburst",
+                description = "Create an impassible ring of stones, pushing enemies towards you!",
+                enhancedDescription = "Stones are larger and deal more damage!",
+                icon = null,//AssetLoading.LoadSprite("GustBurstButEarth"),
+                tier = 3,
+                stateType = typeof(GustBurstButEarthState),
+                skillStats = new SkillStats
+                {
+                    ID = new string[] { GustBurstButEarthState.staticID },
+                    elementType = new string[] { "Earth" },
+                    subElementType = new string[] { "Earth" },
+                    targetNames = new string[] { "EnemyFloorContact", "DestructibleHurtBox" },
+                    damage = new int[] { 40, 50 },
+                    cooldown = new float[] { 7f },
+                    knockbackMultiplier = new float[] { 0,/*20, 30*/ },
+                    knockbackOverwrite = new bool[] { false/*true*/ },
+                    hitStunDurationModifier = new float[] { 3.0f },
+                    sameAttackImmunityTime = new float[] { 0f },
+                    sameTargetImmunityTime = new float[] {0.5f}
+                },
+                priceMultiplier = 6
+            };
+            #endregion gustburstbutert
+            Skills.Register(GustBurstButEarthSkill);
         }
     }
 }

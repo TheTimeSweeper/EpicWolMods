@@ -94,7 +94,7 @@ namespace Clothes
                               0, //multiValue
                               0, //override value
                               false), //bool value
-                                      // more OutfitModStats here
+                        // more OutfitModStats here
                     },
                     false, //isUnlocked
                     false) //isLeveling
@@ -111,7 +111,7 @@ namespace Clothes
                     1, //newColorIndex
                     new List<OutfitModStat>
                     {
-                        new OutfitModStat(OutfitModStat.OutfitModType.Health,100,0,0,false),
+                        new OutfitModStat(OutfitModStat.OutfitModType.Health, 100, 0, 0, false),
                         new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 0, 0, true),
                         // more OutfitModStats here
                     },
@@ -123,7 +123,8 @@ namespace Clothes
 
                     if (showStats)
                     {
-                        string statString = "+ 10 %";
+                        float statValue = modStat.multiModifier.modValue * 100;
+                        string statString = $"+ {statValue} %";
                         string formattedStats = $"<color=#009999>( </color><color=#00dddd>{statString}</color><color=#009999> )</color>";
 
                         description = $"- Gives Cool Effect {formattedStats}";
@@ -135,7 +136,8 @@ namespace Clothes
                 {
                     if (isEquipping)
                     {
-                        player.transform.localScale = new UnityEngine.Vector3(2f, 2f, 2f);
+                        float scaleValue = outfitModStat.overrideModifier.modValue;
+                        player.transform.localScale = new UnityEngine.Vector3(scaleValue, scaleValue, scaleValue);
                     }
                     else
                     {
@@ -216,7 +218,7 @@ namespace Clothes
                     "Sweep_Joe",
                     joeOutfitColor,
                     new List<OutfitModStat> {
-                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 15, 0, false),
+                        new OutfitModStat(LegendAPI.Outfits.CustomModType, 0, 20, 0, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Health, 0f, -0.2f, 0f, false),
                         new OutfitModStat(OutfitModStat.OutfitModType.Damage, 0f, -0.2f, 0f, false),
                         //#region tesuto
@@ -327,7 +329,7 @@ namespace Clothes
             if (!CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
                 return orig(self);
 
-            float reduction = 0.15f;
+            float reduction = 0.2f;
 
             //don't fully reduce end duration of basic arcana combos
                 //because they're already kinda redeuced
@@ -336,7 +338,7 @@ namespace Clothes
             {
                 if (basicState.maxComboCount - basicState.comboCounter != 0)
                 {
-                    reduction = 0.05f;
+                    reduction = 0.06f;
                 }
             }
 
@@ -365,7 +367,7 @@ namespace Clothes
         {
             if (CustomOutfitModManager.PlayerHasMod(self.parent, "Sweep_Joe", out bool upgraded))
             {
-                float reduction = 0.2f;
+                float reduction = 0.25f;
                 float multiplier = 1 - (upgraded ? reduction * 1.5f : reduction);
 
                 self.slideStopwatch.SetDelay(0.25f * multiplier);

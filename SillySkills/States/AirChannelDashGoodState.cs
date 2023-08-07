@@ -4,7 +4,8 @@ namespace SillySkills.States
 {
     public class AirChannelDashGoodState : Player.BaseDashState
     {
-        public AirChannelDashGoodState(FSM fsm, Player parentPlayer) : base("AirChannelDashGood", fsm, parentPlayer)
+        public new static string staticID = "AirChannelDashGood";
+        public AirChannelDashGoodState(FSM fsm, Player parentPlayer) : base(staticID, fsm, parentPlayer)
         {
             //this.hasEmpowered = true;
             this.applyStopElementStatus = true;
@@ -68,8 +69,6 @@ namespace SillySkills.States
             this.currentAC.attack.knockbackOverwriteVector = this.inputVector;
             this.currentAC.targetVector = this.inputVector;
         }
-
-        public new static string staticID = "AirChannelDash";
 
         private WindBurst currentWB;
 

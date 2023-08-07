@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Clothes
 {
     [BepInDependency("TheTimeSweeper.CustomPalettes", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.1")]
+    [BepInPlugin("TheTimeSweeper.Clothes", "Clothes", "0.6.2")]
     public class ClothesPlugin : BaseUnityPlugin {
 
         public static PluginInfo PluginInfo;

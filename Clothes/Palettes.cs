@@ -12,7 +12,7 @@ namespace Clothes
 {
     internal class Palettes
     {
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         public static List<Texture2D> palettes = new List<Texture2D>();
 
