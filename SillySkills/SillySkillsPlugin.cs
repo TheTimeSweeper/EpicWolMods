@@ -35,7 +35,7 @@ namespace SillySkills {
             {
                 ID = "AirChannelDashGood",
                 displayName = "Gust Burst",
-                description = "Dash forward with such force that enemies in the area are pulled into your wake! (My beloved returns!)",
+                description = "Dash forward with such force that enemies in the area are pulled into your wake!",
                 enhancedDescription = "Creates a secondary burst on landing!",
                 icon = Assets.LoadSprite("AirChannelDashGood"),
                 tier = 1,
@@ -81,7 +81,7 @@ namespace SillySkills {
                 displayName = "Stone Outburst",
                 description = "Create an impassible ring of stones, pushing enemies towards you!",
                 enhancedDescription = "Stones are larger and deal more damage!",
-                icon = null,//AssetLoading.LoadSprite("GustBurstButEarth"),
+                icon = Assets.LoadSprite("GustBurstButEarth"),
                 tier = 3,
                 stateType = typeof(GustBurstButEarthState),
                 skillStats = new SkillStats
@@ -90,13 +90,14 @@ namespace SillySkills {
                     elementType = new string[] { "Earth" },
                     subElementType = new string[] { "Earth" },
                     targetNames = new string[] { "EnemyFloorContact", "DestructibleHurtBox" },
-                    damage = new int[] { 40, 50 },
+                    damage = new int[] { 40, 50, 0 },
                     cooldown = new float[] { 7f },
-                    knockbackMultiplier = new float[] { 0,/*20, 30*/ },
-                    knockbackOverwrite = new bool[] { false/*true*/ },
-                    hitStunDurationModifier = new float[] { 3.0f },
-                    sameAttackImmunityTime = new float[] { 0f },
-                    sameTargetImmunityTime = new float[] {0.5f}
+                    knockbackMultiplier = new float[] { 0, 0, 1 },
+                    knockbackOverwrite = new bool[] { false },
+                    hitStunDurationModifier = new float[] { 3.0f, 3.0f, 1.0f },
+                    sameAttackImmunityTime = new float[] { 0.0f },
+                    sameTargetImmunityTime = new float[] { 0.5f },
+                    showDamageNumber = new bool[] {true, true, false}
                 },
                 priceMultiplier = 6
             };

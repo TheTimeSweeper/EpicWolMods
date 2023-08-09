@@ -1,8 +1,8 @@
 {
     "name": "SillySkills",
-    "version_number": "1.1.0",
+    "version_number": "1.1.2",
     "website_url": "https://github.com/TheTimeSweeper/EpicWolMods",
-    "description": "Adds 3 spells. Re-adds Gust Burst and adds 2 brand new arcana inspired by Gust Burst",
+    "description": "Adds 3 spells. Re-adds Gust Burst and adds 2 brand new arcana inspired by Gust Burst. | Added new earth skill",
     "dependencies": [
         "Modding_Council-BepInExPack_of_Legend-5.4.2100",
         "Modding_Council-HookGenPatcher-1.2.1",

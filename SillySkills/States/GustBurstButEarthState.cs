@@ -108,13 +108,22 @@ namespace SillySkills.States
 
                 CreateFloorSpike(points[i], parent.transform.position, hitWall);
             }
+
+            EarthBurst earthBurst = EarthBurst.CreateBurst(parent.transform.position, parent.skillCategory, staticID, 3, 2);
+            earthBurst.attack.entityCollisionEventHandlers += nip;
+            //earthBurst.skipParticleEmit = true;
+        }
+
+        private void nip(Entity entity)
+        {
+
         }
 
         private void StopCastingCircle()
         {
             if (this.castCircle != null)
             {
-                ModifyCircle(true);
+                ModifyCircle(false);
                 this.castCircle.Reset(false);
                 this.castCircle = null;
             }

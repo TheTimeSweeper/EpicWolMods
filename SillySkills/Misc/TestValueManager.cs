@@ -11,9 +11,9 @@ internal class TestValueManager : MonoBehaviour
     private float _holdTime = 0.4f;
 
     //compiler flags when
-    public static bool testingEnabled => true;
+    public static bool testingEnabled => false;
 
-    public static float value1 = 4f;
+    public static float value1 = 2f;
     public static float value2 = 5f;
 
     public static float value3 = 0.7f;
@@ -30,29 +30,25 @@ internal class TestValueManager : MonoBehaviour
         if (!Input.GetKey(KeyCode.LeftAlt))
             return;
 
-        manageTestValue(ref value1, "min dist knockback", KeyCode.Keypad7, KeyCode.Keypad4, 0.1f);
-        manageTestValue(ref value2, "max dist knockback", KeyCode.Keypad8, KeyCode.Keypad5, 0.1f);
+        manageTestValue(ref value1, "funny", KeyCode.Keypad7, KeyCode.Keypad4, 0.01f);
+        manageTestValue(ref value2, "max dist knockback", KeyCode.Keypad8, KeyCode.Keypad5, 0.01f);
     }
 
     private void manageTestValue(ref float value, string valueName, KeyCode upKey, KeyCode downKey, float incrementAmount)
     {
-
         if (Input.GetKeyDown(upKey))
         {
-
             value = setTestValue(value + incrementAmount, valueName);
         }
 
         if (Input.GetKeyDown(downKey))
         {
-
             value = setTestValue(value - incrementAmount, valueName);
         }
 
 
         if (Input.GetKey(upKey) || Input.GetKey(downKey))
         {
-
             float amount = incrementAmount * (Input.GetKey(upKey) ? 1 : -1);
 
             _tim += Time.deltaTime;
