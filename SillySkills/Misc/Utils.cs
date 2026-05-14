@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SillySkills
 {
-    public class Utils
+    public static class Utils
     {
         private static int savedJsonCount;
 
@@ -18,6 +18,19 @@ namespace SillySkills
 
             File.WriteAllText(jsonPath, json);
             Log.Warning("printedjson to " + jsonPath);
+        }
+
+        public enum SkillEmpowerment
+        {
+            Normal,
+            Empowered,
+            Ultimate
+        }
+
+        public static SkillEmpowerment GetSkillEmpowerment(this Player.SkillState state) => GetSkillEmpowerment(state.IsEmpowered, state.isUltimate);
+        public static SkillEmpowerment GetSkillEmpowerment(bool isEmpowered, bool isUltimate)
+        {
+            return isUltimate ? SkillEmpowerment.Ultimate : isEmpowered ? SkillEmpowerment.Empowered : SkillEmpowerment.Normal;
         }
 
         public static void PrintMyCodePlease()

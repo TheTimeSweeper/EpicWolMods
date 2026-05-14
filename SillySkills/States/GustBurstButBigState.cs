@@ -12,11 +12,7 @@ namespace SillySkills.States
         private int stopwatchID;
         private bool switchDirection;
 
-        private static float scaleEmpowered = 1.1f;
-        private static float scaleNormal = 0.85f;
-        private float scaleMultiplier => IsEmpowered ? scaleEmpowered : scaleNormal;
-
-        private int currentCast;
+        //private int currentCast;
 
         private ParticleSystemOverride implosionOverrideNormal = new ParticleSystemOverride
         {
@@ -40,8 +36,59 @@ namespace SillySkills.States
             startLifetime = new float?(0.6f)
         };
 
-        private ParticleSystemOverride implosionOverride => IsEmpowered ? implosionOverrideEmpowered : implosionOverrideNormal;
-        private ParticleSystemOverride implosionOverrideLarge => IsEmpowered ? implosionOverrideEmpoweredLarge : implosionOverrideNormalLarge;
+        private ParticleSystemOverride implosionOverrideUltimate = new ParticleSystemOverride
+        {
+            startSize = new float?(6 * scaleUltimate),
+            startLifetime = new float?(0.7f)
+        };
+        private ParticleSystemOverride implosionOverrideUltimateLarge = new ParticleSystemOverride
+        {
+            startSize = new float?(13 * scaleUltimate),
+            startLifetime = new float?(0.6f)
+        };
+
+        private static float scaleNormal = 0.85f;
+        private static float scaleEmpowered = 1.1f;
+        private static float scaleUltimate = 1.7f;
+
+        private void SetValues()
+        {
+            switch (this.GetSkillEmpowerment())
+            {
+                default:
+                case Utils.SkillEmpowerment.Normal:
+                    implosionOverride = implosionOverrideNormal;
+                    implosionOverrideLarge = implosionOverrideNormalLarge;
+                    scaleMultiplier = scaleNormal;
+                    stopwatchIntervalTime = 0.25f;
+                    stopwatchTotalIntervals = 2;
+                    skillLevel = 1;
+                    break;
+                case Utils.SkillEmpowerment.Empowered:
+                    implosionOverride = implosionOverrideEmpowered;
+                    implosionOverrideLarge = implosionOverrideEmpoweredLarge;
+                    scaleMultiplier = scaleEmpowered;
+                    stopwatchIntervalTime = 0.15f;
+                    stopwatchTotalIntervals = 3;
+                    skillLevel = 2;
+                    break;
+                case Utils.SkillEmpowerment.Ultimate:
+                    implosionOverride = implosionOverrideUltimate;
+                    implosionOverrideLarge = implosionOverrideUltimateLarge;
+                    scaleMultiplier = scaleUltimate;
+                    stopwatchIntervalTime = 0.12f;
+                    stopwatchTotalIntervals = 8;
+                    skillLevel = 3;
+                    break;
+            }
+        }
+
+        private ParticleSystemOverride implosionOverride;
+        private ParticleSystemOverride implosionOverrideLarge;
+        private float scaleMultiplier;
+        private float stopwatchIntervalTime;
+        private int stopwatchTotalIntervals;
+        private int skillLevel;
 
         //private ParticleSystemOverride twirlOverride = new ParticleSystemOverride
         //{
@@ -52,15 +99,26 @@ namespace SillySkills.States
         public GustBurstButBigState(FSM newFSM, Player newEnt) : base(staticID, newFSM, newEnt)
         {
             applyStopElementStatus = true;
-            this.SetAnimTimes(0.15f, 0.2f, 0.1f, 0.5f, 0.6f, 0.7f);
+            hasSignatureVariant = true;
+            this.SetAnimTimes(
+                0.15f,//start
+                0.2f, //hold
+                0.1f, //execute
+                0.5f, //cancel
+                0.6f, //run
+                0.7f);//exit
         }
         
         public override void OnEnter()
         {
             base.OnEnter();
-
-            currentCast = 0;
-            stopwatchID = ChaosStopwatch.Begin(0f, true, IsEmpowered ? 0.15f : 0.25f, IsEmpowered ? 3 : 2 , 0);
+            SetValues();
+            //currentCast = 0;
+            stopwatchID = ChaosStopwatch.Begin(
+                timeValue: 0.1f, 
+                useInterval: true, 
+                intervalTime: stopwatchIntervalTime, 
+                totalIntervals: stopwatchTotalIntervals);
 
             parent.ToggleEnemyFloorCollisions(false);
         }
@@ -80,7 +138,7 @@ namespace SillySkills.States
                 case StopwatchState.Ready:
                     PlayAnim(animExecTime);
                     AirChannelDash_CreateImplosion();
-                    currentCast++;
+                    //currentCast++;
                     break;
             }
         }
@@ -90,20 +148,22 @@ namespace SillySkills.States
         {
             Vector3 spawnPosition = parent.attackOriginTrans.position;
             
-            this.currentWB = WindBurst.CreateBurst(spawnPosition, parent.skillCategory, this.skillID, IsEmpowered ? 2 : 1, this.burstScale * scaleMultiplier);
+            //do damage
+            this.currentWB = WindBurst.CreateBurst(spawnPosition, parent.skillCategory, this.skillID, skillLevel, this.burstScale * scaleMultiplier);
             this.currentWB.emitParticles = false;
+            //do effects
             //PoolManager.GetPoolItem<ParticleEffect>("WindBurstEffect").Emit(new int?(3), new Vector3?(spawnPosition), null, null, 0f, null, null);
             PoolManager.GetPoolItem<ParticleEffect>("AirVortex").Emit(new int?(1), new Vector3?(spawnPosition), this.implosionOverride, new Vector3?(new Vector3(0f, 0f, UnityEngine.Random.Range(0f, 33f))), 0f, null, null);
             PoolManager.GetPoolItem<ParticleEffect>("AirVortex").Emit(new int?(1), new Vector3?(spawnPosition), this.implosionOverride, new Vector3?(new Vector3(0f, 0f, UnityEngine.Random.Range(180f, 213f))), 0f, null, null);
             //PoolManager.GetPoolItem<ParticleEffect>("AirVortex").Emit(new int?(1), new Vector3?(spawnPosition), this.implosionOverride, new Vector3?(new Vector3(0f, 0f, UnityEngine.Random.Range(0f, 360f))), 0f, null, null);
             PoolManager.GetPoolItem<ParticleEffect>("AirVortex").Emit(new int?(1), new Vector3?(spawnPosition), this.implosionOverrideLarge, new Vector3?(new Vector3(0f, 0f, UnityEngine.Random.Range(0f, 360f))), 0f, null, null);
-            
+            //do dust ig
             DustEmitter poolItem = PoolManager.GetPoolItem<DustEmitter>();
             int particleCount = 150;
             float scale = 2f;
             Vector3? emitPosition = new Vector3?(spawnPosition);
             poolItem.EmitCircle(particleCount, scale, -8f, -1f, emitPosition, null);
-
+            //play sound, clearly
             SoundManager.PlayAudioWithDistance("StandardHeavySwing", new Vector2?(this.parent.transform.position), null, 24f, -1f, 0.9f, false);
 
             //PoolManager.GetPoolItem<ParticleEffect>("WindTwirlEffect").Emit(new int?(2), new Vector3?(spawnPosition), null);

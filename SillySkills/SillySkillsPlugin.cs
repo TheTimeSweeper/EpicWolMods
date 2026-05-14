@@ -8,7 +8,7 @@ using SillySkills.States;
 
 namespace SillySkills {
 
-    [BepInPlugin("TheTimeSweeper.SillySkills", "SillySkills", "0.1.0")]
+    [BepInPlugin("TheTimeSweeper.SillySkills", "SillySkills", "1.2.0")]
     public class SillySkillsPlugin : BaseUnityPlugin {
 
         void Awake()
@@ -64,11 +64,11 @@ namespace SillySkills {
                     targetNames = new string[] { "EnemyHurtBox", "DestructibleHurtBox" },
                     damage = new int[] { 17 },
                     cooldown = new float[] { 5f },
-                    knockbackMultiplier = new float[] { -20f, -17f },
+                    knockbackMultiplier = new float[] { -20f, -17f, -12 },
                     hitStunDurationModifier = new float[] { 1.2f },
                     sameAttackImmunityTime = new float[] { 0.25f }
                 },  
-                priceMultiplier = 6
+                priceMultiplier = 6,
             };
             #endregion gustburstbutbig
             Skills.Register(GustBurstButBigSkill);
