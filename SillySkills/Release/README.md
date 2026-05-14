@@ -7,6 +7,9 @@ Re-added, my beloved
 A brand new standard arcana, inspired by Gust Burst  
 ![mybeloved2](https://raw.githubusercontent.com/TheTimeSweeper/EpicWolMods/master/SillySkills/Release/readme/GustBurstButBig.gif)
 
+Also with signature version!  
+![mybeloved2Ultimate](https://raw.githubusercontent.com/TheTimeSweeper/EpicWolMods/master/SillySkills/Release/readme/GustBurstButBigButSignature.gif)
+
 ### Stone Outburst ![icon](https://raw.githubusercontent.com/TheTimeSweeper/EpicWolMods/master/_EpicUnityProject/Assets/Mods/SkillsUnfunnyBundle/GustBurstButEarth.png)
 I'm not stuck in here with you, you're stuck in here with me  
 ![mybeloved3](https://raw.githubusercontent.com/TheTimeSweeper/EpicWolMods/master/SillySkills/Release/readme/GustBurstButEarth.gif)
@@ -28,6 +31,9 @@ ___
 - drag the contents of this mod's `plugins` folder into this new folder.
 
 ### Changelog:
+`1.2.0`
+- added signature version of gale burst
+
 `1.1.2`
 - fixed the previous fix messing with knockbacks when enhanced
 - last hotfix I hope
