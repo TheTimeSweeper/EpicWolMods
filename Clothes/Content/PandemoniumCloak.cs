@@ -218,11 +218,11 @@ namespace Clothes
             return stripTexture;
         }
 
-        private static List<Color32> CreateStripColors(params Color32[][] capeColors)
+        private static List<Color32> CreateStripColors(params Color32[][] stripsColors)
         {
-            for (int i = 0; i < capeColors.Length; i++)
+            for (int i = 0; i < stripsColors.Length; i++)
             {
-                ApplyStripColors(capeColors[i]);
+                ApplyStripColors(stripsColors[i]);
             }
 
             for (int i = 0; i < _cachedStripColorsList.Count * 2 - 1; i++)

@@ -47,7 +47,7 @@ namespace Clothes
                 return TryGetCustomPalette(fileName);
             }
             
-            return Palettes.AssignNewID(fileName);
+            return Palettes.AssignNewID(Assets.safeBundle.LoadAsset<Texture2D>(fileName));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]

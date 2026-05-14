@@ -23,6 +23,13 @@ ___
 
 ### Changelog:
 
+`0.6.3`
+- added missing dependency on LegendAPI
+- fixed mod not working when the Custom Palettes mod wasn't installed
+  - *This mod is intended to still function without it, but has support with it as well*
+- lowered gold gain stat in pandemonium robe
+  - *it turned out to be a bit too much as it's a permanent gain from what should be a temporary stat*
+
 `0.6.2`
 - migrated to new Custom Palettes api
 - migrated to new LegendAPI version. make sure you update that too!

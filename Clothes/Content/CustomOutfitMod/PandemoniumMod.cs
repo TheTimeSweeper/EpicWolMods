@@ -28,7 +28,7 @@ namespace Clothes
             { OutfitModType.ODRate, 0.4f },
             { OutfitModType.ODDamage, 0.5f },
             { OutfitModType.HealAmount, 0.4f },
-            { OutfitModType.Gold, 0.15f },
+            { OutfitModType.Gold, 0.08f },
         };
 
         private static List<OutfitModType> statModTypeList = new List<OutfitModType>(statModScoreMultipliers.Keys);
@@ -183,26 +183,32 @@ namespace Clothes
 
         private List<float> getRandomScores()
         {
-            int statFieldsAmount = Random.Range(1, 4);
-
             List<float> scores = new List<float>();
+
+            //roll a random amount of random scores between 1 and 3
+            int statFieldsAmount = Random.Range(1, 4);
             for (int i = 0; i < statFieldsAmount; i++)
             {
+                //roll 
                 scores.Add(Random.value-0.2f);
             }
+
             bool noPositive = true;
             for (int i = 0; i < scores.Count; i++)
             {
                 if(scores[i] > 0)
                 {
+                    //positive score was very little. bump it up to be interesting
                     scores[i] = Mathf.Max(scores[i], 0.5f);
                     noPositive = false;
                 }
                 else
                 {
+                    //negative score was very little. bump it down to be interesting
                     scores[i] = Mathf.Min(scores[i], -0.1f);
                 }
             } 
+            //all our stats rolled negative. force first one to be positive
             if (noPositive)
             {
                 scores[0] = 0.5f;
