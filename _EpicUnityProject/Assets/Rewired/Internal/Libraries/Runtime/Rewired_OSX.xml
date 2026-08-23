@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rewired_OSX</name>
+    </assembly>
+    <members>
+        <member name="T:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension">
+            <summary>
+            Provides information about an I/O Kit device.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.deviceService">
+            <summary>
+            Device service handle.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.productName">
+            <summary>
+            HID product name string.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.manufacturer">
+            <summary>
+            HID manufacturer string.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.vendorId">
+            <summary>
+            HID vendor id.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.productId">
+            <summary>
+            HID product id.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.isBluetoothDevice">
+            <summary>
+            Is the device a Bluetooth device?
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.version">
+            <summary>
+            Version.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.serialNumber">
+            <summary>
+            Serial number.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.transport">
+            <summary>
+            Transport.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.locationId">
+            <summary>
+            Location id.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.usagePage">
+            <summary>
+            HID usage page.
+            </summary>
+        </member>
+        <member name="P:Rewired.Platforms.MacOS.IOKit.IOKitControllerExtension.usage">
+            <summary>
+            HID usage.
+            </summary>
+        </member>
+    </members>
+</doc>
