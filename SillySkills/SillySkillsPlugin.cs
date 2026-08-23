@@ -62,7 +62,7 @@ namespace SillySkills {
                     elementType = new string[] { "Air" },
                     subElementType = new string[] { "Air" },
                     targetNames = new string[] { "EnemyHurtBox", "DestructibleHurtBox" },
-                    damage = new int[] { 17 },
+                    damage = new int[] { 14 },
                     cooldown = new float[] { 5f },
                     knockbackMultiplier = new float[] { -20f, -17f, -12 },
                     hitStunDurationModifier = new float[] { 1.2f },
