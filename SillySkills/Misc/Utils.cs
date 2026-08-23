@@ -56,7 +56,7 @@ namespace SillySkills
             {
                 FieldInfo info = property_infos[i];
 
-                //log += ($"\nskillStats.{info.Name} = new {GetCodeTypeString(info.GetValue(skillStats))}nig[attackInfos.Length];").Replace("[]nig", "");
+                //log += ($"\nskillStats.{info.Name} = new {GetCodeTypeString(info.GetValue(skillStats))}nip[attackInfos.Length];").Replace("[]nip", "");
                 log += ($"\nskillStats.{info.Name}[i] = attackInfo.{info.Name};");
             }
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37516.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolModButEpic", "WolModButEpic\WolModButEpic.csproj", "{E629E2D9-0C1D-4CDE-99D8-280C14841444}"
 EndProject
@@ -38,6 +38,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldCounter", "GoldCounter\GoldCounter.csproj", "{22EA8288-E640-4AF6-AF76-7A59501DD8B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfBreakingProjectilesFix", "SelfBreakingProjectilesFix\SelfBreakingProjectilesFix.csproj", "{8BD2B2F1-C22A-469C-8413-C1277E795406}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BossDialogReplacer", "BossDialogReplacer\BossDialogReplacer.csproj", "{661159C7-3FB5-4D22-8B61-62F613C6807E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleSimpleOutfit", "ExampleSimpleOutfit\ExampleSimpleOutfit.csproj", "{6A7D1CBE-786B-46B4-9873-C3F568E66BF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIMod", "DIMod\DIMod.csproj", "{0BA658FC-2C7C-4805-8B34-4EFBF9FD6178}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorePlayers", "MorePlayers\MorePlayers.csproj", "{6F6A170E-F46A-44EB-91DE-D25B29A72685}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetWizarding", "NetWizarding\NetWizarding.csproj", "{EDC96FEA-648F-4E09-9535-8F0C2FAB5494}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +127,26 @@ Global
 		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BD2B2F1-C22A-469C-8413-C1277E795406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{661159C7-3FB5-4D22-8B61-62F613C6807E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{661159C7-3FB5-4D22-8B61-62F613C6807E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{661159C7-3FB5-4D22-8B61-62F613C6807E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{661159C7-3FB5-4D22-8B61-62F613C6807E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A7D1CBE-786B-46B4-9873-C3F568E66BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A7D1CBE-786B-46B4-9873-C3F568E66BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A7D1CBE-786B-46B4-9873-C3F568E66BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A7D1CBE-786B-46B4-9873-C3F568E66BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BA658FC-2C7C-4805-8B34-4EFBF9FD6178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BA658FC-2C7C-4805-8B34-4EFBF9FD6178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BA658FC-2C7C-4805-8B34-4EFBF9FD6178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BA658FC-2C7C-4805-8B34-4EFBF9FD6178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F6A170E-F46A-44EB-91DE-D25B29A72685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6A170E-F46A-44EB-91DE-D25B29A72685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F6A170E-F46A-44EB-91DE-D25B29A72685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F6A170E-F46A-44EB-91DE-D25B29A72685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDC96FEA-648F-4E09-9535-8F0C2FAB5494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC96FEA-648F-4E09-9535-8F0C2FAB5494}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC96FEA-648F-4E09-9535-8F0C2FAB5494}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC96FEA-648F-4E09-9535-8F0C2FAB5494}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

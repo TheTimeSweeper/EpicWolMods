@@ -10,7 +10,8 @@ namespace ButtonMutiny {
 
         void Awake() {
             //not working since rewired update
-            //On.ChaosInputDevice.InitButtonMapping += ChaosInputDevice_InitButtonMapping;
+
+            On.ChaosInputDevice.InitButtonMapping += ChaosInputDevice_InitButtonMapping;
             On.GameUI.LoadInputButtonSprites += GameUI_LoadInputButtonSprites;
             
         }
@@ -29,29 +30,29 @@ namespace ButtonMutiny {
             GameUI.InputButtonSprites["EquipMenuSwitch"] = GameUI.UIButtonIcons["SwitchL"];
         }
 
-        //private void ChaosInputDevice_InitButtonMapping(On.ChaosInputDevice.orig_InitButtonMapping orig, ChaosInputDevice self) {
-        //    orig(self);
-
-        //    if (self.inputScheme == ChaosInputDevice.InputScheme.Gamepad) {
-        //        self.buttonMapping["Skill0"] = new List<InputControlType> { InputControlType.Action4 };
-        //        self.buttonMapping["Skill1"] = new List<InputControlType> { InputControlType.Action2 };
-
-        //        self.buttonMapping["Skill2"] = new List<InputControlType> { InputControlType.Action3 };
-        //        self.buttonMapping["Skill3"] = new List<InputControlType> { InputControlType.Action1 };
-
-        //        self.buttonMapping["Skill4"] = new List<InputControlType> { InputControlType.LeftTrigger };
-        //        self.buttonMapping["Skill5"] = new List<InputControlType> { InputControlType.RightTrigger };
-
-        //        self.buttonMapping["EquipMenu"] = new List<InputControlType> { InputControlType.LeftBumper };
-        //        self.buttonMapping["Map"] = new List<InputControlType> { InputControlType.RightBumper, InputControlType.Select };
-
-        //        self.buttonMapping["Overdrive"] = new List<InputControlType> { InputControlType.RightStickButton };
-
-        //        // on switch y button interact
-        //        //TODO: detect if it's a switch gamepad (though idk if it'll work for joycons)
-
-        //        self.buttonMapping["Interact"] = new List<InputControlType> { InputControlType.Action4 };
-        //    }
-        //}
+        private void ChaosInputDevice_InitButtonMapping(On.ChaosInputDevice.orig_InitButtonMapping orig, ChaosInputDevice self) {
+            orig(self);
+        
+            if (self.inputScheme == ChaosInputDevice.InputScheme.Gamepad) {
+                self.buttonMapping["Skill0"] = new List<InputControlType> { InputControlType.Action4 };
+                self.buttonMapping["Skill1"] = new List<InputControlType> { InputControlType.Action2 };
+        
+                self.buttonMapping["Skill2"] = new List<InputControlType> { InputControlType.Action3 };
+                self.buttonMapping["Skill3"] = new List<InputControlType> { InputControlType.Action1 };
+        
+                self.buttonMapping["Skill4"] = new List<InputControlType> { InputControlType.LeftTrigger };
+                self.buttonMapping["Skill5"] = new List<InputControlType> { InputControlType.RightTrigger };
+        
+                self.buttonMapping["EquipMenu"] = new List<InputControlType> { InputControlType.LeftBumper };
+                self.buttonMapping["Map"] = new List<InputControlType> { InputControlType.RightBumper, InputControlType.Select };
+        
+                self.buttonMapping["Overdrive"] = new List<InputControlType> { InputControlType.RightStickButton };
+        
+                // on switch y button interact
+                //TODO: detect if it's a switch gamepad (though idk if it'll work for joycons)
+        
+                self.buttonMapping["Interact"] = new List<InputControlType> { InputControlType.Action4 };
+            }
+        }
     }
 }
