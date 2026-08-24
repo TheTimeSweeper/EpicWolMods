@@ -2,7 +2,10 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using Rewired;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,6 +27,13 @@ namespace NetWizarding
 
         public Vector3 positionDifference;
 
+        public string[] stateList;
+
+        public delegate void Player1StateChanged(int stateIndex);
+        public static event Player1StateChanged OnPlayer1StateChanged;
+
+        private bool funnyHookBool_StateChangeAllowed;
+
         void Awake()
         {
             Instance = this;
@@ -42,7 +52,45 @@ namespace NetWizarding
             On.Health.TakeDamage += Health_TakeDamage;
             On.Rewired.InputManager_Base.Initialize += InputManager_Base_Initialize;
             On.Movement.MoveToMoveVector += Movement_MoveToMoveVector;
+            On.Player.InitFSM += Player_InitFSM;
+            On.FSM.ChangeState += FSM_ChangeState;
             //On.Attack.CheckCollision += Attack_CheckCollision;
+        }
+
+        //this is causing stack overflows???
+        private void FSM_ChangeState(On.FSM.orig_ChangeState orig, FSM self, string targetStateName, bool allowSelfTransition)
+        {
+            if (self.currentState != null && !funnyHookBool_StateChangeAllowed && TryGetPlayer2(out var player2) && self == player2.fsm)
+            {
+                return;
+            }
+            funnyHookBool_StateChangeAllowed = false;
+            if (stateList != null && TryGetPlayer1(out var player1) && self == player1.fsm)
+            {
+                OnPlayer1StateChanged?.Invoke(GetStateIndex(targetStateName));
+            }
+            orig(self, targetStateName, allowSelfTransition);
+        }
+
+        private int GetStateIndex(string targetStateName)
+        {
+            for (int i = 0; i < stateList.Length; i++)
+            {
+                if (stateList[i] == targetStateName)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void Player_InitFSM(On.Player.orig_InitFSM orig, Player self)
+        {
+            orig(self);
+            if (stateList == null)
+            {
+                stateList = self.fsm.states.Keys.ToArray();
+            }
         }
 
         private bool Health_TakeDamage(On.Health.orig_TakeDamage orig, Health self, AttackInfo givenAttackInfo, Entity attackEntity, bool critPreCalculated)
@@ -64,9 +112,32 @@ namespace NetWizarding
         //    return orig(self, col, targetObjID);
         //}
 
+        private bool TryGetPlayer1(out Player playerScript)
+        {
+            if (GameController.playerScripts.Length > 0 && GameController.playerScripts[0])
+            {
+                playerScript = GameController.playerScripts[0];
+                return true;
+            }
+            playerScript = null;
+            return false;
+        }
+
+
+        private bool TryGetPlayer2(out Player playerScript)
+        {
+            if (GameController.playerScripts.Length > 1 && GameController.playerScripts[1])
+            {
+                playerScript = GameController.playerScripts[1];
+                return true;
+            }
+            playerScript = null;
+            return false;
+        }
+
         private void Movement_MoveToMoveVector(On.Movement.orig_MoveToMoveVector orig, Movement self, float speed, bool useAddForce)
         {
-            if(GameController.playerScripts.Length > 1 && GameController.playerScripts[1] && self == GameController.playerScripts[1].movement)
+            if(TryGetPlayer2(out var player2) && self == player2.movement)
             {
                 self.UpdateZeroedVelocity(self.moveVector);
                 return;
@@ -144,6 +215,20 @@ namespace NetWizarding
         {
             CharacterSelectUI.P2CharacterSelectUI.currentController = netWizardFakeController;
             CharacterSelectUI.P2CharacterSelectUI.ClaimInputDevice();
+        }
+
+        public void RecieveState(int stateIndex)
+        {
+            if(stateIndex == -1)
+            {
+                return;
+            }
+            if(TryGetPlayer2(out var player2))
+            {
+                funnyHookBool_StateChangeAllowed = true;
+                player2.fsm.ChangeState(stateList[stateIndex]);
+                funnyHookBool_StateChangeAllowed = false;
+            }
         }
     }
 }

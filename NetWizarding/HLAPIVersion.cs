@@ -1,21 +1,25 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
 namespace NetWizarding
 {
     public class WizardPositionMessage : MessageBase
     {
         public Vector3 decodedPosition;
-        
+        public Vector2 input;
+
         public override void Serialize(NetworkWriter writer)
         {
             writer.Write((Vector3)GameController.playerScripts[0].transform.position);
+            writer.Write((Vector2)GameController.playerScripts[0].inputDevice.GetMoveVector());
 
         }
         public override void Deserialize(NetworkReader reader)
         {
             decodedPosition = reader.ReadVector3();
+            input = reader.ReadVector2();
         }
     }
 
@@ -34,6 +38,11 @@ namespace NetWizarding
             position = 100,
             fsm_state = 200,
             damage = 300,
+        }
+
+        void Awake()
+        {
+            NetWizardingPlugin.OnPlayer1StateChanged += NetWizardingPlugin_OnPlayer1StateChanged;
         }
 
         void Update()
@@ -57,10 +66,24 @@ namespace NetWizarding
             }
 
             msgTimer -= Time.deltaTime;
-            if (msgTimer <= 0 && myClient != null && myClient.connection != null && myClient.connection.isConnected)
+            if (msgTimer <= 0 && IsClientReady())
             {
-                msgTimer = 0.02f;
+                msgTimer = 0.03f;
                 myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
+            }
+        }
+
+        private bool IsClientReady()
+        {
+            return myClient != null && myClient.connection != null && myClient.connection.isConnected;
+        }
+
+        private void NetWizardingPlugin_OnPlayer1StateChanged(int stateIndex)
+        {
+            if (IsClientReady())
+            {
+                Log.Warning($"sending state {stateIndex}");
+                myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
             }
         }
 
@@ -70,6 +93,7 @@ namespace NetWizarding
             NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
             NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
             NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
+            NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
             Log.Warning($"starter server at port {NetworkServer.listenPort}");
         }
 
@@ -95,10 +119,18 @@ namespace NetWizarding
 
         private void OnHostReceivedPosition(NetworkMessage netMsg)
         {
-            var decodedPosition = netMsg.ReadMessage<WizardPositionMessage>().decodedPosition;
+            WizardPositionMessage wizardPositionMessage = netMsg.ReadMessage<WizardPositionMessage>();
+            Vector3 decodedPosition = wizardPositionMessage.decodedPosition;
             GameController.playerScripts[1].transform.position = decodedPosition;
-            NetWizardingPlugin.Instance.positionDifference = (decodedPosition - previousNetworkPosition).normalized;
+            NetWizardingPlugin.Instance.positionDifference = wizardPositionMessage.input;
             previousNetworkPosition = decodedPosition;
+        }
+
+        private void OnHostReceivedState(NetworkMessage netMsg)
+        {
+            var stateIndex = netMsg.ReadMessage<IntegerMessage>().value;
+            Log.Message($"received state {stateIndex}");
+            NetWizardingPlugin.Instance.RecieveState(stateIndex);
         }
     }
 }
