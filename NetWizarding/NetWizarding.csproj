@@ -37,9 +37,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Brxxzzy_Netboot.cs" />
+    <Compile Include="HLAPIVersion.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="ModAccess.cs" />
+    <Compile Include="NetworkTransportVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NetWizardingPlugin.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Release\manifest.json" />
@@ -119,6 +123,7 @@
   <PropertyGroup>
     <PostBuildEvent>if "$(Username)" == "Erikbir" copy /Y "$(TargetPath)" "$(ProjectDir)\Release\plugins"
 if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\Program Files (x86)\Steam\steamapps\common\Wizard of Legend\BepInEx\plugins\TheTimesweeper-NetWizarding"
-if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\Abbas's stuff VII I think\1337 haxx\ror2lol\r2modmanPlus-local\WizardOfLegend\profiles\Default\BepInEx\plugins\TheTimesweeper-NetWizarding"</PostBuildEvent>
+if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "E:\Abbas's stuff VII I think\1337 haxx\ror2lol\r2modmanPlus-local\WizardOfLegend\profiles\Default\BepInEx\plugins\TheTimesweeper-NetWizarding"
+if "$(Username)" == "Erikbir" Xcopy /E /I /Y "$(ProjectDir)\Release\plugins" "C:\EnforcerBuild\TheTimesweeper-NetWizarding"</PostBuildEvent>
   </PropertyGroup>
 </Project>
