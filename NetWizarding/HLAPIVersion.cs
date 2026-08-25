@@ -8,18 +8,21 @@ namespace NetWizarding
     public class WizardPositionMessage : MessageBase
     {
         public Vector3 decodedPosition;
-        public Vector2 input;
+        public Vector2 moveInput;
+        public Vector2 lookInput;
 
         public override void Serialize(NetworkWriter writer)
         {
             writer.Write((Vector3)GameController.playerScripts[0].transform.position);
             writer.Write((Vector2)GameController.playerScripts[0].inputDevice.GetMoveVector());
+            writer.Write((Vector2)GameController.playerScripts[0].inputDevice.GetAimVector());
 
         }
         public override void Deserialize(NetworkReader reader)
         {
             decodedPosition = reader.ReadVector3();
-            input = reader.ReadVector2();
+            moveInput = reader.ReadVector2();
+            lookInput = reader.ReadVector2();
         }
     }
 
@@ -64,6 +67,10 @@ namespace NetWizarding
                     SetupClient(IpToConnect);
                 }
             }
+            if (Input.GetKeyDown(KeyCode.X) && IsClientReady())
+            {
+                myClient.Send(MsgType.Disconnect, new EmptyMessage());
+            }
 
             msgTimer -= Time.deltaTime;
             if (msgTimer <= 0 && IsClientReady())
@@ -92,9 +99,16 @@ namespace NetWizarding
         {
             NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
             NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
+            NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
             NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
             NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
             Log.Warning($"starter server at port {NetworkServer.listenPort}");
+        }
+
+        private void OnHostReceivedDisconnect(NetworkMessage netMsg)
+        {
+            Log.Warning("Client Disconnected from us");
+            CharacterSelectUI.P2CharacterSelectUI.Activate();
         }
 
         // Create a client and connect to the server port
@@ -122,7 +136,8 @@ namespace NetWizarding
             WizardPositionMessage wizardPositionMessage = netMsg.ReadMessage<WizardPositionMessage>();
             Vector3 decodedPosition = wizardPositionMessage.decodedPosition;
             GameController.playerScripts[1].transform.position = decodedPosition;
-            NetWizardingPlugin.Instance.positionDifference = wizardPositionMessage.input;
+            NetWizardingPlugin.Instance.networkPlayer2MoveInput = wizardPositionMessage.moveInput;
+            NetWizardingPlugin.Instance.networkPlayer2LookInput = wizardPositionMessage.lookInput;
             previousNetworkPosition = decodedPosition;
         }
 

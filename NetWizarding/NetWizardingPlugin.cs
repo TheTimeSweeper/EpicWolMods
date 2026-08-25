@@ -25,7 +25,8 @@ namespace NetWizarding
 
         public static ConfigFile staticConfig;
 
-        public Vector3 positionDifference;
+        public Vector2 networkPlayer2MoveInput;
+        public Vector2 networkPlayer2LookInput;
 
         public string[] stateList;
 
@@ -54,7 +55,29 @@ namespace NetWizarding
             On.Movement.MoveToMoveVector += Movement_MoveToMoveVector;
             On.Player.InitFSM += Player_InitFSM;
             On.FSM.ChangeState += FSM_ChangeState;
+            On.ChaosInputDevice.GetAimVector += ChaosInputDevice_GetAimVector;
+            On.ChaosInputDevice.GetMoveVector += ChaosInputDevice_GetMoveVector;
             //On.Attack.CheckCollision += Attack_CheckCollision;
+        }
+
+        private Vector2 ChaosInputDevice_GetMoveVector(On.ChaosInputDevice.orig_GetMoveVector orig, ChaosInputDevice self)
+        {
+            if (TryGetPlayer2(out var player2) && self == player2.inputDevice)
+            {
+                return networkPlayer2MoveInput;
+            }
+
+            return orig(self);
+        }
+
+        private Vector2 ChaosInputDevice_GetAimVector(On.ChaosInputDevice.orig_GetAimVector orig, ChaosInputDevice self)
+        {
+            if(TryGetPlayer2(out var player2) && self == player2.inputDevice)
+            {
+                return networkPlayer2LookInput;
+            }
+
+            return orig(self);
         }
 
         //this is causing stack overflows???
@@ -68,6 +91,10 @@ namespace NetWizarding
             if (stateList != null && TryGetPlayer1(out var player1) && self == player1.fsm)
             {
                 OnPlayer1StateChanged?.Invoke(GetStateIndex(targetStateName));
+            }
+            if(TryGetPlayer1(out var player22) && self == player22.fsm)
+            {
+                Log.Warning($"player 2 entering state {targetStateName}");
             }
             orig(self, targetStateName, allowSelfTransition);
         }
@@ -202,13 +229,13 @@ namespace NetWizarding
             self._userData.players = userDataButEpic.players;
             orig(self);
             netWizardFakeController = ReInput.ControllerHelper.Instance.CreateCustomController(0);
-            ReInput.InputSourceUpdateEvent += ReInput_InputSourceUpdateEvent;
+            //ReInput.InputSourceUpdateEvent += ReInput_InputSourceUpdateEvent;
         }
         private bool debugG;
         private void ReInput_InputSourceUpdateEvent()
         {
-            netWizardFakeController.SetAxisValue(0, positionDifference.y);
-            netWizardFakeController.SetAxisValue(1, positionDifference.x);
+            netWizardFakeController.SetAxisValue(0, networkPlayer2MoveInput.y);
+            netWizardFakeController.SetAxisValue(1, networkPlayer2MoveInput.x);
         }
 
         public void Player2ClaimFakeInput()

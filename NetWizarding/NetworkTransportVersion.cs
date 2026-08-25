@@ -192,7 +192,7 @@ namespace NetWizarding
                         decodedPosition.z = BitConverter.ToSingle(receivedBuffer, 8);
 
                         GameController.playerScripts[1].transform.position = decodedPosition;
-                        NetWizardingPlugin.Instance.positionDifference = (decodedPosition - previousNetworkPosition).normalized;
+                        NetWizardingPlugin.Instance.networkPlayer2MoveInput = (decodedPosition - previousNetworkPosition).normalized;
                         previousNetworkPosition = decodedPosition;
                     }
                     break;
