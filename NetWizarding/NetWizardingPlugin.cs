@@ -32,8 +32,11 @@ namespace NetWizarding
 
         public delegate void Player1StateChanged(int stateIndex);
         public static event Player1StateChanged OnPlayer1StateChanged;
+        public delegate void Player2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity);
+        public static event Player2TakeDamage OnPlayer2TakeDamage;
 
         private bool funnyHookBool_StateChangeAllowed;
+        private bool funnyHookBool_DamageAllowed;
 
         void Awake()
         {
@@ -57,7 +60,16 @@ namespace NetWizarding
             On.FSM.ChangeState += FSM_ChangeState;
             On.ChaosInputDevice.GetAimVector += ChaosInputDevice_GetAimVector;
             On.ChaosInputDevice.GetMoveVector += ChaosInputDevice_GetMoveVector;
+            Health.globalTakeDamageEnterHandlers += GlobalOnTakeDamage;
             //On.Attack.CheckCollision += Attack_CheckCollision;
+        }
+
+        private void GlobalOnTakeDamage(AttackInfo givenAtkInfo, Entity attackEntity, Entity hurtEntity)
+        {
+            if(TryGetPlayer2(out var player2) && player2 == hurtEntity)
+            {
+                OnPlayer2TakeDamage?.Invoke(givenAtkInfo, attackEntity);
+            }
         }
 
         private Vector2 ChaosInputDevice_GetMoveVector(On.ChaosInputDevice.orig_GetMoveVector orig, ChaosInputDevice self)
@@ -92,9 +104,9 @@ namespace NetWizarding
             {
                 OnPlayer1StateChanged?.Invoke(GetStateIndex(targetStateName));
             }
-            if(TryGetPlayer1(out var player22) && self == player22.fsm)
+            if(TryGetPlayer1(out var player12) && self == player12.fsm)
             {
-                Log.Warning($"player 2 entering state {targetStateName}");
+                Log.Warning($"player 1 entering state {targetStateName}");
             }
             orig(self, targetStateName, allowSelfTransition);
         }
@@ -122,10 +134,11 @@ namespace NetWizarding
 
         private bool Health_TakeDamage(On.Health.orig_TakeDamage orig, Health self, AttackInfo givenAttackInfo, Entity attackEntity, bool critPreCalculated)
         {
-            if (givenAttackInfo.entity == GameController.playerScripts[1])
+            if (givenAttackInfo.entity == GameController.playerScripts[1] && !funnyHookBool_DamageAllowed)
             {
                 return false;
             }
+            funnyHookBool_DamageAllowed = true;
             return orig(self, givenAttackInfo, attackEntity, critPreCalculated);
         }
 
@@ -256,6 +269,29 @@ namespace NetWizarding
                 player2.fsm.ChangeState(stateList[stateIndex]);
                 funnyHookBool_StateChangeAllowed = false;
             }
+        }
+
+        public void ReceivePVPAttackInfo(AttackInfo decodedInfo)
+        {
+
+            if (!TryGetPlayer1(out var player1))
+            {
+                Log.Warning($"Player 1 missing to take damage");
+                return;
+            }
+            if (!TryGetPlayer2(out var player2)) 
+            {
+                Log.Warning($"Player 2 missing to deal damage");
+                return;
+            }
+
+            decodedInfo.entity = player2;
+            decodedInfo.gameObject = player2.gameObject;
+            decodedInfo.atkObjID = player2.gameObject.GetInstanceID(); 
+            decodedInfo.attacker = player2.gameObject.name;
+            funnyHookBool_DamageAllowed = true;
+            player1.health.TakeDamage(decodedInfo, player2);
+            funnyHookBool_DamageAllowed = false;
         }
     }
 }

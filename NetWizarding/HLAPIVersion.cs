@@ -26,6 +26,118 @@ namespace NetWizarding
         }
     }
 
+    public class WizardPVPDamageMessage : MessageBase
+    {
+        public AttackInfo attackInfo;
+
+        #region reference
+
+        ////public Entity entity;//decode for now
+        ////public GameObject gameObject;//decode for now
+        /////hopefully don't need
+        ////public string skillCategory;
+        ////public string skillID;
+        ////public int skillLevel;
+        ////public bool isUltimate;
+        ////public string attackInfoKey;
+        /////decode for now
+        ////public int atkObjID;
+        ////public string attacker;
+
+        //public Vector2 inAttackerPosition;
+        //public Vector2 inTargetPosition;
+        //public ElementType inElementType;
+        //public ElementType inSubElementType;
+        //public bool inShowDamageNumber;
+        //public bool inShowDamageEffect;
+        //public bool inShakeCamera;
+        ////targetobjid - using hard-coding p1 vs p2 values
+        ////targetnames - doesn't seem to be referenced in health take damage step
+        //public float inTime;
+        //public float inSameTargetImmunityTime;
+        //public float inSameAttackImmunityTime;
+        ////public bool inCanHitStun;//oh god
+        ////hitstunduration
+        //public float inKnockbackMultiplier;
+        //public bool inKnockbackOverwrite;
+        //public Vector2 inKnockbackVector;
+        //public Vector2 attackingVector;
+        //public int damage;
+        //public bool isCritical;
+        //public bool isDamageOverride;
+        ////public float critHitChance;
+        //public float critDmgModifier;
+        ////these will have to be networked separately
+        ////public bool isStatusEffect;
+        ////public float rootChance;
+        ////public float rootDuration;
+        ////public float chaosChance;
+        ////public int chaosLevel;
+        ////public float burnChance;
+        ////public int burnLevel;
+        ////public float slowChance;
+        ////public int slowLevel;
+        ////public float poisonChance;
+        ////public int poisonLevel;
+        ////public float shockChance;
+        ////public int shockLevel;
+        ////public float freezeChance;
+        ////public float freezeDuration;
+
+        ////not read in takedamage step
+        ////public float odDmgModifier;
+        ////public float odProgMultiplier;
+        ////public bool odSingleIncrease;
+        #endregion reference
+
+        public override void Serialize(NetworkWriter writer)
+        {
+            writer.Write((Vector2)attackInfo.attackerPosition);
+            writer.Write((Vector2)attackInfo.targetPosition);
+            writer.Write((int)attackInfo.elementType);
+            writer.Write((int)attackInfo.subElementType);
+            writer.Write((bool)attackInfo.showDamageNumber);
+            writer.Write((bool)attackInfo.showDamageEffect);
+            writer.Write((bool)attackInfo.shakeCamera);
+            writer.Write((float)attackInfo.time);
+            writer.Write((float)attackInfo.sameTargetImmunityTime);
+            writer.Write((float)attackInfo.sameAttackImmunityTime);
+            writer.Write((float)attackInfo.knockbackMultiplier);
+            writer.Write((bool)attackInfo.knockbackOverwrite);
+            writer.Write((Vector2)attackInfo.knockbackVector);
+            writer.Write((Vector2)attackInfo.attackingVector);
+            writer.Write((int)attackInfo.damage);
+            writer.Write((bool)attackInfo.isCritical);
+            writer.Write((bool)attackInfo.isDamageOverride);
+            writer.Write((float)attackInfo.critDmgModifier);
+        }
+        public override void Deserialize(NetworkReader reader)
+        {
+            attackInfo = new AttackInfo()
+            {
+                attackerPosition = reader.ReadVector2(),
+                targetPosition = reader.ReadVector2(),
+                elementType = (ElementType)reader.ReadInt32(),
+                subElementType = (ElementType)reader.ReadInt32(),
+                showDamageNumber = reader.ReadBoolean(),
+
+                showDamageEffect = reader.ReadBoolean(),
+                shakeCamera = reader.ReadBoolean(),
+                time = reader.ReadSingle(),
+                sameTargetImmunityTime = reader.ReadSingle(),
+                sameAttackImmunityTime = reader.ReadSingle(),
+                knockbackMultiplier = reader.ReadSingle(),
+                knockbackOverwrite = reader.ReadBoolean(),
+                knockbackVector = reader.ReadVector2(),
+                attackingVector = reader.ReadVector2(),
+                damage = reader.ReadInt32(),
+                isCritical = reader.ReadBoolean(),
+                isDamageOverride = reader.ReadBoolean(),
+                critDmgModifier = reader.ReadSingle(),
+            };
+        }
+    }
+
     public class HLAPIVersion : MonoBehaviour
     {
         private string IpToConnect;
@@ -46,6 +158,8 @@ namespace NetWizarding
         void Awake()
         {
             NetWizardingPlugin.OnPlayer1StateChanged += NetWizardingPlugin_OnPlayer1StateChanged;
+
+            NetWizardingPlugin.OnPlayer2TakeDamage += NetWizardingPlugin_OnPlayer2TakeDamage;
         }
 
         void Update()
@@ -73,10 +187,10 @@ namespace NetWizarding
             }
 
             msgTimer -= Time.deltaTime;
-            if (msgTimer <= 0 && IsClientReady())
+            if (msgTimer <= 0)
             {
                 msgTimer = 0.03f;
-                myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
+                SendPositionMessage();
             }
         }
 
@@ -85,13 +199,34 @@ namespace NetWizarding
             return myClient != null && myClient.connection != null && myClient.connection.isConnected;
         }
 
+        private void SendPositionMessage()
+        {
+            if (!IsClientReady())
+                return;
+
+            myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
+        }
+
         private void NetWizardingPlugin_OnPlayer1StateChanged(int stateIndex)
         {
-            if (IsClientReady())
+            if (!IsClientReady())
+                return;
+            
+            Log.Warning($"sending state {stateIndex}");
+            myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
+        }
+
+        private void NetWizardingPlugin_OnPlayer2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity)
+        {
+            if (!IsClientReady())
+                return;
+
+            WizardPVPDamageMessage damageMessage = new WizardPVPDamageMessage()
             {
-                Log.Warning($"sending state {stateIndex}");
-                myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
-            }
+                attackInfo = givenAtkInfo
+            };
+
+            myClient.Send((short)NetWizMessageType.damage, damageMessage);
         }
 
         // Create a server and listen on a port
@@ -102,7 +237,15 @@ namespace NetWizarding
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
             NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
             NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
+            NetworkServer.RegisterHandler((short)NetWizMessageType.damage, OnHostReceivedPVPDamage);
             Log.Warning($"starter server at port {NetworkServer.listenPort}");
+        }
+
+        private void OnHostReceivedPVPDamage(NetworkMessage netMsg)
+        {
+            WizardPVPDamageMessage damageMessage = netMsg.ReadMessage<WizardPVPDamageMessage>();
+            AttackInfo decodedInfo = damageMessage.attackInfo;
+            NetWizardingPlugin.Instance.ReceivePVPAttackInfo(decodedInfo);
         }
 
         private void OnHostReceivedDisconnect(NetworkMessage netMsg)

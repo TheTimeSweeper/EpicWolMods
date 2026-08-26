@@ -1569,6 +1569,6 @@ MonoBehaviour:
     customControllerMapIdCounter: 2
     customControllerIdCounter: 1
     controllerMapLayoutManagerSetIdCounter: 0
-    controllerMapEnablerSetIdCounter: 0
+    controllerMapEnablerSetIdCounter: 1
   _controllerDataFiles: {fileID: 11400000, guid: d21d2b20df8369642b76aafbb2576ba7,
     type: 2}
