@@ -30,6 +30,9 @@ namespace NetWizarding
 
         private void BeginHost()
         {
+            if(thisHostId != -1)
+                return;
+
             NetworkTransport.Init();
             ConnectionConfig config = new ConnectionConfig();
             myReiliableChannelId = config.AddChannel(QosType.Reliable);
@@ -170,7 +173,7 @@ namespace NetWizarding
                         (NetworkError)error == NetworkError.Ok)
                     {
                         hostConnectedClientIds.Add(connectionId);
-                        Log.Warning($"Connection request received with connectionId {connectionId}");
+                        Log.Message($"Connection request received with connectionId {connectionId}");
                         NetWizardingPlugin.Instance.Player2ClaimFakeInput();
                     }
                     break;
@@ -203,7 +206,7 @@ namespace NetWizarding
                         //(NetworkError)error == NetworkError.Ok
                         )
                     {
-                        Log.Warning($"Disconnect request received with connectionId {connectionId}");
+                        Log.Message($"Disconnect request received with connectionId {connectionId}");
                     }
                     break;
             }

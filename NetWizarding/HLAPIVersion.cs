@@ -157,8 +157,10 @@ namespace NetWizarding
 
         void Awake()
         {
-            NetWizardingPlugin.OnPlayer1StateChanged += NetWizardingPlugin_OnPlayer1StateChanged;
+            NetWizardingPlugin.OnPlayer1Spawned += NetWizardingPlugin_OnPlayer1Spawned;
+            NetWizardingPlugin.OnSceneExited += NetWizardingPlugin_OnSceneExited;
 
+            NetWizardingPlugin.OnPlayer1StateChanged += NetWizardingPlugin_OnPlayer1StateChanged;
             NetWizardingPlugin.OnPlayer2TakeDamage += NetWizardingPlugin_OnPlayer2TakeDamage;
         }
 
@@ -168,22 +170,24 @@ namespace NetWizarding
             {
                 SetupServer();
             }
+
             if (Input.GetKeyDown(KeyCode.C))
             {
-                if (!Util.inputUI)
-                {
-                    Util.ToggleIPInput();
-                }
-                else
+                Util.ToggleIPInput();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (Util.inputUI)
                 {
                     IpToConnect = Util.ConsumeIPInput();
                     if (string.IsNullOrEmpty(IpToConnect)) IpToConnect = "127.0.0.1";
                     SetupClient(IpToConnect);
                 }
             }
-            if (Input.GetKeyDown(KeyCode.X) && IsClientReady())
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                myClient.Send(MsgType.Disconnect, new EmptyMessage());
+                SendDisconnectMessage();
             }
 
             msgTimer -= Time.deltaTime;
@@ -192,6 +196,25 @@ namespace NetWizarding
                 msgTimer = 0.03f;
                 SendPositionMessage();
             }
+        }
+
+        private void NetWizardingPlugin_OnSceneExited()
+        {
+            SendDisconnectMessage();
+        }
+
+        private void NetWizardingPlugin_OnPlayer1Spawned()
+        {
+            SetupServer();
+        }
+
+        private void SendDisconnectMessage()
+        {
+            if (!IsClientReady())
+                return;
+
+            myClient.Send(MsgType.Disconnect, new EmptyMessage());
+            myClient = null;
         }
 
         private bool IsClientReady()
@@ -232,13 +255,23 @@ namespace NetWizarding
         // Create a server and listen on a port
         public void SetupServer()
         {
+            if (NetworkServer.active)
+            {
+                Log.Warning("Host already active");
+                if(NetworkServer.connections.Count == 0)
+                {
+                    GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection (press C to connect).");
+                }
+                return;
+            }
             NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
             NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
             NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
             NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
             NetworkServer.RegisterHandler((short)NetWizMessageType.damage, OnHostReceivedPVPDamage);
-            Log.Warning($"starter server at port {NetworkServer.listenPort}");
+            Log.Message($"started server at port {NetworkServer.listenPort}");
+            GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
         }
 
         private void OnHostReceivedPVPDamage(NetworkMessage netMsg)
@@ -250,13 +283,21 @@ namespace NetWizarding
 
         private void OnHostReceivedDisconnect(NetworkMessage netMsg)
         {
-            Log.Warning("Client Disconnected from us");
-            CharacterSelectUI.P2CharacterSelectUI.Activate();
+            Log.Message("Client Disconnected from us. Disconnecting from our host as well.");
+            GameUI.BroadcastNoticeMessage("Client disconnected from us. Disconnecting from our host as well.");
+            SendDisconnectMessage();
+
+            NetWizardingPlugin.Instance.ReceiveDisconnect();
         }
 
         // Create a client and connect to the server port
         public void SetupClient(string Ip)
         {
+            if (IsClientReady())
+            {
+                Log.Message("trying to connect when already established");
+                return;
+            }
             myClient = new NetworkClient();
             myClient.RegisterHandler(MsgType.Connect, OnClientConnectedToHost);
             myClient.Connect(Ip, NetWizardingPlugin.config_clientPort);
@@ -264,14 +305,22 @@ namespace NetWizarding
 
         private void OnHostReceivedConnection(NetworkMessage netMsg)
         {
-            Log.Warning("Client Connected to us");
+            Log.Message("Client Connected to us");
+            string message = "Client connection received.";
+            if (!IsClientReady())
+            {
+                message += "\nConnect back to establish pair (press C)";
+            }
+            GameUI.BroadcastNoticeMessage("Client connection received.");
+
             NetWizardingPlugin.Instance.Player2ClaimFakeInput();
         }
 
         // client function
         public void OnClientConnectedToHost(NetworkMessage netMsg)
         {
-            Log.Warning("Connected to server");
+            Log.Message("Connected to server");
+            GameUI.BroadcastNoticeMessage("Connected to host.");
         }
 
         private void OnHostReceivedPosition(NetworkMessage netMsg)
@@ -287,7 +336,7 @@ namespace NetWizarding
         private void OnHostReceivedState(NetworkMessage netMsg)
         {
             var stateIndex = netMsg.ReadMessage<IntegerMessage>().value;
-            Log.Message($"received state {stateIndex}");
+            Log.Warning($"received state {stateIndex}");
             NetWizardingPlugin.Instance.RecieveState(stateIndex);
         }
     }

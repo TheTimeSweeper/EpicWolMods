@@ -72,7 +72,7 @@ namespace NetWizarding
             rectTransform.anchoredPosition = Vector2.zero;
             ipInputField = gameObject3.AddComponent<InputField>();
             ipInputField.textComponent = CreateText(gameObject3.transform, "", TextAnchor.MiddleLeft, Color.white, 24);
-            ipInputField.placeholder = CreateText(gameObject3.transform, "Enter Host ID...", TextAnchor.MiddleLeft, new Color(0.6f, 0.6f, 0.6f), 24);
+            ipInputField.placeholder = CreateText(gameObject3.transform, "Enter IP to connect...", TextAnchor.MiddleLeft, new Color(0.6f, 0.6f, 0.6f), 24);
             ipInputField.ActivateInputField();
             ipInputField.Select();
         }

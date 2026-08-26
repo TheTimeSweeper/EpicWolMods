@@ -30,6 +30,8 @@ namespace NetWizarding
 
         public string[] stateList;
 
+        public static event Action OnPlayer1Spawned;
+        public static event Action OnSceneExited;
         public delegate void Player1StateChanged(int stateIndex);
         public static event Player1StateChanged OnPlayer1StateChanged;
         public delegate void Player2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity);
@@ -46,7 +48,8 @@ namespace NetWizarding
             Harmony.CreateAndPatchAll(typeof(NetWizardingPlugin));
             Debug.Log("I belive in you c:");
             config_hostPort = NetWizardingPlugin.staticConfig.Bind("uh", "hostport", 6969).Value;
-            config_clientPort = NetWizardingPlugin.staticConfig.Bind("uh", "clientport", 9696).Value;
+            config_clientPort = NetWizardingPlugin.staticConfig.Bind("uh", "clientport", 6969).Value;
+            Log.DebugLogs = NetWizardingPlugin.staticConfig.Bind("uh", "debug logs", false, "for dev").Value;
 
             //gameObject.AddComponent<NetworkTransportVersion>();
             gameObject.AddComponent<HLAPIVersion>();
@@ -61,7 +64,44 @@ namespace NetWizarding
             On.ChaosInputDevice.GetAimVector += ChaosInputDevice_GetAimVector;
             On.ChaosInputDevice.GetMoveVector += ChaosInputDevice_GetMoveVector;
             Health.globalTakeDamageEnterHandlers += GlobalOnTakeDamage;
+            On.GameController.Quit += GameController_Quit;
+            On.GameController.LoadLevel += GameController_LoadLevel;
+            On.PlayerCharacterSelectUI.SpawnPlayer += PlayerCharacterSelectUI_SpawnPlayer;
+            On.PlayerCharacterSelectUI.ClaimInputDevice += PlayerCharacterSelectUI_ClaimInputDevice;
             //On.Attack.CheckCollision += Attack_CheckCollision;
+        }
+
+        private bool PlayerCharacterSelectUI_ClaimInputDevice(On.PlayerCharacterSelectUI.orig_ClaimInputDevice orig, PlayerCharacterSelectUI self)
+        {
+            if (Util.inputUI)
+            {
+                return false;
+            }
+            return orig(self);
+        }
+
+        private void PlayerCharacterSelectUI_SpawnPlayer(On.PlayerCharacterSelectUI.orig_SpawnPlayer orig, PlayerCharacterSelectUI self)
+        {
+            orig(self);
+            if (TryGetPlayer1(out var player1) && self.player == player1)
+            {
+                OnPlayer1Spawned?.Invoke();
+            }
+        }
+
+        private void GameController_LoadLevel(On.GameController.orig_LoadLevel orig, string givenLevelName)
+        {
+            if (givenLevelName == "TitleScreen")
+            {
+                OnSceneExited?.Invoke();
+            }
+            orig(givenLevelName);
+        }
+
+        private void GameController_Quit(On.GameController.orig_Quit orig)
+        {
+            OnSceneExited?.Invoke();
+            orig();
         }
 
         private void GlobalOnTakeDamage(AttackInfo givenAtkInfo, Entity attackEntity, Entity hurtEntity)
@@ -292,6 +332,18 @@ namespace NetWizarding
             funnyHookBool_DamageAllowed = true;
             player1.health.TakeDamage(decodedInfo, player2);
             funnyHookBool_DamageAllowed = false;
+        }
+
+        internal void ReceiveDisconnect()
+        {
+            //CharacterSelectUI.P2CharacterSelectUI.Disable(true);
+            //CharacterSelectUI.P2CharacterSelectUI.player = null;
+            //if (TryGetPlayer2(out var player2))
+            //{
+            //    DestroyImmediate(player2.gameObject);
+            //}
+            //CharacterSelectUI.P2CharacterSelectUI.Activate();
+
         }
     }
 }
