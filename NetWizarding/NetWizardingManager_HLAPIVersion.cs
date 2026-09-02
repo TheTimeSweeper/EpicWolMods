@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Steamworks;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
@@ -137,25 +138,21 @@ namespace NetWizarding
             };
         }
     }
+    public enum NetWizMessageType : short
+    {
+        position = 100,
+        fsm_state = 200,
+        damage = 300,
+    }
 
-    public class HLAPIVersion : MonoBehaviour
+    public class NetWizardingManager_HLAPIVersion : MonoBehaviour
     {
         private string IpToConnect;
-        private NetworkClient myClient;
+        public virtual NetworkClient myClient { get; set; }
 
         private float msgTimer;
 
-        private Vector3 previousNetworkPosition;
-
-
-        public enum NetWizMessageType : short
-        {
-            position = 100,
-            fsm_state = 200,
-            damage = 300,
-        }
-
-        void Awake()
+        protected virtual void Awake()
         {
             NetWizardingPlugin.OnPlayer1Spawned += NetWizardingPlugin_OnPlayer1Spawned;
             NetWizardingPlugin.OnSceneExited += NetWizardingPlugin_OnSceneExited;
@@ -164,7 +161,19 @@ namespace NetWizarding
             NetWizardingPlugin.OnPlayer2TakeDamage += NetWizardingPlugin_OnPlayer2TakeDamage;
         }
 
-        void Update()
+        protected virtual void Update()
+        {
+            InputsNStuff();
+
+            msgTimer -= Time.deltaTime;
+            if (msgTimer <= 0)
+            {
+                msgTimer = 0.03f;
+                SendPositionMessage();
+            }
+        }
+
+        protected virtual void InputsNStuff()
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
@@ -189,13 +198,6 @@ namespace NetWizarding
             {
                 SendDisconnectMessage();
             }
-
-            msgTimer -= Time.deltaTime;
-            if (msgTimer <= 0)
-            {
-                msgTimer = 0.03f;
-                SendPositionMessage();
-            }
         }
 
         private void NetWizardingPlugin_OnSceneExited()
@@ -205,7 +207,7 @@ namespace NetWizarding
 
         private void NetWizardingPlugin_OnPlayer1Spawned()
         {
-            SetupServer();
+            //SetupServer();
         }
 
         private void SendDisconnectMessage()
@@ -258,13 +260,13 @@ namespace NetWizarding
             if (NetworkServer.active)
             {
                 Log.Warning("Host already active");
-                if(NetworkServer.connections.Count == 0)
+                if (NetworkServer.connections.Count == 0)
                 {
-                    GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection (press C to connect).");
+                    GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
                 }
                 return;
             }
-            NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
+            StartNetworkServer();
             NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
             NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
@@ -272,6 +274,11 @@ namespace NetWizarding
             NetworkServer.RegisterHandler((short)NetWizMessageType.damage, OnHostReceivedPVPDamage);
             Log.Message($"started server at port {NetworkServer.listenPort}");
             GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
+        }
+
+        protected virtual void StartNetworkServer()
+        {
+            NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
         }
 
         private void OnHostReceivedPVPDamage(NetworkMessage netMsg)
@@ -309,9 +316,9 @@ namespace NetWizarding
             string message = "Client connection received.";
             if (!IsClientReady())
             {
-                message += "\nConnect back to establish pair (press C)";
+                message += "\nConnect back to establish pair";
             }
-            GameUI.BroadcastNoticeMessage("Client connection received.");
+            GameUI.BroadcastNoticeMessage(message);
 
             NetWizardingPlugin.Instance.Player2ClaimFakeInput();
         }
@@ -330,7 +337,6 @@ namespace NetWizarding
             GameController.playerScripts[1].transform.position = decodedPosition;
             NetWizardingPlugin.Instance.networkPlayer2MoveInput = wizardPositionMessage.moveInput;
             NetWizardingPlugin.Instance.networkPlayer2LookInput = wizardPositionMessage.lookInput;
-            previousNetworkPosition = decodedPosition;
         }
 
         private void OnHostReceivedState(NetworkMessage netMsg)

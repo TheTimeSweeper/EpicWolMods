@@ -3,8 +3,10 @@ Very barebones online multiplayer setup that fakes it heavily, but might just be
 - Only works for PVP
 - Currently always expecting multiplayer. Uninstall mod to go back to normal
 - tons of interactions untested  
+- no UI.
+- requires port forwarding currently I think.
 
-## How to use (warning, port forward required)
+## How to use (warning, port forward required I think)
 Both machines will need to connect to each other as both host and client.
 1. Forward the port 6969 on your router
    - if you don't know how to forward your port, give a google
@@ -16,6 +18,7 @@ Both machines will need to connect to each other as both host and client.
    - this will start a host server on your end, allowing others to connect to you
 5. On Both Machines, press C on the keyboard to bring up the IP connect window
 6. On Both Machines, type the IP of the other user you want to connect to, and hit enter.
+7. You're kinda of in separate worlds, so in order to start a pvp match. You will have to begin the match on both screens manually. 
 
 Once a client is connected to you, If all is well, the second wizard should have spawned and claimed the second "press to join" window.
 

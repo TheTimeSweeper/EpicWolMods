@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace NetWizarding
 {
-    public class NetworkTransportVersion : MonoBehaviour
+    public class NetWizaredingManager_NetworkTransportVersion : MonoBehaviour
     {
         private int myReiliableChannelId;
         private int myUnreliableChannelId;

@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using Rewired;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +53,7 @@ namespace NetWizarding
             Log.DebugLogs = NetWizardingPlugin.staticConfig.Bind("uh", "debug logs", false, "for dev").Value;
 
             //gameObject.AddComponent<NetworkTransportVersion>();
-            gameObject.AddComponent<HLAPIVersion>();
+            gameObject.AddComponent<NetWizardingManager_HLAPIVersion_Steam>();
 
             LoadFromBundle();
 
