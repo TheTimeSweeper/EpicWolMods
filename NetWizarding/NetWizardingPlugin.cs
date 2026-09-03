@@ -70,10 +70,8 @@ namespace NetWizarding
             On.PlayerCharacterSelectUI.SpawnPlayer += PlayerCharacterSelectUI_SpawnPlayer;
             On.PlayerCharacterSelectUI.ClaimInputDevice += PlayerCharacterSelectUI_ClaimInputDevice;
             //On.Attack.CheckCollision += Attack_CheckCollision;
-
-            Cursor.lockState = CursorLockMode.None;
         }
-
+        
         private bool PlayerCharacterSelectUI_ClaimInputDevice(On.PlayerCharacterSelectUI.orig_ClaimInputDevice orig, PlayerCharacterSelectUI self)
         {
             if (Util.inputUI)
@@ -230,6 +228,8 @@ namespace NetWizarding
 
         void Update()
         {
+
+            Cursor.lockState = CursorLockMode.None;
             #region testFakeController
             //if (Input.GetKeyDown(KeyCode.Alpha5))
             //{

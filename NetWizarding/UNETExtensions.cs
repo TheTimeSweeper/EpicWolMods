@@ -14,5 +14,9 @@ namespace NetWizarding
             int id = ++nextConnectionId;
             conn.Initialize("localhost", id, id, NetWizardingManager_HLAPI_But_Steam.instance.hostTopology);
         }
+        public static bool IsReady(this NetworkClient client)
+        {
+            return client != null && client.connection != null && client.connection.isConnected;
+        }
     }
 }

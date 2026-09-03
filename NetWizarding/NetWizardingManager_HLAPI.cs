@@ -148,7 +148,7 @@ namespace NetWizarding
     public class NetWizardingManager_HLAPI : MonoBehaviour
     {
         private string IpToConnect;
-        public virtual NetworkClient myClient { get; set; }
+        public virtual NetworkClient clientClient { get; set; }
 
         private float msgTimer;
 
@@ -164,7 +164,17 @@ namespace NetWizarding
         protected virtual void Update()
         {
             InputsNStuff();
-
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (msgTimer > 1)
+                {
+                    msgTimer = 0;
+                } 
+                else
+                {
+                    msgTimer = 100;
+                }
+            }
             msgTimer -= Time.deltaTime;
             if (msgTimer <= 0)
             {
@@ -241,14 +251,14 @@ namespace NetWizarding
         }
         public void StartUNETClient()
         {
-            if (IsClientReady())
+            if (clientClient.IsReady())
             {
                 Log.Message("trying to connect when already established");
                 return;
             }
-            myClient = new NetworkClient();
-            myClient.RegisterHandler(MsgType.Connect, OnClientConnectedToHost);
-            myClient.Connect(IpToConnect, NetWizardingPlugin.config_clientPort);
+            clientClient = new NetworkClient();
+            clientClient.RegisterHandler(MsgType.Connect, OnClientConnectedToHost);
+            clientClient.Connect(IpToConnect, NetWizardingPlugin.config_clientPort);
         }
         #endregion client initialization
 
@@ -268,7 +278,7 @@ namespace NetWizarding
         {
             Log.Message("Client Connected to our UNET Host");
             string message = "Client connection received.";
-            if (!IsClientReady())
+            if (!clientClient.IsReady())
             {
                 message += "\nConnect back to establish pair";
             }
@@ -296,33 +306,33 @@ namespace NetWizarding
         }
         protected virtual void ClientSendDisconnectMessage()
         {
-            if (!IsClientReady())
+            if (!clientClient.IsReady())
                 return;
 
-            myClient.Send(MsgType.Disconnect, new EmptyMessage());
-            myClient = null;
+            clientClient.Send(MsgType.Disconnect, new EmptyMessage());
+            clientClient = null;
         }
         #endregion client disconnect from host
 
         #region client send gameplay messages
         private void SendPositionMessage()
         {
-            if (!IsClientReady())
+            if (!clientClient.IsReady())
                 return;
             Log.Info("sending position");
-            myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
+            clientClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
         }
         private void NetWizardingPlugin_OnPlayer1StateChanged(int stateIndex)
         {
-            if (!IsClientReady())
+            if (!clientClient.IsReady())
                 return;
 
             //Log.Warning($"sending state {stateIndex}");
-            myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
+            clientClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
         }
         private void NetWizardingPlugin_OnPlayer2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity)
         {
-            if (!IsClientReady())
+            if (!clientClient.IsReady())
                 return;
 
             WizardPVPDamageMessage damageMessage = new WizardPVPDamageMessage()
@@ -330,7 +340,7 @@ namespace NetWizarding
                 attackInfo = givenAtkInfo
             };
 
-            myClient.Send((short)NetWizMessageType.damage, damageMessage);
+            clientClient.Send((short)NetWizMessageType.damage, damageMessage);
         }
         #endregion client send gameplay messages
 
@@ -359,10 +369,5 @@ namespace NetWizarding
             NetWizardingPlugin.Instance.ReceivePVPAttackInfo(decodedInfo);
         }
         #endregion host gameplay callbacks
-
-        public virtual bool IsClientReady()
-        {
-            return myClient != null && myClient.connection != null && myClient.connection.isConnected;
-        }
     }
 }

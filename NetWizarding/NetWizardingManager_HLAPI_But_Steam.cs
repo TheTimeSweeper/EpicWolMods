@@ -11,7 +11,7 @@ namespace NetWizarding
     {
         public static NetWizardingManager_HLAPI_But_Steam instance;
 
-        public override NetworkClient myClient { get => NetWizardingManager_Steam.Instance.myClient; set => NetWizardingManager_Steam.Instance.myClient = value; }
+        public override NetworkClient clientClient { get => NetWizardingManager_Steam.Instance.clientClient; set => NetWizardingManager_Steam.Instance.clientClient = value; }
 
         // UNET vars
         private List<NetworkConnection> connectedClients = new List<NetworkConnection>();
@@ -65,6 +65,18 @@ namespace NetWizarding
             NetworkServer.Configure(hostTopology);
             NetworkServer.dontListen = true;
             NetworkServer.Listen(0);
+
+            NetworkClient hostClient = ClientScene.ConnectLocalServer();
+            hostClient.Configure(hostTopology);
+            hostClient.Connect("localhost", 0);
+            hostClient.connection.ForceInitialize();
+
+            NetWizardingManager_Steam.Instance.hostClient = new SteamNetworkClient(hostClient.connection);
+
+            // Add local client to server's list of connections
+            // Here we get the connection from the NetworkServer because it represents the server-to-client connection
+            var serverToClientConn = NetworkServer.connections[0];
+            connectedClients.Add(serverToClientConn);
         }
         #endregion host initialization
         protected override void NetWizardingPlugin_OnPlayer1Spawned()
@@ -116,7 +128,7 @@ namespace NetWizarding
             // Create connection to host player's steam ID
             var conn = new SteamNetworkConnection(hostSteamId);
             var mySteamClient = new SteamNetworkClient(conn);
-            myClient = mySteamClient;
+            clientClient = mySteamClient;
 
             // Setup and connect
             mySteamClient.RegisterHandler(MsgType.Connect, base.OnClientConnectedToHost);
@@ -133,7 +145,7 @@ namespace NetWizarding
         //called from steam api OnLobbyChatUpdate
         public void HostRemoveClientConnection(CSteamID steamIdToDisconnect)
         {
-            var unetClientConnection = GetClient(steamIdToDisconnect);
+            var unetClientConnection = GetSteamNetworkClient(steamIdToDisconnect);
             var steamClientConnection = unetClientConnection as SteamNetworkConnection;
 
             if (unetClientConnection != null)
@@ -164,8 +176,20 @@ namespace NetWizarding
         }
         #endregion client disconnect from host
 
+        public static int Debug_GetConnectionIndex(NetworkConnection connection)
+        {
+            // find remote client
+            for (int i = 0; i < instance.connectedClients.Count; i++)
+            {
+                if(connection == instance.connectedClients[i])
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
 
-        public static NetworkConnection GetClient(CSteamID steamId)
+        public static NetworkConnection GetSteamNetworkClient(CSteamID steamId)
         {
             //todo if id is us... I think that means we fucked up somewhere
             if (steamId.m_SteamID == SteamUser.GetSteamID().m_SteamID)
@@ -177,11 +201,20 @@ namespace NetWizarding
                     return NetworkServer.connections[0];
                 }
             }
+            //Log.Warning($"connectedclients {instance.connectedClients.Count}");
 
             // find remote client
             for (int i = 0; i < instance.connectedClients.Count; i++)
             {
                 var steamConn = instance.connectedClients[i] as SteamNetworkConnection;
+                //if(steamConn == null)
+                //{
+                //    Log.Warning($"connection {i} is null or not a steamnetworkconnection");
+                //} 
+                //else
+                //{
+                //    Log.Warning($"connection {i} steamid {steamConn.steamId.m_SteamID}");
+                //}
                 if (steamConn != null && steamConn.steamId.m_SteamID == steamId.m_SteamID)
                 {
                     return steamConn;

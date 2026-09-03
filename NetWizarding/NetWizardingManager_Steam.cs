@@ -28,7 +28,8 @@ namespace NetWizarding
         public static NetWizardingManager_Steam Instance;
 
         // Client-to-server connection
-        public NetworkClient myClient;
+        public NetworkClient hostClient;
+        public NetworkClient clientClient;
 
         // steam state vars
         public SessionConnectionState lobbyConnectionState { get; private set; }
@@ -101,7 +102,7 @@ namespace NetWizarding
                 return;
             }
 
-            if(!NetworkServer.active && !NetWizardingManager_HLAPI_But_Steam.instance.IsClientReady())
+            if(!NetworkServer.active && !hostClient.IsReady())
             {
                 return;
             }
@@ -126,49 +127,22 @@ namespace NetWizarding
 
                     if (SteamNetworking.ReadP2PPacket(data, packetSize, out packetSize, out senderId, chan))
                     {
-                        Log.Message("receiving p2p packet");
-                        NetworkConnection connection;
+                        Log.Message("received p2p packet");
 
-                        //if (NetworkServer.active)
-                        //{
-                            // We are the server, one of our clients will handle this packet
-                            connection = NetWizardingManager_HLAPI_But_Steam.GetClient(senderId);
+                        NetworkConnection connection = NetWizardingManager_HLAPI_But_Steam.GetSteamNetworkClient(senderId);
+                        
+                        if (connection == null)
+                        {
+                            Log.Message("defaulting to host client");
+                            connection = hostClient.connection;
 
-                            if (connection == null)
-                            {
-                                //okay this seems to just be wrong...
-                                //// In some cases the p2p connection can persist, resulting in UNETServerController.OnP2PSessionRequested not being called. This happens usually when testing in editor.
-                                //// If the peers have already established a connection, reset it.
-                                //P2PSessionState_t sessionState;
-                                //if (SteamNetworking.GetP2PSessionState(senderId, out sessionState) && Convert.ToBoolean(sessionState.m_bConnectionActive))
-                                //{
-                                //    Log.Message("P2P connection is still established. Resetting.");
-                                //    SteamNetworking.CloseP2PSessionWithUser(senderId);
-                                //    NetWizardingManager_HLAPI_But_Steam.instance.CreateP2PConnectionWithPeer(senderId);
-                                //    connection = NetWizardingManager_HLAPI_But_Steam.GetClient(senderId);
-                                //}
-
-                                //was none of our clients, so it's us, right?
-                                
-                            }
-                        //}
-                        //else
-                        //{
-
-                        //    if (!NetWizardingManager_HLAPI_But_Steam.instance.IsClientReady())//todo bouncing too much
-                        //    {
-                        //        Log.Error("tried to receive a message for client when our client is not ready. something went wrong?");
-                        //        return;
-                        //    }
-                        //    // We are a client, we only have one connection (the server).
-                        //    connection = myClient.connection;
-                        //}
+                        }
                         if (connection != null)
                         {
+                            Log.Message($"receiving packet on connection {NetWizardingManager_HLAPI_But_Steam.Debug_GetConnectionIndex(connection)}");
                             // Handle Steam packet through UNET
                             connection.TransportReceive(data, Convert.ToInt32(packetSize), chan);
                         }
-
                     }
                 }
             }
@@ -247,7 +221,7 @@ namespace NetWizarding
         public void ClientDisconnectFromHost()
         {
             Log.Message("ClientDisconnectFromHost");
-            if (!NetWizardingManager_HLAPI_But_Steam.instance.IsClientReady())
+            if (!clientClient.IsReady())
             {
                 Log.Message("but we were already disconnected");
                 return;
@@ -265,10 +239,10 @@ namespace NetWizarding
             otherHostSteamLobbyId.Clear();
 
             //this was definitely local client stuff but we can use it
-            if (myClient != null)
+            if (clientClient != null)
             {
-                (myClient as SteamNetworkClient).Disconnect();
-                myClient = null;
+                (clientClient as SteamNetworkClient).Disconnect();
+                clientClient = null;
             }
 
             //UNETServerController.Disconnect();// i don't think I ever shut down my server so idk
