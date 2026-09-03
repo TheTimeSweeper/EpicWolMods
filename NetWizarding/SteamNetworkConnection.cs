@@ -38,6 +38,7 @@ namespace NetWizarding
             // Send packet to peer through Steam
             if (SteamNetworking.SendP2PPacket(steamId, bytes, (uint)numBytes, eP2PSendType))
             {
+                Log.Message("sent p2p packet");
                 error = 0;
                 return true;
             }

@@ -309,7 +309,7 @@ namespace NetWizarding
         {
             if (!IsClientReady())
                 return;
-
+            Log.Info("sending position");
             myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
         }
         private void NetWizardingPlugin_OnPlayer1StateChanged(int stateIndex)
@@ -317,7 +317,7 @@ namespace NetWizarding
             if (!IsClientReady())
                 return;
 
-            Log.Warning($"sending state {stateIndex}");
+            //Log.Warning($"sending state {stateIndex}");
             myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
         }
         private void NetWizardingPlugin_OnPlayer2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity)
@@ -337,6 +337,7 @@ namespace NetWizarding
         #region host gameplay callbacks
         private void OnHostReceivedPosition(NetworkMessage netMsg)
         {
+            Log.Info("recieved position");
             WizardPositionMessage wizardPositionMessage = netMsg.ReadMessage<WizardPositionMessage>();
             Vector3 decodedPosition = wizardPositionMessage.decodedPosition;
             GameController.playerScripts[1].transform.position = decodedPosition;
@@ -347,7 +348,7 @@ namespace NetWizarding
         private void OnHostReceivedState(NetworkMessage netMsg)
         {
             var stateIndex = netMsg.ReadMessage<IntegerMessage>().value;
-            Log.Warning($"received state {stateIndex}");
+            //Log.Warning($"received state {stateIndex}");
             NetWizardingPlugin.Instance.RecieveState(stateIndex);
         }
 
@@ -359,7 +360,7 @@ namespace NetWizarding
         }
         #endregion host gameplay callbacks
 
-        public bool IsClientReady()
+        public virtual bool IsClientReady()
         {
             return myClient != null && myClient.connection != null && myClient.connection.isConnected;
         }

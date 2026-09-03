@@ -149,7 +149,7 @@ namespace NetWizarding
             }
             if(TryGetPlayer1(out var player12) && self == player12.fsm)
             {
-                Log.Warning($"player 1 entering state {targetStateName}");
+                //Log.Warning($"player 1 entering state {targetStateName}");
             }
             orig(self, targetStateName, allowSelfTransition);
         }

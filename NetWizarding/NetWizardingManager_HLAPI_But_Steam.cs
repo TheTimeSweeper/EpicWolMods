@@ -170,7 +170,7 @@ namespace NetWizarding
             //todo if id is us... I think that means we fucked up somewhere
             if (steamId.m_SteamID == SteamUser.GetSteamID().m_SteamID)
             {
-                Log.Error("Attempting to disconnect from self. did we have a connection to self? how? what? who? faster? stronger?");
+                Log.Error("Attempting to reach self local client. did we have a connection to self? how? what? who? faster? stronger?");
                 // get the local client
                 if (NetworkServer.active && NetworkServer.connections.Count > 0)
                 {
