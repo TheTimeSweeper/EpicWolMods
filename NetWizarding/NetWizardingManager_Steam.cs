@@ -9,7 +9,7 @@ using UnityEngine.Networking.NetworkSystem;
 namespace NetWizarding
 {
     //credit to https://news.clobber.net/gamedev/2017-10-28-unity-unet-hlapi-and-steam-p2p-networking/
-    public class NetWizardingManager_SteamVersion : MonoBehaviour
+    public class NetWizardingManager_Steam : MonoBehaviour
     {
         public const int MAX_USERS = 4;
         public const string GAME_ID = "wizard-of-legend-net-wizarding"; // Unique identifier for matchmaking so we don't match up with other Spacewar games
@@ -25,7 +25,7 @@ namespace NetWizarding
             DISCONNECTED
         }
 
-        public static NetWizardingManager_SteamVersion Instance;
+        public static NetWizardingManager_Steam Instance;
 
         // Client-to-server connection
         public NetworkClient myClient;
@@ -41,6 +41,8 @@ namespace NetWizarding
         private Callback<LobbyChatUpdate_t> m_LobbyChatUpdate;
         private CallResult<LobbyMatchList_t> m_LobbyMatchList;
 
+        private bool openInviteOnLobbyCreated;
+
         void Start()
         {
             // init
@@ -55,7 +57,7 @@ namespace NetWizarding
                 m_LobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
                 //m_LobbyMatchList = CallResult<LobbyMatchList_t>.Create(OnLobbyMatchList);
 
-                NetWizardingManager_HLAPIVersion_Steam.instance.Init();
+                NetWizardingManager_HLAPI_But_Steam.instance.SubscribeToSteamMessages();
             } else
             {
                 Log.Warning("SteamManager not initializd");
@@ -67,7 +69,6 @@ namespace NetWizarding
 
         private void JoinGameStartupLobby()
         {
-
             // check if game started via friend invitation
             string[] args = System.Environment.GetCommandLineArgs();
             string input = "";
@@ -99,13 +100,13 @@ namespace NetWizarding
                 return;
             }
 
-            if (!IsConnectedToUNETServer())
+            if (!NetWizardingManager_HLAPI_But_Steam.instance.IsClientReady())//todo bouncing too much
             {
                 return;
             }
 
             uint packetSize;
-            int channels = NetWizardingManager_HLAPIVersion_Steam.GetChannelCount();
+            int channels = NetWizardingManager_HLAPI_But_Steam.GetChannelCount();
 
             // Read Steam packets
             for (int chan = 0; chan < channels; chan++)
@@ -121,7 +122,7 @@ namespace NetWizarding
                         NetworkConnection connection;
 
                         // We are the server, one of our clients will handle this packet
-                        connection = NetWizardingManager_HLAPIVersion_Steam.GetClient(senderId);
+                        connection = NetWizardingManager_HLAPI_But_Steam.GetClient(senderId);
 
                         if (connection == null)
                         {
@@ -132,8 +133,8 @@ namespace NetWizarding
                             {
                                 Log.Message("P2P connection is still established. Resetting.");
                                 SteamNetworking.CloseP2PSessionWithUser(senderId);
-                                NetWizardingManager_HLAPIVersion_Steam.instance.CreateP2PConnectionWithPeer(senderId);
-                                connection = NetWizardingManager_HLAPIVersion_Steam.GetClient(senderId);
+                                NetWizardingManager_HLAPI_But_Steam.instance.CreateP2PConnectionWithPeer(senderId);
+                                connection = NetWizardingManager_HLAPI_But_Steam.GetClient(senderId);
                             }
                         }
 
@@ -195,11 +196,6 @@ namespace NetWizarding
         //    return CSteamID.Nil;
         //}
 
-        public bool IsConnectedToUNETServer()
-        {
-            return myClient != null && myClient.connection != null && myClient.connection.isConnected;
-        }
-
         //todo disconnect
         //public void Disconnect()
         //{
@@ -222,6 +218,28 @@ namespace NetWizarding
         //    steamLobbyId.Clear();
         //}
 
+        //let's just disconnect our client for now.
+        public void ClientDisconnectFromHost()
+        {
+            lobbyConnectionState = SessionConnectionState.DISCONNECTED;//todo dont quite understand but seems fine
+
+            //todo is this for the local client? if so not needed. will test without
+            //if not it was probably to close the lobby
+            //if (SteamManager.Initialized)
+            //{
+            //    SteamMatchmaking.LeaveLobby(steamLobbyId);
+            //}
+
+            //this was definitely local client stuff but we can use it
+            if (myClient != null)
+            {
+                (myClient as SteamNetworkClient).Disconnect();
+                myClient = null;
+            }
+
+            //UNETServerController.Disconnect();// i don't think I ever shut down my server so idk
+
+        }
 
         void OnLobbyChatUpdate(LobbyChatUpdate_t pCallback)
         {
@@ -230,13 +248,13 @@ namespace NetWizarding
                 Log.Message("A client has disconnected from the UNET server");
 
                 // user left lobby
-                var userId = new CSteamID(pCallback.m_ulSteamIDUserChanged);
+                var userIdToDisconnect = new CSteamID(pCallback.m_ulSteamIDUserChanged);
                 if (NetworkServer.active)
                 {
-                    NetWizardingManager_HLAPIVersion_Steam.instance.RemoveConnection(userId);
+                    NetWizardingManager_HLAPI_But_Steam.instance.HostRemoveClientConnection(userIdToDisconnect);
                 }
 
-                SteamNetworking.CloseP2PSessionWithUser(userId);
+                SteamNetworking.CloseP2PSessionWithUser(userIdToDisconnect);
             }
         }
 
@@ -302,7 +320,7 @@ namespace NetWizarding
         //}
 
 
-        public void InviteFriendsToLobby()
+        public void InviteFriendOrCreateLobbyAndInvite()
         {
             if (lobbyConnectionState == SessionConnectionState.CONNECTING)
             {
@@ -311,39 +329,39 @@ namespace NetWizarding
                 return;
             }
 
-            if (lobbyConnectionState != SessionConnectionState.CONNECTED)
+            if (lobbyConnectionState == SessionConnectionState.CONNECTED)
             {
-                // No lobby yet
-                CreateLobbyAndInviteFriend();
+                // Already in lobby. show dialog to Invite friends to current lobby
+                InviteFriendsToLobby();
             }
             else
             {
-                // Already in lobby. Invite friends to current lobby
-                InviteFriendsToLobbye();
+                openInviteOnLobbyCreated = true;
+                // No lobby yet. create one, and show dialog after.
+                CreateLobby();
             }
         }
 
-        public void InviteFriendsToLobbye()
+        public void InviteFriendsToLobby()
         {
-            Debug.Log("Showing invite friend dialog");
+            Log.Warning("Showing invite friend dialog");
             SteamFriends.ActivateGameOverlayInviteDialog(steamLobbyId);
         }
-
-        public void CreateLobbyAndInviteFriend()
+        public void CreateLobby()
         {
             if (!SteamManager.Initialized)
             {
                 lobbyConnectionState = SessionConnectionState.FAILED;
-                Log.Warning("failed not initialized");
+                Log.Warning("Failed. SteamManager not initialized");
                 return;
             }
 
-            //UNETServerController.inviteFriendOnStart = true;
             lobbyConnectionState = SessionConnectionState.CONNECTING;
             SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePrivate, MAX_USERS);
             // ...continued in OnLobbyEntered callback
         }
 
+        //callback when joining a lobby, but also when requesting a lobby for self
         void OnLobbyEntered(LobbyEnter_t pCallback)
         {
             if (!SteamManager.Initialized)
@@ -354,23 +372,25 @@ namespace NetWizarding
 
             steamLobbyId = new CSteamID(pCallback.m_ulSteamIDLobby);
 
-            Log.Warning("Connected to Steam lobby");
+            Log.Warning("OnLobbyEntered Callback");
             lobbyConnectionState = SessionConnectionState.CONNECTED;
 
             var hostUserId = SteamMatchmaking.GetLobbyOwner(steamLobbyId);
             var me = SteamUser.GetSteamID();
-            //todo we're not connecting to self. need to start unetserver ourselves
             if (hostUserId.m_SteamID == me.m_SteamID)
             {
                 SteamMatchmaking.SetLobbyData(steamLobbyId, "game", GAME_ID);
-                Log.Warning("Lobby Created on host");
-                NetWizardingManager_HLAPIVersion_Steam.instance.SetupServer();
-                //UNETServerController.StartUNETServer();
+                Log.Message("Lobby Created on host");
+                NetWizardingManager_HLAPI_But_Steam.instance.HLAPI_StartServer();
+                if (openInviteOnLobbyCreated)
+                {
+                    InviteFriendsToLobby();
+                }
             }
             else
             {
                 // joined friend's lobby.
-                Log.Warning("Sending request to p2p connect with host");
+                Log.Message("Sending request to p2p connect with host");
                 StartCoroutine(RequestP2PConnectionWithHost());
             }
 
@@ -400,14 +420,14 @@ namespace NetWizarding
             {
                 if (senderId.m_SteamID == hostUserId.m_SteamID)
                 {
-                    Debug.Log("P2P connection established");
+                    Log.Message("P2P connection established");
 
                     // packet was from host, assume it's notifying client that AcceptP2PSessionWithUser was called
                     P2PSessionState_t sessionState;
                     if (SteamNetworking.GetP2PSessionState(hostUserId, out sessionState))
                     {
                         // connect to the unet server
-                        ConnectToUnetServerForSteam(hostUserId);
+                        NetWizardingManager_HLAPI_But_Steam.instance.ConnectToUnetServerFromSteam(hostUserId);
 
                         yield break;
                     }
@@ -415,157 +435,7 @@ namespace NetWizarding
                 }
             }
 
-            Debug.LogError("Connection failed");
-        }
-
-
-        void ConnectToUnetServerForSteam(CSteamID hostSteamId)
-        {
-            Debug.Log("Connecting to UNET server");
-
-            // Create connection to host player's steam ID
-            var conn = new SteamNetworkConnection(hostSteamId);
-            var mySteamClient = new SteamNetworkClient(conn);
-            myClient = mySteamClient;
-
-            // Setup and connect
-            mySteamClient.RegisterHandler(MsgType.Connect, OnConnect);
-            mySteamClient.SetNetworkConnectionClass<SteamNetworkConnection>();
-            mySteamClient.Configure(NetWizardingManager_HLAPIVersion_Steam.instance.hostTopology);
-            mySteamClient.Connect();
-
-        }
-
-        void OnConnect(NetworkMessage msg)
-        {
-            // Set to ready and spawn player
-            Log.Message("Connected to UNET server.");
-            myClient.UnregisterHandler(MsgType.Connect);//todo uh
-
-            //var conn = myClient.connection;
-            //if (conn != null)
-            //{
-            //    ClientScene.Ready(conn);
-            //    Debug.Log("Requesting spawn");
-            //    myClient.Send(NetworkMessages.SpawnRequestMsg, new StringMessage(SteamUser.GetSteamID().m_SteamID.ToString()));
-            //}
-
-        }
-    }
-
-    //credit to https://news.clobber.net/gamedev/2017-10-28-unity-unet-hlapi-and-steam-p2p-networking/
-    public class SteamNetworkConnection : NetworkConnection
-    {
-        public CSteamID steamId;
-
-        public SteamNetworkConnection() : base()
-        {
-        }
-
-        public SteamNetworkConnection(CSteamID steamId)
-        {
-            this.steamId = steamId;
-        }
-
-        public override bool TransportSend(byte[] bytes, int numBytes, int channelId, out byte error)
-        {
-            if (steamId.m_SteamID == SteamUser.GetSteamID().m_SteamID)
-            {
-                // sending to self. short circuit
-                TransportReceive(bytes, numBytes, channelId);
-                error = 0;
-                return true;
-            }
-
-            EP2PSend eP2PSendType = EP2PSend.k_EP2PSendReliable;
-
-            QosType qos = /*SteamNetworkManager*/NetworkServer.hostTopology.DefaultConfig.Channels[channelId].QOS;
-            if (qos == QosType.Unreliable || qos == QosType.UnreliableFragmented || qos == QosType.UnreliableSequenced)
-            {
-                eP2PSendType = EP2PSend.k_EP2PSendUnreliable;
-            }
-
-            // Send packet to peer through Steam
-            if (SteamNetworking.SendP2PPacket(steamId, bytes, (uint)numBytes, eP2PSendType))
-            {
-                error = 0;
-                return true;
-            }
-            else
-            {
-                error = 1;
-                return false;
-            }
-        }
-
-        public void CloseP2PSession()
-        {
-            SteamNetworking.CloseP2PSessionWithUser(steamId);
-            steamId = CSteamID.Nil;
-        }
-    }
-
-    public class SteamNetworkClient : NetworkClient
-    {
-
-        public SteamNetworkConnection steamConnection
-        {
-            get
-            {
-                return connection as SteamNetworkConnection;
-            }
-
-        }
-
-        public string status { get { return m_AsyncConnect.ToString(); } }
-
-        public void Connect()
-        {
-            // Connect to localhost and trick UNET by setting ConnectState state to "Connected", which triggers some initialization and allows data to pass through TransportSend
-            Connect("localhost", 0);
-            m_AsyncConnect = ConnectState.Connected;
-
-            // manually init connection
-            connection.ForceInitialize();
-
-            // send Connected message
-            connection.InvokeHandlerNoData(MsgType.Connect);
-        }
-
-        public SteamNetworkClient(NetworkConnection conn) : base(conn)
-        {
-        }
-
-        public override void Disconnect()
-        {
-            m_AsyncConnect = ConnectState.Disconnected;
-
-            if (m_Connection != null & m_Connection.isConnected)
-            {
-                m_Connection.InvokeHandlerNoData(MsgType.Disconnect);
-
-                steamConnection.CloseP2PSession();
-                m_Connection.hostId = -1;
-                m_Connection.Disconnect();
-                m_Connection.Dispose();
-                m_Connection = null;
-
-            }
-
-        }
-    }
-
-    public static class UNETExtensions
-    {
-
-        private static int nextConnectionId = -1;
-
-        /// Because we fake the UNET connection, connection initialization is not handled by UNET internally. 
-        /// Connections must be manually initialized with this function.
-        public static void ForceInitialize(this NetworkConnection conn)
-        {
-            int id = ++nextConnectionId;
-            conn.Initialize("localhost", id, id, NetWizardingManager_HLAPIVersion_Steam.instance.hostTopology);
+            Log.Message("Connection failed");
         }
     }
 }

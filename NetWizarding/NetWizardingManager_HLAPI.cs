@@ -145,7 +145,7 @@ namespace NetWizarding
         damage = 300,
     }
 
-    public class NetWizardingManager_HLAPIVersion : MonoBehaviour
+    public class NetWizardingManager_HLAPI : MonoBehaviour
     {
         private string IpToConnect;
         public virtual NetworkClient myClient { get; set; }
@@ -177,40 +177,124 @@ namespace NetWizarding
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
-                SetupServer();
+                HLAPI_StartServer();
             }
 
             if (Input.GetKeyDown(KeyCode.C))
             {
                 Util.ToggleIPInput();
             }
-
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return))//breaks if p1 is on controller, as p2 will attempt to claim keyboard with the enter press
             {
-                if (Util.inputUI)
-                {
-                    IpToConnect = Util.ConsumeIPInput();
-                    if (string.IsNullOrEmpty(IpToConnect)) IpToConnect = "127.0.0.1";
-                    SetupClient(IpToConnect);
-                }
+                HLAPI_StartClient();
             }
+
             if (Input.GetKeyDown(KeyCode.X))
             {
-                SendDisconnectMessage();
+                ClientSendDisconnectMessage();
             }
         }
-
-        private void NetWizardingPlugin_OnSceneExited()
+        
+        #region host initialization
+        protected virtual void NetWizardingPlugin_OnPlayer1Spawned()
         {
-            SendDisconnectMessage();
+            HLAPI_StartServer();
         }
-
-        private void NetWizardingPlugin_OnPlayer1Spawned()
+        public void HLAPI_StartServer()
         {
-            //SetupServer();
-        }
+            if (NetworkServer.active)
+            {
+                Log.Warning("Host already active");
+                if (NetworkServer.connections.Count == 0)
+                {
+                    GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
+                }
+                return;
+            }
+            StartUNETServer();
+            Log.Message($"started UNET server at port {NetworkServer.listenPort}");
+            GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
 
-        private void SendDisconnectMessage()
+            NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
+            NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
+            NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
+            NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
+            NetworkServer.RegisterHandler((short)NetWizMessageType.damage, OnHostReceivedPVPDamage);
+        }
+        // HLAPI version only. Steam version will override this to up its own NetworkServer
+        protected virtual void StartUNETServer()
+        {
+            NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
+        }
+        #endregion host initialization
+
+        #region client Initialization
+        // HLAPI version only. Steam version will set up its own NetworkClient
+        private void HLAPI_StartClient()
+        {
+            if (Util.inputUI)
+            {
+                IpToConnect = Util.ConsumeIPInput();
+                if (string.IsNullOrEmpty(IpToConnect)) IpToConnect = "127.0.0.1";
+                StartUNETClient();
+            }
+        }
+        public void StartUNETClient()
+        {
+            if (IsClientReady())
+            {
+                Log.Message("trying to connect when already established");
+                return;
+            }
+            myClient = new NetworkClient();
+            myClient.RegisterHandler(MsgType.Connect, OnClientConnectedToHost);
+            myClient.Connect(IpToConnect, NetWizardingPlugin.config_clientPort);
+        }
+        #endregion client initialization
+
+        #region client connections
+        // client function
+        public void OnClientConnectedToHost(NetworkMessage netMsg)
+        {
+            //todo are we also doing this on steam side?. I should just kill the backwards compatibility
+            //tbh an entire rewrite would do pretty dang well I feel
+            Log.Message("Connected to other UNET server");
+            GameUI.BroadcastNoticeMessage("Connected to host.");
+        }
+        #endregion client connections
+
+        #region host connection
+        public void OnHostReceivedConnection(NetworkMessage netMsg)
+        {
+            Log.Message("Client Connected to our UNET Host");
+            string message = "Client connection received.";
+            if (!IsClientReady())
+            {
+                message += "\nConnect back to establish pair";
+            }
+            GameUI.BroadcastNoticeMessage(message);
+
+            NetWizardingPlugin.Instance.Player2ClaimFakeInput();
+        }
+        #endregion host connection
+
+        #region host recieve disconnect from client
+        public void OnHostReceivedDisconnect(NetworkMessage netMsg)
+        {
+            Log.Message("Client Disconnected from us. Disconnecting from our host as well.");
+            GameUI.BroadcastNoticeMessage("Client disconnected from us. Disconnecting from our host as well.");
+            ClientSendDisconnectMessage();
+
+            NetWizardingPlugin.Instance.ReceiveDisconnect();
+        }
+        #endregion host recieve disconnect from client
+
+        #region client disconnect from host
+        protected void NetWizardingPlugin_OnSceneExited()
+        {
+            ClientSendDisconnectMessage();//todo should disconnect both?
+        }
+        protected virtual void ClientSendDisconnectMessage()
         {
             if (!IsClientReady())
                 return;
@@ -218,12 +302,9 @@ namespace NetWizarding
             myClient.Send(MsgType.Disconnect, new EmptyMessage());
             myClient = null;
         }
+        #endregion client disconnect from host
 
-        private bool IsClientReady()
-        {
-            return myClient != null && myClient.connection != null && myClient.connection.isConnected;
-        }
-
+        #region client send gameplay messages
         private void SendPositionMessage()
         {
             if (!IsClientReady())
@@ -231,16 +312,14 @@ namespace NetWizarding
 
             myClient.Send((short)NetWizMessageType.position, new WizardPositionMessage());
         }
-
         private void NetWizardingPlugin_OnPlayer1StateChanged(int stateIndex)
         {
             if (!IsClientReady())
                 return;
-            
+
             Log.Warning($"sending state {stateIndex}");
             myClient.Send((short)NetWizMessageType.fsm_state, new IntegerMessage(stateIndex));
         }
-
         private void NetWizardingPlugin_OnPlayer2TakeDamage(AttackInfo givenAtkInfo, Entity attackEntity)
         {
             if (!IsClientReady())
@@ -253,83 +332,9 @@ namespace NetWizarding
 
             myClient.Send((short)NetWizMessageType.damage, damageMessage);
         }
+        #endregion client send gameplay messages
 
-        // Create a server and listen on a port
-        public void SetupServer()
-        {
-            if (NetworkServer.active)
-            {
-                Log.Warning("Host already active");
-                if (NetworkServer.connections.Count == 0)
-                {
-                    GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
-                }
-                return;
-            }
-            StartNetworkServer();
-            NetworkServer.RegisterHandler(MsgType.Connect, OnHostReceivedConnection);
-            NetworkServer.RegisterHandler(MsgType.Disconnect, OnHostReceivedDisconnect);
-            NetworkServer.RegisterHandler((short)NetWizMessageType.position, OnHostReceivedPosition);
-            NetworkServer.RegisterHandler((short)NetWizMessageType.fsm_state, OnHostReceivedState);
-            NetworkServer.RegisterHandler((short)NetWizMessageType.damage, OnHostReceivedPVPDamage);
-            Log.Message($"started server at port {NetworkServer.listenPort}");
-            GameUI.BroadcastNoticeMessage("Created Host Server. Awaiting client connection.");
-        }
-
-        protected virtual void StartNetworkServer()
-        {
-            NetworkServer.Listen(NetWizardingPlugin.config_hostPort);
-        }
-
-        private void OnHostReceivedPVPDamage(NetworkMessage netMsg)
-        {
-            WizardPVPDamageMessage damageMessage = netMsg.ReadMessage<WizardPVPDamageMessage>();
-            AttackInfo decodedInfo = damageMessage.attackInfo;
-            NetWizardingPlugin.Instance.ReceivePVPAttackInfo(decodedInfo);
-        }
-
-        private void OnHostReceivedDisconnect(NetworkMessage netMsg)
-        {
-            Log.Message("Client Disconnected from us. Disconnecting from our host as well.");
-            GameUI.BroadcastNoticeMessage("Client disconnected from us. Disconnecting from our host as well.");
-            SendDisconnectMessage();
-
-            NetWizardingPlugin.Instance.ReceiveDisconnect();
-        }
-
-        // Create a client and connect to the server port
-        public void SetupClient(string Ip)
-        {
-            if (IsClientReady())
-            {
-                Log.Message("trying to connect when already established");
-                return;
-            }
-            myClient = new NetworkClient();
-            myClient.RegisterHandler(MsgType.Connect, OnClientConnectedToHost);
-            myClient.Connect(Ip, NetWizardingPlugin.config_clientPort);
-        }
-
-        private void OnHostReceivedConnection(NetworkMessage netMsg)
-        {
-            Log.Message("Client Connected to us");
-            string message = "Client connection received.";
-            if (!IsClientReady())
-            {
-                message += "\nConnect back to establish pair";
-            }
-            GameUI.BroadcastNoticeMessage(message);
-
-            NetWizardingPlugin.Instance.Player2ClaimFakeInput();
-        }
-
-        // client function
-        public void OnClientConnectedToHost(NetworkMessage netMsg)
-        {
-            Log.Message("Connected to server");
-            GameUI.BroadcastNoticeMessage("Connected to host.");
-        }
-
+        #region host gameplay callbacks
         private void OnHostReceivedPosition(NetworkMessage netMsg)
         {
             WizardPositionMessage wizardPositionMessage = netMsg.ReadMessage<WizardPositionMessage>();
@@ -344,6 +349,19 @@ namespace NetWizarding
             var stateIndex = netMsg.ReadMessage<IntegerMessage>().value;
             Log.Warning($"received state {stateIndex}");
             NetWizardingPlugin.Instance.RecieveState(stateIndex);
+        }
+
+        private void OnHostReceivedPVPDamage(NetworkMessage netMsg)
+        {
+            WizardPVPDamageMessage damageMessage = netMsg.ReadMessage<WizardPVPDamageMessage>();
+            AttackInfo decodedInfo = damageMessage.attackInfo;
+            NetWizardingPlugin.Instance.ReceivePVPAttackInfo(decodedInfo);
+        }
+        #endregion host gameplay callbacks
+
+        public bool IsClientReady()
+        {
+            return myClient != null && myClient.connection != null && myClient.connection.isConnected;
         }
     }
 }

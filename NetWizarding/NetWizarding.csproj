@@ -37,14 +37,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Brxxzzy_Netboot.cs" />
-    <Compile Include="NetWizardingManager_HLAPIVersion.cs" />
+    <Compile Include="NetWizardingManager_HLAPI.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ModAccess.cs" />
-    <Compile Include="NetWizaredingManager_NetworkTransportVersion.cs" />
+    <Compile Include="NetWizaredingManager_NetworkTransport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NetWizardingPlugin.cs" />
-    <Compile Include="NetWizardingManager_SteamVersion.cs" />
-    <Compile Include="NetWizardingManager_HLAPIVersion_Steam.cs" />
+    <Compile Include="NetWizardingManager_Steam.cs" />
+    <Compile Include="NetWizardingManager_HLAPI_But_Steam.cs" />
+    <Compile Include="SteamNetworkClient.cs" />
+    <Compile Include="SteamNetworkConnection.cs" />
+    <Compile Include="UNETExtensions.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -53,7 +53,7 @@ namespace NetWizarding
             Log.DebugLogs = NetWizardingPlugin.staticConfig.Bind("uh", "debug logs", false, "for dev").Value;
 
             //gameObject.AddComponent<NetworkTransportVersion>();
-            gameObject.AddComponent<NetWizardingManager_HLAPIVersion_Steam>();
+            gameObject.AddComponent<NetWizardingManager_HLAPI_But_Steam>();
 
             LoadFromBundle();
 
@@ -70,6 +70,8 @@ namespace NetWizarding
             On.PlayerCharacterSelectUI.SpawnPlayer += PlayerCharacterSelectUI_SpawnPlayer;
             On.PlayerCharacterSelectUI.ClaimInputDevice += PlayerCharacterSelectUI_ClaimInputDevice;
             //On.Attack.CheckCollision += Attack_CheckCollision;
+
+            Cursor.lockState = CursorLockMode.None;
         }
 
         private bool PlayerCharacterSelectUI_ClaimInputDevice(On.PlayerCharacterSelectUI.orig_ClaimInputDevice orig, PlayerCharacterSelectUI self)
