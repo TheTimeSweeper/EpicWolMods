@@ -21,11 +21,6 @@ namespace NetWizarding
 
         public HostTopology hostTopology;
 
-        public static int GetChannelCount()
-        {
-            return instance.hostTopology.DefaultConfig.Channels.Count;
-        }
-
         protected override void Awake()
         {
             instance = this;
@@ -43,11 +38,6 @@ namespace NetWizarding
             {
                 NetWizardingManager_Steam.Instance.InviteFriendOrCreateLobbyAndInvite();
             }
-        }
-
-        public void SubscribeToSteamMessages()
-        {
-            m_P2PSessionRequested = Callback<P2PSessionRequest_t>.Create(OnP2PSessionRequested);
         }
 
         #region host initialization
@@ -90,21 +80,6 @@ namespace NetWizarding
         #endregion client initialization
 
         #region host connection
-        void OnP2PSessionRequested(P2PSessionRequest_t pCallback)
-        {
-            Log.Warning("P2P session request received");
-
-            CSteamID member = pCallback.m_steamIDRemote;
-
-            if (NetworkServer.active && NetWizardingManager_Steam.Instance.IsMemberInSteamLobby(member))
-            {
-                // Accept the connection if this user is in the lobby
-                Log.Info("Steam P2P connection accepted");
-                SteamNetworking.AcceptP2PSessionWithUser(member);
-
-                CreateP2PConnectionWithPeer(member);
-            }
-        }
 
         public void CreateP2PConnectionWithPeer(CSteamID peer)
         {
@@ -176,17 +151,10 @@ namespace NetWizarding
         }
         #endregion client disconnect from host
 
-        public static int Debug_GetConnectionIndex(NetworkConnection connection)
+        #region util
+        public static int GetChannelCount()
         {
-            // find remote client
-            for (int i = 0; i < instance.connectedClients.Count; i++)
-            {
-                if(connection == instance.connectedClients[i])
-                {
-                    return i;
-                }
-            }
-            return -1;
+            return instance.hostTopology.DefaultConfig.Channels.Count;
         }
 
         public static NetworkConnection GetSteamNetworkClient(CSteamID steamId)
@@ -224,5 +192,19 @@ namespace NetWizarding
             Log.Warning("Client not found\n" + Environment.StackTrace);
             return null;
         }
+
+        public static int Debug_GetConnectionIndex(NetworkConnection connection)
+        {
+            // find remote client
+            for (int i = 0; i < instance.connectedClients.Count; i++)
+            {
+                if (connection == instance.connectedClients[i])
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        #endregion util
     }
 }

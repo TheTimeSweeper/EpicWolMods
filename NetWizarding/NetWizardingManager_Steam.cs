@@ -59,7 +59,7 @@ namespace NetWizarding
                 m_LobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
                 //m_LobbyMatchList = CallResult<LobbyMatchList_t>.Create(OnLobbyMatchList);
 
-                NetWizardingManager_HLAPI_But_Steam.instance.SubscribeToSteamMessages();
+                m_P2PSessionRequested = Callback<P2PSessionRequest_t>.Create(OnP2PSessionRequested);
             } else
             {
                 Log.Warning("SteamManager not initializd");
@@ -152,6 +152,22 @@ namespace NetWizarding
             //{
             //    Disconnect();
             //}
+        }
+
+        void OnP2PSessionRequested(P2PSessionRequest_t pCallback)
+        {
+            Log.Warning("P2P session request received");
+
+            CSteamID member = pCallback.m_steamIDRemote;
+
+            if (NetworkServer.active && NetWizardingManager_Steam.Instance.IsMemberInSteamLobby(member))
+            {
+                // Accept the connection if this user is in the lobby
+                Log.Info("Steam P2P connection accepted");
+                SteamNetworking.AcceptP2PSessionWithUser(member);
+
+                NetWizardingManager_HLAPI_But_Steam.instance.CreateP2PConnectionWithPeer(member);
+            }
         }
 
         public bool IsMemberInSteamLobby(CSteamID steamUser)
